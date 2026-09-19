@@ -1,0 +1,222 @@
+{
+  "runId": "01M2XP0RAASY569XERK1CSW73X",
+  "kind": "replay",
+  "capability": {
+    "name": "member.open_share",
+    "version": "1.0.0",
+    "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***3]",
+    "share_type": "Club Savings",
+    "description": "Vacation fund",
+    "initial_deposit": "1.00"
+  },
+  "startedAt": "2026-09-19T20:34:10.890Z",
+  "endedAt": "2026-09-19T20:34:25.174Z",
+  "durationMs": 14284,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:11.226Z",
+      "durationMs": 502,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:11.728Z",
+      "durationMs": 365,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 11
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:12.093Z",
+      "durationMs": 484,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:12.577Z",
+      "durationMs": 482,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-click-new-share",
+      "index": 4,
+      "kind": "click",
+      "name": "Click the button \"New Share\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:13.060Z",
+      "durationMs": 478,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 8
+      },
+      "screenshot": "steps/05-s05-click-new-share.png"
+    },
+    {
+      "stepId": "s06-select-share-type",
+      "index": 5,
+      "kind": "select",
+      "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:13.538Z",
+      "durationMs": 354,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "screenshot": "steps/06-s06-select-share-type.png"
+    },
+    {
+      "stepId": "s07-type-description",
+      "index": 6,
+      "kind": "type",
+      "name": "Enter {{description}} into the textbox \"Description\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:13.893Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/07-s07-type-description.png"
+    },
+    {
+      "stepId": "s08-type-initial-deposit",
+      "index": 7,
+      "kind": "type",
+      "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:14.244Z",
+      "durationMs": 347,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/08-s08-type-initial-deposit.png"
+    },
+    {
+      "stepId": "s09-click-review",
+      "index": 8,
+      "kind": "click",
+      "name": "Click the button \"Review\" in frame main",
+      "status": "failed",
+      "startedAt": "2026-09-19T20:34:14.591Z",
+      "durationMs": 0,
+      "attempts": 1,
+      "recoveries": [],
+      "error": {
+        "code": "EXPECTATION_FAILED",
+        "message": "Post-condition failed after \"Click the button \"Review\" in frame main\"",
+        "stepId": "s09-click-review",
+        "stepIndex": 8,
+        "stepName": "Click the button \"Review\" in frame main",
+        "expected": "text \"Review New Share\" present in main",
+        "observed": "text \"Review New Share\" absent",
+        "evidence": [
+          "failure/fail-s09-click-review.png",
+          "failure/dom-s09-click-review.html"
+        ]
+      },
+      "screenshot": "failure/fail-s09-click-review.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 8
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/02-discovery-open_share-probe-low_deposit",
+    "events": "events.jsonl",
+    "failureScreenshot": "failure/fail-s09-click-review.png"
+  },
+  "policy": {
+    "decisions": 9,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "failure",
+  "error": {
+    "code": "EXPECTATION_FAILED",
+    "message": "Post-condition failed after \"Click the button \"Review\" in frame main\"",
+    "stepId": "s09-click-review",
+    "stepIndex": 8,
+    "stepName": "Click the button \"Review\" in frame main",
+    "expected": "text \"Review New Share\" present in main",
+    "observed": "text \"Review New Share\" absent",
+    "evidence": [
+      "failure/fail-s09-click-review.png",
+      "failure/dom-s09-click-review.html"
+    ]
+  }
+}

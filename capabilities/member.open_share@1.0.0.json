@@ -1,0 +1,927 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20",
+  "name": "member.open_share",
+  "version": "1.0.0",
+  "status": "approved",
+  "title": "Open a new share (sub-account) for a member",
+  "description": "Finds the member, fills the New Share form (type, description, initial deposit), reviews it and posts it, returning the confirmation number.",
+  "goal": "Open a new {{share_type}} sub-account (share) for member {{member_id}} with a {{initial_deposit}} initial deposit and reach the confirmation screen",
+  "app": {
+    "profile": "legacycore-teller",
+    "surface": "legacy_web",
+    "family": "legacycore/teller-console@7"
+  },
+  "entry": {
+    "url": {
+      "kind": "template",
+      "template": "{{base_url}}/"
+    },
+    "requiresSession": true
+  },
+  "inputs": {
+    "member_id": {
+      "type": "string",
+      "description": "Five-digit member number",
+      "required": true,
+      "pattern": "^\\d{5}$",
+      "sensitivity": "pii"
+    },
+    "share_type": {
+      "type": "string",
+      "description": "Share product to open (Savings, {{share_type}}, Money Market)",
+      "required": true,
+      "example": "{{share_type}}",
+      "sensitivity": "none"
+    },
+    "description": {
+      "type": "string",
+      "description": "Free-text description for the new share",
+      "required": true,
+      "example": "{{description}}",
+      "sensitivity": "none"
+    },
+    "initial_deposit": {
+      "type": "number",
+      "description": "Initial deposit in USD (minimum 5.00), moved from the member's funding share",
+      "required": true,
+      "sensitivity": "financial"
+    }
+  },
+  "outputs": {
+    "confirmation_number": {
+      "type": "string",
+      "description": "Confirmation number of the posted share",
+      "sensitivity": "none"
+    }
+  },
+  "policy": {
+    "riskClass": "irreversible",
+    "sideEffects": "creates_record",
+    "requiresApproval": true,
+    "allowedOrigins": [
+      "http://localhost:4173",
+      "http://127.0.0.1:4173"
+    ]
+  },
+  "steps": [
+    {
+      "kind": "click",
+      "target": {
+        "description": "the link \"Member Inquiry\" in frame nav",
+        "frame": [
+          "nav"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "Member Inquiry",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Member Inquiry",
+            "tag": "a",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "a",
+            "attrs": {
+              "href": "{{base_path}}/inquiry"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > font > a"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[1]/tbody[1]/tr[2]/td[1]/font[1]/a[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 12,
+              "y": 101,
+              "w": 104.140625,
+              "h": 16
+            },
+            "template": "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",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "a",
+          "role": "link",
+          "name": "Member Inquiry",
+          "bbox": {
+            "x": 12,
+            "y": 101,
+            "w": 104.140625,
+            "h": 16
+          }
+        }
+      },
+      "id": "s01-click-member-inquiry",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "intent": "Open the member inquiry function from the menu",
+      "risk": "safe",
+      "expect": []
+    },
+    {
+      "kind": "type",
+      "target": {
+        "description": "the textbox \"Member Number\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Member Number",
+            "control": "textbox"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "memberno",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 300.296875,
+              "y": 113,
+              "w": 96,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAAa0lEQVR4Ae3BwQ3CQAADwcW6nl2DqwYeQUoFwQ/PvN5fTBUxdQ43tpnnJeHucLFNEuZ5tknCj5g6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmzuGSBNvM85Jwd7hJwvyfmDofil4TaEhUQmwAAAAASUVORK5CYII=",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "textbox",
+          "bbox": {
+            "x": 300.296875,
+            "y": 113,
+            "w": 96,
+            "h": 19
+          }
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "member_id"
+      },
+      "clear": true,
+      "id": "s02-type-member-number",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "intent": "Enter the member number to search for",
+      "risk": "safe",
+      "expect": []
+    },
+    {
+      "kind": "click",
+      "target": {
+        "description": "the button \"Search\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Search",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Search",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "button",
+              "value": "Search"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 300.296875,
+              "y": 159,
+              "w": 54.078125,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAADsAAAAXCAYAAAC1Szf+AAAD3klEQVR4AeXBT0hTDwDA8e8eL9wf5+ZKhgcPA8HD2CAaUVEbltFpKB6yrNcg1kU0pQKpy5gkYnSwYGR/bisRDaaSxHAFwW6DYgNlXvYOwWCMTMwF6RPzwQZD6Nfmr98P0s9Hs72DA0LgABEpEw6HKRQKyLLM38xms2EwGJAkiXIiReFwGJ1Oh9frZT+IxWKEw2EkSaJEoKhQKNDW1sZ+0dbWRqFQoJxAkSzL7DeyLFNO4AAR2IPv37+Ty+XY2tri/5JKpUilUvwbIlVYXl7m/v37vHnzhhKfz8fY2Bj/tUgkgsrpdLJXIlXo6+ujpaUFWZapra0lmUwyPj7O30KkQoqikEgkuH37NmazGdWxY8d4/vw5JU+ePCEUCrGxscGVK1fo7+/HbDYTDAZ59eoV+Xweu93O8PAwHo+H9fV1zp8/z8DAANPT01itVkKhEC9evODp06fkcjlcLhePHj1ClUwm8Xq9xONxLl++zOjoKEajkUqJVEgURW7evMmlS5fw+Xw4HA5OnDiB3W5HNTc3x7Nnz4hEIlitVm7dusXr16/x+/20t7fT09NDfX09ExMTDAwM8OnTJ7a2tkin07x//57e3l7MZjMzMzMMDQ3x8uVLjh49ysLCApubm6hWVlZ4+PAhTU1NdHV18e7dOzo6OqiUSBWCwSBer5f5+Xmi0Sh37txBkiQeP35MNBpFq9USCoVQZbNZZmdn8fv9qAKBAEtLS2SzWfL5POUePHiAyWRCNT4+zsWLF3G73ag6OzspaW1txeVyofJ4PCSTSTo6OqiUSJVcLhculwvVx48fOXfuHPfu3WNjY4MzZ85w9epVSnQ6Haurq7S2tjI2NkYgEGBtbY3jx4/zK4qioNPp+B1BEKiWQIW+fv3K9evXSaVSKIrC+vo6Hz58wGg0UldXh9vtZmFhAYvFgtPppLGxkUwmw+rqKqqzZ89y+PBh4vE4/+TUqVNEIhHS6TSqRCLB58+f+RNEKlRTU8Pm5iYej4eS5uZmpqam0Ov1dHd3k8lkcDgcGI1Gvn37xuDgIBcuXODGjRs4nU5Up0+fZjeNRkPJtWvXWFxc5OTJkxiNRrRaLW/fvmU3jUbD9vY21dBs72DH4OAgd+/e5XcURSGfz6PX6zGZTOymKApfvnzBYrFw6NAhSlZWVhAEAbPZTCV+/PjB2toaR44cQaPRsBcjIyOMjo5SIlIlURRpbGzkV0RRxGq1spvFYqEaNTU1NDQ08CcJFNlsNvYbm81GOYEig8FALBZjv4jFYhgMBsqJFEmSRDgcZnJyElmW+ZvZbDYMBgOSJFFOpIwkSexnAgfIT2stYfHmIwtwAAAAAElFTkSuQmCC",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "Search",
+          "bbox": {
+            "x": 300.296875,
+            "y": 159,
+            "w": 54.078125,
+            "h": 19
+          }
+        }
+      },
+      "id": "s03-click-search",
+      "name": "Click the button \"Search\" in frame main",
+      "intent": "Run the search",
+      "risk": "safe",
+      "expect": [
+        {
+          "kind": "text",
+          "text": "Search Results",
+          "frame": [
+            "main"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "click",
+      "target": {
+        "description": "the link \"{{member_id}}\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "{{member_id}}",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "{{member_id}}",
+            "tag": "a",
+            "exact": true
+          },
+          {
+            "kind": "table",
+            "headers": [
+              "Member #",
+              "Name",
+              "Status"
+            ],
+            "row": {
+              "column": "Member #",
+              "equals": "{{member_id}}"
+            },
+            "column": "Member #",
+            "inner": "link"
+          },
+          {
+            "kind": "attr",
+            "tag": "a",
+            "attrs": {
+              "href": "javascript:goMember('{{member_id}}')"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td:nth-of-type(1) > a"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[2]/tbody[1]/tr[2]/td[1]/a[1]"
+          }
+        ],
+        "recorded": {
+          "tag": "a",
+          "role": "link",
+          "name": "{{member_id}}",
+          "bbox": {
+            "x": 182,
+            "y": 134,
+            "w": 34.96875,
+            "h": 13
+          }
+        }
+      },
+      "id": "s04-click-member-id",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "intent": "Open the matching member's profile",
+      "risk": "safe",
+      "expect": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Profile",
+          "frame": [
+            "main"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "click",
+      "target": {
+        "description": "the button \"New Share\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "New Share",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "New Share",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "button",
+              "value": "New Share"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table:nth-of-type(5) > tbody > tr > td:nth-of-type(1) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[5]/tbody[1]/tr[1]/td[1]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 181,
+              "y": 366,
+              "w": 75.984375,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAFAAAAAXCAYAAACcTMh5AAAFG0lEQVR4Ae3BXUiTCwPA8b9zGGuMZllgZnMaIW7pQpOIsnSWdCEVrYRggSOXUcEqYWxBy9mQoovRhX1eFGOVWWSxC2nDoA8SAqmoGH09dZPVwGb7SLLa2wMORuck03o558B+v6zED2RMmYSM3yIlhcfjIRaLIQgCGX+lVquRy+UYjUaSpIzzeDzIZDIaGxvJ+LVAIIDH48FoNCKSMC4Wi1FfX0/GxOrr64nFYiRJGCcIAhnpEQSBJAkZv0XCf8C7d++IRqOk6u/vZ2hoiH+alEnIzc1F9OzZM2bPno1o8eLFnDlzhsrKSv40t9uN1+vlxYsXiBYsWEBXVxdLlizB6XSyf/9+8vPz+SdJmaTS0lLcbjcul4ukRCLBn9bf3097ezt+v5/KykrC4TBnz57lw4cP/JtImaSOjg42bdqE2WxGpVKRShAErFYrAwMDVFVVsX37dhoaGrBYLKxatYr169dz69Yt3G43V65cISsri82bN2O329HpdKQKBoNUVFRQVVWFKDc3lz179pCqt7cXu93OyMgIZrOZtrY2RO3t7Xi9XkKhEBqNBpfLxcqVK7l37x5dXV0sXboUn8+HwWCgqakJh8NBT08PBQUFbN26lR07dpAuCZNUWlqKyWSis7OTVN++fWPLli0sW7aMYDCI1WqlpaWFsbEx5s+fT19fH6Lu7m5u3rzJgwcPeP/+PX6/n4ULF/KzxsZGXr16hV6v58iRI/h8PuLxOKm+fv1Kd3c3169fx+VyMTQ0hGjdunXcvXuXUCiE2WzGYrEgikaj+Hw+otEoBw4coLa2lo6ODoaHhxkcHKSnp4dTp07x+PFj0iVlCvbt24dGo2HXrl0kvXnzhmAwyPPnz7Hb7YgikQj379+npqaGEydOEI/H8fv92Gw2ent7qa6uRq/XM336dH5WWFjIkydPuHz5MoODg1y4cIG9e/dy6dIldDodIoPBQHFxMSKNRsOjR4/Iz89H5HA4ePr0KW/fviUUCpFUUVGB1Wol6erVq2i1Wg4dOkRSX18fWq2WdEiZgrlz59LW1obT6STpy5cviLZt20Z2djYik8mESqVCLpczOjrKyZMnaWhooKmpidWrVzM2NoZer+dXFAoFzc3NNDc38/37d4xGI+fPn0en0/GzadOmIQqHw9TW1uJ2u3E4HHz69Inq6mp+ZXR0lI0bN7Jo0SJEJpOJvLw80iVhinbu3MnAwACvX79GVFxcTEFBAbdv30ar1VJWVsbHjx+Jx+NIpVLWrFmD0+lkw4YNqFQqSkpKOH78ODU1NfydY8eOce7cOcLhMIlEAkEQePjwIYWFhUwkHA4jqqurY9asWdy5c4eJrF27lkAgQElJCeXl5eTk5DA0NES6pEyRUqnEZrNht9vJysoiJycHr9dLa2srR48eJRKJUFRUxLVr1xDV1dVx48YNVqxYgchgMPDy5UvKysr4OyqVioMHD2KxWEgym820trYykaKiIlpaWigvL0e0fPlyUmVnZ5PK5XKxe/du5s2bh0KhQHT69GnSlZX4gR+sVis2m40/YWRkhEQigVKp5HdFIhEikQhz5sxBKpWSruHhYSQSCUqlknR8/vyZSCRCXl4eEomEiXR2dnL48GFEUv4PZsyYwZ+iUChQKBRM1syZM5kMmUyGTCZjsiSMU6vVZKRHrVaTJGGcXC4nEAiQMbFAIIBcLidJyjij0YjH4+HixYsIgkDGX6nVauRyOUajkSQpKYxGIxmTIyHjt/wPoInaWOSQTEUAAAAASUVORK5CYII=",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "New Share",
+          "bbox": {
+            "x": 181,
+            "y": 366,
+            "w": 75.984375,
+            "h": 19
+          }
+        }
+      },
+      "id": "s05-click-new-share",
+      "name": "Click the button \"New Share\" in frame main",
+      "intent": "Start the new share (sub-account) form",
+      "risk": "safe",
+      "expect": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "target": {
+        "description": "the combobox \"Share Type\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Share Type",
+            "control": "combobox"
+          },
+          {
+            "kind": "attr",
+            "tag": "select",
+            "attrs": {
+              "name": "sharetype"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > select"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/select[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 282.125,
+              "y": 133,
+              "w": 100,
+              "h": 17
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAGkAAAAVCAYAAABFYsCAAAAE9ElEQVR4Ae3BXUhTCwDA8b/HA+bWaILIZrMVllQmoZFF1iZIFNRS82V9QNjaQyYktTiBhImEnT0sM9KUfIk+NIkZQRZU2gYxDArqIbADCq2mBj7EksKptwMNxqWr1g3ave73S5r5hoS4JpAQ90RiSJJEwp8nyzKxRL6TJAlZlkn48yRJQpZlogQS4p5AQtwTmKeJiQlGRkaYmpri34hEIkxMTJAwfyJzePPmDbW1tXi9XqKcTift7e38ijt37uByuXj37h0LhcfjYf/+/RgMBmKNjIzQ2dlJTU0NsxGZw+HDh1m7di3j4+PodDpevHjBxYsX+VU2mw2r1cpC0draysmTJ2ltbcXn82E0GlGFQiEsFguKoqDVanE6nfwTkVlEIhECgQC1tbWkpaWhKiws5MaNG6jevn3L7t27GRwcRKfTsW/fPpqbm/H7/bjdbh48eIAgCKjKysqoqqpCq9XS3NxMV1cXfr+fhoYGDAYDPT09bN68mQsXLpCbm8vMzAznz5+nqamJsbExioqK2LZtG42Njfh8PlwuF8+fPycnJ4czZ85w8OBB4lF5eTlutxtFUbBYLPj9flQWiwVFUVi5ciU2m43ZiMxCFEVOnTqFzWbD6XSSn5/P1q1bycvLQ5Wenk5nZye5ubl8+vQJq9WK1+ultLSUQCBAX18fJSUlDAwM8OTJE27dusXTp09RFAVVOBwmEAhw7do1PB4P9fX1XLlyhUuXLtHV1UVTUxPd3d1s3LiRs2fPEgwGUVVWVnLixAmePXuGoigMDw8TrwwGA36/n+LiYhRFYcuWLaiGhobIzs7G5/NhMBiYjcgc3G43FRUV9PT0cO/ePaqqqnA4HFy9ehWtVsujR49wuVwEg0EGBwcZHR0lNTWVmpoa2traKCkpob29nePHj5OamsrfrVq1irKyMlQ7duygrq4O1cOHD7Hb7VgsFlRZWVl8+PAB1YYNG2hpaeHz589YLBZ27txJPDOZTPT19WG1WhkaGkKVnZ1Nf38/RqORuQjMw6ZNm2hsbOT+/fsMDAzQ0dFBKBSivr6eu3fv4vF4ePnyJYcOHSLK4XDQ3d3Nq1ev6Ojo4MiRI8wlOTmZKL1eT0pKCj9y8+ZNGhoaeP/+PaWlpdTV1RHvsrKy8Pl8mEwmli9fTn9/PyaTifkQmcX4+DhHjx7l9OnT5OXl8eXLFx4/foxOp2PJkiWMjo6yfv161q1bRzAY5PXr1+Tn56Mym82Ul5ezfft2KioqMJvN/Ixdu3Zx4MABioqK0Ov13L59G7PZjOr69evY7Xb27t3L0qVL6e3t5b/AZDLh8/kQRRGTycR8icxi0aJFTE5OUlBQQFROTg69vb1oNBqOHTvGnj17aGlpISMjA71ejyAIRFVXV+P1eqmuriZKEARiJScnE5WUlERUcXExsixz7tw5dDod6enppKSkoGpra6OyspKMjAzMZjOXL1/mv2LFihX8rKSZb/hGkiRkWeZHIpEIY2NjaDQa9Ho9saanpwkGg2RmZiKKIr/L1NQUX79+RaPRMD09jd1up7CwEJfLhSocDjM5OUlaWhr/N5IkIcsyUSLzIIoimZmZ/IggCCxbtozf7ePHjxiNRgoKCgiHw6xZswaHw0HU4sWLWShE4pTBYGB4eJhQKMTq1avR6/UsVCLfybKMJEkk/HmyLBNLJIYsyyTEH4GEuPcXCa3FUlBv5ScAAAAASUVORK5CYII=",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "select",
+          "role": "combobox",
+          "bbox": {
+            "x": 282.125,
+            "y": 133,
+            "w": 100,
+            "h": 17
+          }
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "share_type"
+      },
+      "id": "s06-select-share-type",
+      "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
+      "intent": "Choose the share type",
+      "risk": "safe",
+      "expect": []
+    },
+    {
+      "kind": "type",
+      "target": {
+        "description": "the textbox \"Description\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Description",
+            "control": "textbox"
+          },
+          {
+            "kind": "table",
+            "headers": [
+              "Share Type",
+              "Savings{{share_type}}Money Market"
+            ],
+            "row": {
+              "column": "Share Type",
+              "equals": "Description"
+            },
+            "column": "Savings{{share_type}}Money Market",
+            "inner": "control"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "descr",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[2]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 282.125,
+              "y": 154,
+              "w": 222,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAOMAAAAXCAYAAAD5jfhDAAAAfklEQVR4Ae3BwQ3CQBAEwWZ0OW8MEzXwMJIjMPvoqtf7C0l/FyStcLiZGSQ9oy13h8vM0BZJz5gZ2vITJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK1wuLRlZpD0jLbcHW7aIuk/gqQVPp3PE2hhR6Z1AAAAAElFTkSuQmCC",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "textbox",
+          "bbox": {
+            "x": 282.125,
+            "y": 154,
+            "w": 222,
+            "h": 19
+          }
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "description"
+      },
+      "clear": true,
+      "id": "s07-type-description",
+      "name": "Enter {{description}} into the textbox \"Description\" in frame main",
+      "intent": "Describe the new share",
+      "risk": "safe",
+      "expect": []
+    },
+    {
+      "kind": "type",
+      "target": {
+        "description": "the textbox \"Initial Deposit\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Initial Deposit",
+            "control": "textbox"
+          },
+          {
+            "kind": "table",
+            "headers": [
+              "Share Type",
+              "Savings{{share_type}}Money Market"
+            ],
+            "row": {
+              "column": "Share Type",
+              "equals": "Initial Deposit"
+            },
+            "column": "Savings{{share_type}}Money Market",
+            "inner": "control"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "deposit",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 282.125,
+              "y": 177,
+              "w": 82,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAFcAAAAXCAYAAAB+kNMAAAAAaElEQVR4Ae3BsQ3CUABDwYf1d/YMnhoogpQ6wp3vXu8vpkJMzeHGNvNcEu4OF9skYZ6zTRJ+xNSIqRFTI6ZGTI2YGjE1YmrE1IipEVMjpkZMjZgaMTViag6XJNhmnkvC3eEmCfM/Ymo+iDUTaJnjRj0AAAAASUVORK5CYII=",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "textbox",
+          "bbox": {
+            "x": 282.125,
+            "y": 177,
+            "w": 82,
+            "h": 19
+          }
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "initial_deposit"
+      },
+      "clear": true,
+      "id": "s08-type-initial-deposit",
+      "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
+      "intent": "Fund the share with the initial deposit",
+      "risk": "safe",
+      "expect": []
+    },
+    {
+      "kind": "click",
+      "target": {
+        "description": "the button \"Review\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Review",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Review",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "table",
+            "headers": [
+              "Share Type",
+              "Savings{{share_type}}Money Market"
+            ],
+            "rowIndex": 3,
+            "column": "Savings{{share_type}}Money Market",
+            "inner": "cell"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "button",
+              "value": "Review"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(5) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[5]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 282.125,
+              "y": 221,
+              "w": 55.015625,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAADwAAAAXCAYAAABXlyyHAAAD5UlEQVR4AeXBPUgbCwDA8X+OM3pGt+ukjQahRdCAg1uF1i9QFFGxxeGshoJoFgeltVIEY/wAoRBbEAdBTkSJ1A6tqBwO7VAnUchovSmoJBVKjJ7NkHpgIHR6Z9/ro/r72ZKXuEUEbhmRNKqqEo/H0XWdv53L5cLhcKAoCulErqiqiiRJNDY2clNomoaqqiiKQorAlXg8TnV1NTdJdXU18XicdAJXdF3nJtJ1nXQCt4zA/+ji4gLDMPiTRCx48uQJm5ubmHJzc2lra8Pv95OVlcV1vHz5kkQiQSAQ4E8RsSCZTDI2NsbTp0/Z39+noaGB4uJinj17xnW8evWKP03EIrvdTnZ2Nm63m/r6esLhMKbT01OGh4cJBoPk5eXR0dFBT08Pr1+/5uzsjKGhIUyRSITm5mbev3/Pu3fvSCQSeL1eTk9PGR4eJhgMkpeXR0dHBz09Pezt7TE4OMja2homRVFob2+nvr6ejY0NPn78SCAQ4J8SsCiZTPLjxw92d3fZ2tqisrISk8/n4+TkhJ2dHYLBILOzs4RCISorK5mamuL79++YlpeXuXv3LrIsc3R0RCQSweTz+Tg5OWFnZ4dgMMjs7CyhUIh79+7x5csXvn79ysHBAR8+fEBVVUxbW1s4nU6sELFoYGCAkZERYrEYb968oaKiAtPq6iolJSWMjo6Ssr6+Tn9/P+Xl5aysrNDZ2cnMzAyBQIBfra6uUlJSwujoKCnr6+v09/dTU1PD9vY20WiUFy9e8PbtW759+8anT58IBAJYIWLR1NQUXV1ddHd3Mzc3R1NTEzk5ORiGQWtrK6WlpZg8Hg+yLGPq7u5mYmKCgoICMjIyePjwIb8yDIPW1lZKS0sxeTweZFnGVFNTw+fPnwmFQiwsLBAOh5mfnyccDlNWVoYVAtcgCALT09NkZmbi8XhIJBLU1dWhaRpFRUW43W7sdjuHh4eYGhoaOD4+pre3F6/XiyAI/Kqurg5N0ygqKsLtdmO32zk8PMRUUVHB8vIy2dnZFBYW0tLSgs/no6qqClEUsULAApvNRkpWVhaLi4vouk5fXx9+vx/DMMjPz8fpdFJbW0s0GsWUmZmJ1+slEonQ1tZGis1mI8Xv92MYBvn5+TidTmpra4lGo5ju37/PnTt3ePz4MaYHDx6Qm5vLo0ePsMqWvMSl58+fMzg4yO86Pz8nFoshyzKCIGDV+fk5sVgMWZYRBIHfNT4+zuTkJCki/zJJkpAkieuSJAlJkvivCFxxuVzcRC6Xi3QCVxwOB5qmcZNomobD4SCdyBVFUVBVlaWlJXRd52/ncrlwOBwoikI6kTSKonDTCdwyPwFa0HMetu81FAAAAABJRU5ErkJggg==",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "Review",
+          "bbox": {
+            "x": 282.125,
+            "y": 221,
+            "w": 55.015625,
+            "h": 19
+          }
+        }
+      },
+      "id": "s09-click-review",
+      "name": "Click the button \"Review\" in frame main",
+      "intent": "Review the new share before posting",
+      "risk": "safe",
+      "expect": [
+        {
+          "kind": "text",
+          "text": "Review New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "click",
+      "target": {
+        "description": "the button \"Confirm\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Confirm",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Confirm",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "submit",
+              "value": "Confirm"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr > td > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[1]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 181,
+              "y": 231,
+              "w": 59.609375,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAEAAAAAXCAYAAAC74kmRAAADmklEQVR4AeXBTyhkDwDA8e+8eT07XmMSmiQyc5BWRi7aaVHkpJkcRnMwXjlINqct+XMxUbubVu11RZRXDCZN4ja54EIRJQ7DO5BtW4edmKFp5GfKlDa/GvLT/szno7u5RRoTSHMi96iqSiQSQdM0XiOLxYIsyyiKQpLIHVVVMRgMOJ1OXrNgMIiqqiiKQoLAnUgkQkNDA69dQ0MDkUiEJIE7mqaRLjRNI0kgzQk8wfX1Naenp1xeXvIcTk5OmJ6eZm9vj2g0Sjwe56WIPEI4HGZoaIiJiQmMRiPn5+fU1dUxMjKC1WrlKXw+Hz09PTgcDiRJorW1lf7+ftxuNy9B5BG6u7vZ399nZ2eHoqIifv78idfr5fDwEKvVylMsLy/T29tLV1cXCTU1NRiNRl6KSIqOjo7w+/2sr69TVFREgtls5vv378RiMW5ubvj69Svj4+NcXV3hcrn49OkTmZmZtLe3k5OTw8rKCuFwmI6ODrq7u1lYWGBpaYnt7W1mZmbw+XwMDg7S1tbG+/fvaW9vp6qqio2NDUKhEH6/H6fTSX19PaqqkpWVhdfrZXV1lUAgQGVlJZ8/f6asrIxUiaRob2+PgoIC3r59y58kSWJra4upqSnm5+cxmUx8+PCBQCBAS0sLoVAIvV7P7OwssVgMu92Ox+OhsbGRd+/e0dLSgsPhwGQycXR0xMXFBQmhUAhN0/j48SM5OTno9XoODg5QFIXNzU38fj8dHR2Mjo4yMDDAt2/fmJycZGRkhFQJpOjq6gqDwcC/WVxcpKmpiYqKCoqLi/F4PCwsLJDU3NyM1WqltLSUsrIydnd3efPmDZIkYTQayc7ORhAE/tTX14fD4cButyMIAgkejwez2UxNTQ1GoxG3201ubi7V1dVsb2/zGAIpKikpIRQK8ePHDx4SjUaRJIkkSZKIRqM8JCMjg+eg1+u5TxAEHksgRTabjbq6Ojo7Ozk+Pibh7OyM4eFh1tbWaGpqIhAIcHJywu/fv5mbm8PlcvG3E0mRTqdjbGyMgYEBbDYbSbW1tbjdbgoLC6mqqqK8vJwEu92Oy+Xiv6DT6Xguuptb3Ort7aW/v59UxONxfv36RVZWFrIsc184HCYWi5GXl8ff6suXLwwPD5Mg8gSiKJKfn89DTCYT/ycCdywWC+nCYrGQJHBHlmWCwSCvXTAYRJZlkkTuKIqCqqr4fD40TeM1slgsyLKMoigkidyjKArpRiDN/QPNR0bnUXZYEgAAAABJRU5ErkJggg==",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "Confirm",
+          "bbox": {
+            "x": 181,
+            "y": 231,
+            "w": 59.609375,
+            "h": 19
+          }
+        }
+      },
+      "id": "s10-click-confirm",
+      "name": "Click the button \"Confirm\" in frame main",
+      "intent": "Post the new share after review",
+      "risk": "irreversible",
+      "expect": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/confirm(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Share Opened",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
+      "dialog": {
+        "messagePattern": "Post this new share to member {{member_id}}\\?",
+        "response": "accept"
+      }
+    },
+    {
+      "kind": "extract",
+      "target": {
+        "description": "the value next to \"Confirmation Number\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Confirmation Number",
+            "control": "value"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(1) > td:nth-of-type(2)"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[3]/tbody[1]/tr[1]/td[2]"
+          }
+        ],
+        "recorded": {
+          "tag": "td",
+          "role": "cell",
+          "bbox": {
+            "x": 329.703125,
+            "y": 137,
+            "w": 144.359375,
+            "h": 20
+          }
+        }
+      },
+      "output": "confirmation_number",
+      "parse": {
+        "type": "text"
+      },
+      "id": "s11-extract-confirmation-number",
+      "name": "Read confirmation_number from the value next to \"Confirmation Number\" in frame main",
+      "intent": "Capture the confirmation number for the caller",
+      "risk": "safe",
+      "expect": []
+    }
+  ],
+  "checkpoint": {
+    "description": "The Share Opened confirmation screen is displayed with a confirmation number.",
+    "expect": [
+      {
+        "kind": "url",
+        "pattern": "^{{base_url}}/member/{{member_id}}/share/confirm(\\?.*)?$",
+        "frame": [
+          "main"
+        ]
+      },
+      {
+        "kind": "text",
+        "text": "Share Opened",
+        "frame": [
+          "main"
+        ]
+      }
+    ]
+  },
+  "conditions": [
+    {
+      "id": "validation_error",
+      "description": "The New Share form rejected the supplied values.",
+      "detect": {
+        "kind": "text",
+        "text": "Initial deposit must be at least",
+        "frame": [
+          "main"
+        ]
+      },
+      "class": "business_outcome",
+      "outcome": {
+        "code": "VALIDATION_ERROR",
+        "message": "The application rejected the new share request; see the validation message."
+      },
+      "origin": "probe"
+    }
+  ],
+  "overrides": {},
+  "provenance": {
+    "recordedAt": "2026-09-19T20:34:10.888Z",
+    "recordedBy": {
+      "kind": "scripted",
+      "model": "scripted"
+    },
+    "discoveryRunId": "01M2XP0JJWQQEVFH8N805MYFK3",
+    "tenant": "summit",
+    "tools": {
+      "@anthropic-ai/sdk": "unknown",
+      "playwright": "1.63.0",
+      "node": "v24.14.1"
+    },
+    "transcriptRef": "transcript.json"
+  },
+  "review": {
+    "approvedBy": "demo-reviewer",
+    "approvedAt": "2026-09-19T20:34:25.247Z",
+    "notes": "Reviewed steps, dialog policy and learned VALIDATION_ERROR condition."
+  },
+  "stats": {
+    "replays": 2,
+    "successes": 1,
+    "businessOutcomes": 1,
+    "failures": 0,
+    "lastReplayAt": "2026-09-19T20:36:24.118Z",
+    "stabilityScore": 1
+  }
+}

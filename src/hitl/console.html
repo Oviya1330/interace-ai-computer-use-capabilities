@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CUA Operator Console</title>
+    <style>
+      body {
+        font:
+          13px/1.4 -apple-system,
+          Segoe UI,
+          Helvetica,
+          Arial,
+          sans-serif;
+        margin: 0;
+        background: #f4f5f7;
+        color: #1b1f24;
+      }
+      header {
+        background: #1f3a5f;
+        color: #fff;
+        padding: 10px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header .owner {
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: #2b8a3e;
+      }
+      header .owner.human {
+        background: #d6336c;
+      }
+      main {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 12px;
+        padding: 12px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 12px;
+      }
+      .item {
+        padding: 8px;
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+      .item.sel {
+        border-color: #1f3a5f;
+        background: #eef3fa;
+      }
+      .item .t {
+        font-weight: 600;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0 6px;
+        border-radius: 8px;
+        font-size: 11px;
+        background: #e7ecf1;
+        margin-left: 4px;
+      }
+      .badge.open {
+        background: #fff3bf;
+      }
+      .badge.in_control {
+        background: #ffe3e3;
+      }
+      .badge.resolved {
+        background: #d3f9d8;
+      }
+      button {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #adb5bd;
+        background: #fff;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #1f3a5f;
+        color: #fff;
+        border-color: #1f3a5f;
+      }
+      button.danger {
+        background: #c92a2a;
+        color: #fff;
+        border-color: #c92a2a;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      canvas,
+      img.shot {
+        max-width: 100%;
+        border: 2px solid #d0d7de;
+        border-radius: 4px;
+        background: #000;
+      }
+      canvas.live {
+        border-color: #d6336c;
+        outline: none;
+      }
+      pre {
+        background: #f6f8fa;
+        padding: 8px;
+        border-radius: 4px;
+        overflow: auto;
+        max-height: 160px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 8px 0;
+      }
+      input[type="text"] {
+        padding: 5px;
+        border: 1px solid #adb5bd;
+        border-radius: 4px;
+        min-width: 260px;
+      }
+      .muted {
+        color: #57606a;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <strong>Operator Console</strong>
+        <span class="muted" style="color: #c9d4e3"
+          >— computer-use automation · human-in-the-loop</span
+        >
+      </div>
+      <div>Control: <span id="owner" class="owner">automation</span></div>
+    </header>
+    <main>
+      <div class="panel">
+        <div class="row"><strong>Interventions</strong> <span class="muted" id="count"></span></div>
+        <div id="list"></div>
+      </div>
+      <div class="panel" id="detail"><span class="muted">Select an intervention.</span></div>
+    </main>
+    <script>
+      const $ = (s) => document.querySelector(s);
+      let list = [],
+        selected = null,
+        owner = "automation",
+        ws,
+        liveFrame = null,
+        inControl = false;
+      const operator =
+        localStorage.getItem("operator") || "operator-" + Math.random().toString(36).slice(2, 6);
+      localStorage.setItem("operator", operator);
+
+      function connect() {
+        ws = new WebSocket(
+          (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws",
+        );
+        ws.onmessage = (ev) => {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === "interventions") {
+            list = msg.list;
+            owner = msg.controlOwner;
+            render();
+          } else if (msg.type === "frame") {
+            liveFrame = msg;
+            drawFrame();
+          } else if (msg.type === "error") {
+            console.warn(msg.message);
+          }
+        };
+        ws.onclose = () => setTimeout(connect, 1000);
+      }
+      connect();
+
+      function render() {
+        $("#owner").textContent = owner;
+        $("#owner").className = "owner " + owner;
+        $("#count").textContent = list.length
+          ? "(" +
+            list.filter((i) => i.status === "open" || i.status === "in_control").length +
+            " open)"
+          : "";
+        $("#list").innerHTML =
+          list
+            .map(
+              (i) => `<div class="item ${selected === i.id ? "sel" : ""}" data-id="${i.id}">
+      <div class="t">${i.type.toUpperCase()} <span class="badge ${i.status}">${i.status}</span></div>
+      <div>${esc(i.reason.code)} — ${esc(i.reason.message).slice(0, 120)}</div>
+      <div class="muted">${i.capability ? esc(i.capability.name + "@" + i.capability.version) : "discovery"} · step ${i.step ? esc(i.step.id) : "-"} · ${new Date(i.raisedAt).toLocaleTimeString()}</div>
+    </div>`,
+            )
+            .join("") || '<span class="muted">No interventions yet. This page updates live.</span>';
+        document.querySelectorAll(".item").forEach(
+          (el) =>
+            (el.onclick = () => {
+              selected = el.dataset.id;
+              render();
+            }),
+        );
+        renderDetail();
+      }
+      function esc(s) {
+        return String(s ?? "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      }
+
+      function renderDetail() {
+        const i = list.find((x) => x.id === selected);
+        const d = $("#detail");
+        if (!i) {
+          d.innerHTML = '<span class="muted">Select an intervention.</span>';
+          return;
+        }
+        inControl = i.control.owner === "human";
+        const open = i.status === "open" || i.status === "in_control";
+        const res = (k, cls) =>
+          `<button class="${cls || ""}" ${open && i.allowedResolutions.includes(k) ? "" : "disabled"} onclick="resolve('${i.id}','${k}')">${k}</button>`;
+        d.innerHTML = `
+    <div class="row"><strong>${i.type.toUpperCase()}</strong> <span class="badge ${i.status}">${i.status}</span> <span class="muted">${i.id} · run ${i.runId} (${i.runKind})</span></div>
+    <div><strong>Why it stopped:</strong> ${esc(i.reason.code)} — ${esc(i.reason.message)}</div>
+    ${i.reason.expected ? `<div><strong>Expected:</strong> ${esc(i.reason.expected)}</div>` : ""}
+    ${i.reason.observed ? `<div><strong>Observed:</strong> ${esc(i.reason.observed)}</div>` : ""}
+    <div><strong>Capability:</strong> ${i.capability ? esc(i.capability.name + "@" + i.capability.version) : "(discovery)"} · <strong>Goal:</strong> ${esc(i.goal || "")}</div>
+    <div><strong>Step:</strong> ${i.step ? esc(i.step.index + 1 + ". " + i.step.name + " [" + i.step.kind + "]") : "-"} · <strong>Tenant:</strong> ${esc(i.tenant)} · <strong>URL:</strong> ${esc(i.url)} ${i.landmark ? "· <strong>Screen:</strong> " + esc(i.landmark) : ""}</div>
+    <div class="row">
+      ${open && !inControl && i.allowedResolutions.some((k) => ["retry", "skip", "resume"].includes(k)) ? `<button class="primary" onclick="takeControl('${i.id}')">Take control of live session</button>` : ""}
+      ${inControl ? `<strong style="color:#d6336c">You are driving the live session.</strong> Hand back with:` : open ? "Resolve:" : "Resolved: <strong>" + esc(i.resolution && i.resolution.kind) + "</strong> " + esc((i.resolution && i.resolution.note) || "")}
+      ${res("approve", "primary")}${res("deny")}${res("retry", "primary")}${res("resume", "primary")}${res("skip")}${res("abort", "danger")}
+      <input type="text" id="note" placeholder="note for the evidence log (what you did / why)">
+    </div>
+    <div id="view">${inControl ? '<canvas id="live" class="live" tabindex="0" width="1280" height="800"></canvas><div class="muted">Click into the frame to send mouse/keyboard input. Every action is recorded.</div>' : `<img class="shot" src="/api/interventions/${i.id}/screenshot.png" alt="screenshot at the time of the request">`}</div>
+    <div><strong>Human actions (${i.humanActions.length})</strong> · control transfers: ${i.controlTransfers}</div>
+    <pre>${esc(i.humanActions.map((a) => a.at.slice(11, 19) + " " + a.kind + (a.element ? " → " + a.element.role + ' "' + (a.element.name || a.element.text) + '"' : "") + (a.key ? " " + a.key : "") + (a.text ? ' "' + a.text + '"' : "")).join("\n") || "(none)")}</pre>
+    <details><summary>Interactive elements at request time (${i.elements.length})</summary><pre>${esc(i.elements.map((e) => `${e.ref} ${e.role} "${e.name || e.text}" @${Math.round(e.bbox.x)},${Math.round(e.bbox.y)} [${e.frame.join("/") || "top"}]`).join("\n"))}</pre></details>`;
+        if (inControl) bindLive();
+      }
+
+      async function takeControl(id) {
+        await fetch(`/api/interventions/${id}/take-control`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ operator }),
+        });
+      }
+      async function resolve(id, kind) {
+        const note = $("#note") ? $("#note").value : "";
+        const r = await fetch(`/api/interventions/${id}/resolve`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ kind, note, operator }),
+        });
+        if (!r.ok) alert((await r.json()).error);
+      }
+      function drawFrame() {
+        const c = document.getElementById("live");
+        if (!c || !liveFrame) return;
+        const img = new Image();
+        img.onload = () => {
+          c.width = liveFrame.width;
+          c.height = liveFrame.height;
+          c.getContext("2d").drawImage(img, 0, 0);
+        };
+        img.src = "data:image/jpeg;base64," + liveFrame.data;
+      }
+      function bindLive() {
+        const c = document.getElementById("live");
+        if (!c || c.dataset.bound) return;
+        c.dataset.bound = "1";
+        drawFrame();
+        const pos = (ev) => {
+          const r = c.getBoundingClientRect();
+          return {
+            x: (ev.clientX - r.left) * (c.width / r.width),
+            y: (ev.clientY - r.top) * (c.height / r.height),
+          };
+        };
+        const send = (m) => ws && ws.readyState === 1 && ws.send(JSON.stringify(m));
+        c.addEventListener("mousedown", (ev) => {
+          c.focus();
+          const p = pos(ev);
+          send({ type: "mouse", event: "mousePressed", ...p, button: "left", clickCount: 1 });
+          ev.preventDefault();
+        });
+        c.addEventListener("mouseup", (ev) => {
+          const p = pos(ev);
+          send({ type: "mouse", event: "mouseReleased", ...p, button: "left", clickCount: 1 });
+        });
+        let lastMove = 0;
+        c.addEventListener("mousemove", (ev) => {
+          const now = Date.now();
+          if (now - lastMove < 50) return;
+          lastMove = now;
+          const p = pos(ev);
+          send({ type: "mouse", event: "mouseMoved", ...p, button: "none" });
+        });
+        c.addEventListener("keydown", (ev) => {
+          ev.preventDefault();
+          if (ev.key.length === 1 && !ev.ctrlKey && !ev.metaKey)
+            send({ type: "text", text: ev.key });
+          else send({ type: "key", event: "keyDown", key: ev.key, code: ev.code });
+        });
+        c.addEventListener("keyup", (ev) => {
+          if (ev.key.length > 1) send({ type: "key", event: "keyUp", key: ev.key, code: ev.code });
+        });
+      }
+    </script>
+  </body>
+</html>

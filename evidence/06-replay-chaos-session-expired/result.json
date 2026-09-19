@@ -1,0 +1,164 @@
+{
+  "runId": "01M2XP23HW9NKD2E9VGM2YBJ1Y",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]"
+  },
+  "startedAt": "2026-09-19T20:34:55.164Z",
+  "endedAt": "2026-09-19T20:35:11.767Z",
+  "durationMs": 16603,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:55.496Z",
+      "durationMs": 14065,
+      "attempts": 1,
+      "recoveries": [
+        {
+          "conditionId": "session_expired",
+          "class": "recoverable",
+          "description": "The teller session expired or was lost (server side); the console shows the sign-on page, with or without the expiry message.",
+          "handled": "resolved",
+          "stepId": "s01-click-member-inquiry",
+          "handler": "reauthenticate",
+          "attempt": 1
+        }
+      ]
+    },
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:09.561Z",
+      "durationMs": 501,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:10.062Z",
+      "durationMs": 349,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 12
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:10.411Z",
+      "durationMs": 503,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:10.914Z",
+      "durationMs": 486,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:11.400Z",
+      "durationMs": 366,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$312.19"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "session_expired",
+      "class": "recoverable",
+      "description": "The teller session expired or was lost (server side); the console shows the sign-on page, with or without the expiry message.",
+      "handled": "resolved",
+      "stepId": "s01-click-member-inquiry",
+      "handler": "reauthenticate",
+      "attempt": 1
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 5
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/06-replay-chaos-session-expired",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 9,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 312.19
+  }
+}

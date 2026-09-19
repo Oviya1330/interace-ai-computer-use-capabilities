@@ -1,0 +1,105 @@
+{
+  "runId": "01M2XP1C47NM8KC6EAVHM49K94",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:9***9]"
+  },
+  "startedAt": "2026-09-19T20:34:31.175Z",
+  "endedAt": "2026-09-19T20:34:42.923Z",
+  "durationMs": 11748,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:31.509Z",
+      "durationMs": 497,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 14
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:32.006Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 11
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "failed",
+      "startedAt": "2026-09-19T20:34:32.358Z",
+      "durationMs": 10565,
+      "attempts": 1,
+      "recoveries": [
+        {
+          "conditionId": "member_not_found",
+          "class": "business_outcome",
+          "description": "The inquiry returned no member for the supplied member number.",
+          "handled": "terminal",
+          "stepId": "s03-click-search"
+        }
+      ],
+      "screenshot": "conditions/cond-member_not_found-s03-click-search.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "member_not_found",
+      "class": "business_outcome",
+      "description": "The inquiry returned no member for the supplied member number.",
+      "handled": "terminal",
+      "stepId": "s03-click-search"
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 2
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/04-replay-lookup-not-found",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 3,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "business_outcome",
+  "outcome": {
+    "code": "MEMBER_NOT_FOUND",
+    "message": "No member exists with the supplied member number.",
+    "conditionId": "member_not_found"
+  }
+}

@@ -1,0 +1,40 @@
+# Safety policy — evaluated by the PolicyGate before EVERY action (discovery and replay).
+allow:
+  origins:
+    - http://localhost:4173
+    - http://127.0.0.1:4173
+  pathPatterns:
+    - "^/t/(summit|cascade)/"
+  actions: [navigate, click, type, select, press, extract, scroll, wait]
+deny:
+  pathPatterns:
+    - "^/__" # test/chaos hooks are never reachable by the agent
+    - "/logoff" # the agent must not end the operator session
+risk:
+  irreversiblePatterns:
+    [
+      "\\bconfirm\\b",
+      "\\bpost\\b",
+      "\\bsubmit\\b",
+      "\\bapprove\\b",
+      "\\btransfer\\b",
+      "\\bclose account\\b",
+      "\\bdelete\\b",
+    ]
+  mutatingPatterns:
+    ["\\bsave\\b", "\\bupdate\\b", "\\bcreate\\b", "\\badd\\b", "\\bapply\\b", "\\bremove\\b"]
+modes:
+  discovery: confirm # a human approves each mutating/irreversible action during discovery
+  replay: approved_only # unattended only for approved artifacts + an explicit invocation approval
+escalation:
+  onHardFailure: true
+  timeoutMs: 600000
+  console:
+    port: 4790
+data:
+  screenshots: masked # password fields / sensitive controls blacked out in every screenshot
+  redactPatterns: []
+limits:
+  maxSteps: 30
+  maxRunMs: 600000
+  stepTimeoutMs: 10000

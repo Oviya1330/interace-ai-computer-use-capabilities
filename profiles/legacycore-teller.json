@@ -1,0 +1,266 @@
+{
+  "id": "legacycore-teller",
+  "displayName": "LegacyCore Teller Console v7",
+  "family": "legacycore/teller-console@7",
+  "surface": "legacy_web",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "contentFrame": ["main"],
+  "session": {
+    "login": {
+      "entry": {
+        "kind": "template",
+        "template": "{{base_url}}/"
+      },
+      "steps": [
+        {
+          "id": "login-user",
+          "kind": "type",
+          "name": "Enter the teller user id",
+          "target": {
+            "description": "the \"User ID\" text box in frame main",
+            "frame": ["main"],
+            "strategies": [
+              {
+                "kind": "label",
+                "text": "User ID",
+                "control": "textbox"
+              },
+              {
+                "kind": "css",
+                "selector": "form input[type=\"text\"]"
+              }
+            ]
+          },
+          "value": {
+            "kind": "param",
+            "name": "teller_user"
+          }
+        },
+        {
+          "id": "login-password",
+          "kind": "type",
+          "name": "Enter the teller password",
+          "target": {
+            "description": "the \"Password\" box in frame main",
+            "frame": ["main"],
+            "strategies": [
+              {
+                "kind": "label",
+                "text": "Password",
+                "control": "textbox"
+              },
+              {
+                "kind": "css",
+                "selector": "input[type=\"password\"]"
+              }
+            ]
+          },
+          "value": {
+            "kind": "secret",
+            "ref": "teller_password"
+          }
+        },
+        {
+          "id": "login-submit",
+          "kind": "click",
+          "name": "Submit the sign-on form",
+          "target": {
+            "description": "the sign-on button in frame main",
+            "frame": ["main"],
+            "strategies": [
+              {
+                "kind": "attr",
+                "tag": "input",
+                "attrs": {
+                  "type": "submit"
+                }
+              },
+              {
+                "kind": "role",
+                "role": "button",
+                "name": "Sign On"
+              }
+            ]
+          },
+          "expect": [
+            {
+              "kind": "any",
+              "of": [
+                {
+                  "kind": "text",
+                  "text": "Welcome",
+                  "frame": ["main"]
+                },
+                {
+                  "kind": "text",
+                  "text": "System Notice",
+                  "frame": ["main"]
+                },
+                {
+                  "kind": "text",
+                  "text": "Invalid User ID or Password",
+                  "frame": ["main"]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "authenticated": {
+        "kind": "all",
+        "of": [
+          {
+            "kind": "text",
+            "text": "Sign Off",
+            "frame": ["nav"]
+          },
+          {
+            "kind": "text",
+            "text": "Sign On",
+            "frame": ["main"],
+            "present": false
+          }
+        ]
+      }
+    },
+    "expired": {
+      "kind": "text",
+      "text": "Your session has expired",
+      "frame": ["main"]
+    }
+  },
+  "conditions": [
+    {
+      "id": "session_expired",
+      "description": "The teller session expired or was lost (server side); the console shows the sign-on page, with or without the expiry message.",
+      "detect": {
+        "kind": "any",
+        "of": [
+          {
+            "kind": "text",
+            "text": "Your session has expired",
+            "frame": ["main"]
+          },
+          {
+            "kind": "url",
+            "pattern": "^{{base_url}}/login",
+            "frame": ["main"]
+          }
+        ]
+      },
+      "class": "recoverable",
+      "handler": {
+        "kind": "reauthenticate",
+        "then": "restart"
+      },
+      "origin": "profile"
+    },
+    {
+      "id": "invalid_credentials",
+      "description": "Sign-on was rejected. Credentials for this tenant are wrong or locked.",
+      "detect": {
+        "kind": "text",
+        "text": "Invalid User ID or Password",
+        "frame": ["main"]
+      },
+      "class": "hard_failure",
+      "failureCode": "SESSION_LOST",
+      "origin": "profile"
+    },
+    {
+      "id": "maintenance_notice",
+      "description": "A 'System Notice' interstitial is shown; acknowledging it returns to the requested screen.",
+      "detect": {
+        "kind": "text",
+        "text": "System Notice",
+        "frame": ["main"]
+      },
+      "class": "recoverable",
+      "handler": {
+        "kind": "dismiss",
+        "target": {
+          "description": "the \"Continue\" button in frame main",
+          "frame": ["main"],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Continue"
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "value": "Continue"
+              }
+            }
+          ]
+        },
+        "then": "retry_step"
+      },
+      "safeAfterMutation": true,
+      "origin": "profile"
+    },
+    {
+      "id": "app_error",
+      "description": "The application raised an unhandled error page (HTTP 500 / 'Application Error').",
+      "detect": {
+        "kind": "any",
+        "of": [
+          {
+            "kind": "text",
+            "text": "Application Error",
+            "frame": ["main"]
+          },
+          {
+            "kind": "http_status",
+            "min": 500
+          }
+        ]
+      },
+      "class": "recoverable",
+      "handler": {
+        "kind": "wait_retry",
+        "waitMs": 1500,
+        "maxAttempts": 2
+      },
+      "failureCode": "APP_ERROR",
+      "origin": "profile"
+    },
+    {
+      "id": "access_denied",
+      "description": "The operator is not authorised to view the record (restricted account).",
+      "detect": {
+        "kind": "text",
+        "text": "You are not authorized",
+        "frame": ["main"]
+      },
+      "class": "business_outcome",
+      "outcome": {
+        "code": "PERMISSION_DENIED",
+        "message": "The teller is not authorised to access this record (Code R-401). A supervisor must handle it."
+      },
+      "origin": "profile"
+    },
+    {
+      "id": "function_unavailable",
+      "description": "The screen reports the function is not available in this release.",
+      "detect": {
+        "kind": "text",
+        "text": "Function not available",
+        "frame": ["main"]
+      },
+      "class": "hard_failure",
+      "failureCode": "UNKNOWN_STATE",
+      "origin": "profile"
+    }
+  ],
+  "settle": {
+    "domQuietMs": 300,
+    "maxMs": 8000
+  },
+  "defaultStepTimeoutMs": 10000
+}

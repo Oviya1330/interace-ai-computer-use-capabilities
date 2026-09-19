@@ -1,0 +1,123 @@
+{
+  "runId": "01M2XP1QKCRAGFYPS5F6CKE31C",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:5***5]"
+  },
+  "startedAt": "2026-09-19T20:34:42.924Z",
+  "endedAt": "2026-09-19T20:34:55.159Z",
+  "durationMs": 12235,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:43.260Z",
+      "durationMs": 496,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:43.757Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 12
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:34:44.108Z",
+      "durationMs": 481,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "failed",
+      "startedAt": "2026-09-19T20:34:44.589Z",
+      "durationMs": 10570,
+      "attempts": 1,
+      "recoveries": [
+        {
+          "conditionId": "access_denied",
+          "class": "business_outcome",
+          "description": "The operator is not authorised to view the record (restricted account).",
+          "handled": "terminal",
+          "stepId": "s04-click-member-id"
+        }
+      ],
+      "screenshot": "conditions/cond-access_denied-s04-click-member-id.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "access_denied",
+      "class": "business_outcome",
+      "description": "The operator is not authorised to view the record (restricted account).",
+      "handled": "terminal",
+      "stepId": "s04-click-member-id"
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 3
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/05-replay-lookup-permission-denied",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 4,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "business_outcome",
+  "outcome": {
+    "code": "PERMISSION_DENIED",
+    "message": "The teller is not authorised to access this record (Code R-401). A supervisor must handle it.",
+    "conditionId": "access_denied"
+  }
+}

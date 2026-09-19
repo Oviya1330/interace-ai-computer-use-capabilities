@@ -1,0 +1,164 @@
+{
+  "runId": "01M2XP30ZZY4QFNSAEB6F4A762",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]"
+  },
+  "startedAt": "2026-09-19T20:35:25.311Z",
+  "endedAt": "2026-09-19T20:35:40.238Z",
+  "durationMs": 14927,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:25.646Z",
+      "durationMs": 12426,
+      "attempts": 1,
+      "recoveries": [
+        {
+          "conditionId": "app_error",
+          "class": "recoverable",
+          "description": "The application raised an unhandled error page (HTTP 500 / 'Application Error').",
+          "handled": "resolved",
+          "stepId": "s01-click-member-inquiry",
+          "handler": "wait_retry",
+          "attempt": 1
+        }
+      ]
+    },
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:38.072Z",
+      "durationMs": 494,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:38.566Z",
+      "durationMs": 350,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 12
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:38.916Z",
+      "durationMs": 481,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:39.397Z",
+      "durationMs": 487,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:39.884Z",
+      "durationMs": 353,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$312.19"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "app_error",
+      "class": "recoverable",
+      "description": "The application raised an unhandled error page (HTTP 500 / 'Application Error').",
+      "handled": "resolved",
+      "stepId": "s01-click-member-inquiry",
+      "handler": "wait_retry",
+      "attempt": 1
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 5
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/08-replay-chaos-app-error",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 6,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 312.19
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "runId": "01M2XP4CFC51W002RZVK4XJ1G6",
+  "kind": "replay",
+  "capability": {
+    "name": "member.open_share",
+    "version": "1.0.0",
+    "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]",
+    "share_type": "Savings",
+    "description": "Test",
+    "initial_deposit": "1.00"
+  },
+  "startedAt": "2026-09-19T20:36:09.836Z",
+  "endedAt": "2026-09-19T20:36:24.118Z",
+  "durationMs": 14282,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:10.170Z",
+      "durationMs": 498,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 16
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:10.668Z",
+      "durationMs": 369,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 13
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:11.038Z",
+      "durationMs": 463,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:11.501Z",
+      "durationMs": 506,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-click-new-share",
+      "index": 4,
+      "kind": "click",
+      "name": "Click the button \"New Share\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:12.007Z",
+      "durationMs": 495,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "screenshot": "steps/05-s05-click-new-share.png"
+    },
+    {
+      "stepId": "s06-select-share-type",
+      "index": 5,
+      "kind": "select",
+      "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:12.502Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 8
+      },
+      "screenshot": "steps/06-s06-select-share-type.png"
+    },
+    {
+      "stepId": "s07-type-description",
+      "index": 6,
+      "kind": "type",
+      "name": "Enter {{description}} into the textbox \"Description\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:12.853Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/07-s07-type-description.png"
+    },
+    {
+      "stepId": "s08-type-initial-deposit",
+      "index": 7,
+      "kind": "type",
+      "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:13.204Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/08-s08-type-initial-deposit.png"
+    },
+    {
+      "stepId": "s09-click-review",
+      "index": 8,
+      "kind": "click",
+      "name": "Click the button \"Review\" in frame main",
+      "status": "failed",
+      "startedAt": "2026-09-19T20:36:13.556Z",
+      "durationMs": 10562,
+      "attempts": 1,
+      "recoveries": [
+        {
+          "conditionId": "validation_error",
+          "class": "business_outcome",
+          "description": "The New Share form rejected the supplied values.",
+          "handled": "terminal",
+          "stepId": "s09-click-review"
+        }
+      ],
+      "screenshot": "conditions/cond-validation_error-s09-click-review.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "validation_error",
+      "class": "business_outcome",
+      "description": "The New Share form rejected the supplied values.",
+      "handled": "terminal",
+      "stepId": "s09-click-review"
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 8
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/12-replay-open-share-validation-error",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 9,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "business_outcome",
+  "outcome": {
+    "code": "VALIDATION_ERROR",
+    "message": "The application rejected the new share request; see the validation message.",
+    "conditionId": "validation_error"
+  }
+}

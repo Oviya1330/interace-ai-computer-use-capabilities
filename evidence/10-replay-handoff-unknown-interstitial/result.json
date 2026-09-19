@@ -1,0 +1,159 @@
+{
+  "runId": "01M2XP3QRTDGK2AJ8YE46TC5BM",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***7]"
+  },
+  "startedAt": "2026-09-19T20:35:48.634Z",
+  "endedAt": "2026-09-19T20:36:04.806Z",
+  "durationMs": 16172,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:48.967Z",
+      "durationMs": 14101,
+      "attempts": 2,
+      "recoveries": [],
+      "error": {
+        "code": "EXPECTATION_FAILED",
+        "message": "Post-condition failed after \"Click the link \"Member Inquiry\" in frame nav\"",
+        "stepId": "s01-click-member-inquiry",
+        "stepIndex": 0,
+        "stepName": "Click the link \"Member Inquiry\" in frame nav",
+        "expected": "text \"Member Inquiry\" present in main",
+        "observed": "text \"Member Inquiry\" absent",
+        "evidence": [
+          "failure/fail-s01-click-member-inquiry.png",
+          "failure/dom-s01-click-member-inquiry.html"
+        ]
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png",
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      }
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:03.068Z",
+      "durationMs": 386,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 13
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:03.454Z",
+      "durationMs": 480,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:03.934Z",
+      "durationMs": 509,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:04.443Z",
+      "durationMs": 362,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$18,904.55"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [
+    {
+      "id": "int_24d08357",
+      "type": "failure",
+      "reason": "Post-condition failed after \"Click the link \"Member Inquiry\" in frame nav\"",
+      "raisedAt": "2026-09-19T20:35:59.598Z",
+      "humanActions": 1,
+      "controlTransfers": 1,
+      "resolvedAt": "2026-09-19T20:36:02.255Z",
+      "resolution": "retry",
+      "operator": "operator-bot",
+      "note": "Acknowledged \"I Acknowledge\" manually, handing back with retry"
+    }
+  ],
+  "drift": {
+    "tierHistogram": {
+      "0": 5
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/10-replay-handoff-unknown-interstitial",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 6,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 18904.55
+  }
+}

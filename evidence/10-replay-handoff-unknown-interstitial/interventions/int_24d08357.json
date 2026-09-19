@@ -1,0 +1,274 @@
+{
+  "runId": "01M2XP3QRTDGK2AJ8YE46TC5BM",
+  "runKind": "replay",
+  "type": "failure",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0"
+  },
+  "goal": "Look up member {{member_id}} and read their current savings balance",
+  "tenant": "summit",
+  "step": {
+    "id": "s01-click-member-inquiry",
+    "index": 0,
+    "name": "Click the link \"Member Inquiry\" in frame nav",
+    "kind": "click"
+  },
+  "reason": {
+    "code": "EXPECTATION_FAILED",
+    "message": "Post-condition failed after \"Click the link \"Member Inquiry\" in frame nav\"",
+    "expected": "text \"Member Inquiry\" present in main",
+    "observed": "text \"Member Inquiry\" absent"
+  },
+  "url": "http://localhost:4173/t/summit/",
+  "landmark": "Security Bulletin",
+  "screenshot": "interventions/stuck-s01-click-member-inquiry.png",
+  "elements": [
+    {
+      "ref": "e1",
+      "role": "cell",
+      "name": "Summit Federal Credit Union Teller Console v7.3",
+      "text": "Summit Federal Credit Union Teller Console v7.3",
+      "bbox": {
+        "x": 0,
+        "y": 0,
+        "w": 847.78125,
+        "h": 46
+      },
+      "frame": [
+        "banner"
+      ]
+    },
+    {
+      "ref": "e4",
+      "role": "cell",
+      "name": "Signed on as: teller1",
+      "text": "Signed on as: teller1",
+      "bbox": {
+        "x": 847.78125,
+        "y": 0,
+        "w": 432.21875,
+        "h": 46
+      },
+      "frame": [
+        "banner"
+      ]
+    },
+    {
+      "ref": "e6",
+      "role": "link",
+      "name": "Member Inquiry",
+      "text": "Member Inquiry",
+      "bbox": {
+        "x": 12,
+        "y": 101,
+        "w": 104.140625,
+        "h": 16
+      },
+      "frame": [
+        "nav"
+      ]
+    },
+    {
+      "ref": "e7",
+      "role": "link",
+      "name": "Transactions",
+      "text": "Transactions",
+      "bbox": {
+        "x": 12,
+        "y": 125,
+        "w": 81.03125,
+        "h": 16
+      },
+      "frame": [
+        "nav"
+      ]
+    },
+    {
+      "ref": "e8",
+      "role": "link",
+      "name": "Reports",
+      "text": "Reports",
+      "bbox": {
+        "x": 12,
+        "y": 149,
+        "w": 49.90625,
+        "h": 16
+      },
+      "frame": [
+        "nav"
+      ]
+    },
+    {
+      "ref": "e9",
+      "role": "link",
+      "name": "Sign Off",
+      "text": "Sign Off",
+      "bbox": {
+        "x": 12,
+        "y": 173,
+        "w": 52.734375,
+        "h": 16
+      },
+      "frame": [
+        "nav"
+      ]
+    },
+    {
+      "ref": "e10",
+      "role": "cell",
+      "name": "Functions",
+      "text": "Functions",
+      "bbox": {
+        "x": 8,
+        "y": 73,
+        "w": 154,
+        "h": 24
+      },
+      "frame": [
+        "nav"
+      ]
+    },
+    {
+      "ref": "e11",
+      "role": "button",
+      "name": "I Acknowledge",
+      "text": "I Acknowledge",
+      "bbox": {
+        "x": 183,
+        "y": 141,
+        "w": 96.734375,
+        "h": 19
+      },
+      "frame": [
+        "main"
+      ]
+    },
+    {
+      "ref": "e12",
+      "role": "cell",
+      "name": "Security Bulletin",
+      "text": "Security Bulletin",
+      "bbox": {
+        "x": 179,
+        "y": 73,
+        "w": 1093,
+        "h": 38
+      },
+      "frame": [
+        "main"
+      ]
+    },
+    {
+      "ref": "e13",
+      "role": "cell",
+      "name": "Mandatory acknowledgement: phishing awareness training is due by month end.",
+      "text": "Mandatory acknowledgement: phishing awareness training is due by month end.",
+      "bbox": {
+        "x": 179,
+        "y": 111,
+        "w": 765.09375,
+        "h": 26
+      },
+      "frame": [
+        "main"
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "retry",
+    "skip",
+    "resume",
+    "abort"
+  ],
+  "timeoutMs": 600000,
+  "id": "int_24d08357",
+  "raisedAt": "2026-09-19T20:35:59.598Z",
+  "status": "resolved",
+  "control": {
+    "owner": "automation",
+    "since": "2026-09-19T20:36:02.255Z"
+  },
+  "controlTransfers": 1,
+  "humanActions": [
+    {
+      "at": "2026-09-19T20:36:00.674Z",
+      "kind": "click",
+      "x": 231,
+      "y": 151,
+      "element": {
+        "role": "button",
+        "name": "I Acknowledge",
+        "text": "I Acknowledge",
+        "frame": [
+          "main"
+        ]
+      },
+      "target": {
+        "description": "the button \"I Acknowledge\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "I Acknowledge",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "I Acknowledge",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "button",
+              "value": "I Acknowledge"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[2]/tbody[1]/tr[2]/td[1]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 183,
+              "y": 141,
+              "w": 96.734375,
+              "h": 19
+            },
+            "template": "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",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "I Acknowledge",
+          "bbox": {
+            "x": 183,
+            "y": 141,
+            "w": 96.734375,
+            "h": 19
+          }
+        }
+      },
+      "screenshot": "interventions/int_24d08357/human-1.png"
+    }
+  ],
+  "resolution": {
+    "kind": "retry",
+    "note": "Acknowledged \"I Acknowledge\" manually, handing back with retry",
+    "operator": "operator-bot",
+    "at": "2026-09-19T20:36:02.255Z"
+  }
+}

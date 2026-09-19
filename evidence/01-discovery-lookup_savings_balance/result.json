@@ -1,0 +1,39 @@
+{
+  "runId": "01M2XP00W70C4NMZ2QHF8MRY5V",
+  "kind": "discovery",
+  "status": "success",
+  "goal": "Look up member [pii:1***3] and read their current savings balance",
+  "tenant": "summit",
+  "actions": 5,
+  "turns": 5,
+  "llm": {
+    "calls": 0,
+    "inputTokens": "[REDACTED:key]",
+    "outputTokens": "[REDACTED:key]",
+    "cacheReadTokens": "[REDACTED:key]",
+    "cacheWriteTokens": "[REDACTED:key]",
+    "model": "scripted"
+  },
+  "interventions": [],
+  "policy": {
+    "decisions": 5,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/01-discovery-lookup_savings_balance",
+    "events": "events.jsonl",
+    "transcript": "transcript.json",
+    "artifact": "artifact.json",
+    "trace": "trace.zip"
+  },
+  "startedAt": "2026-09-19T20:33:46.888Z",
+  "endedAt": "2026-09-19T20:33:53.122Z",
+  "durationMs": 6234,
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "artifactPath": "/Users/saa/Developer/Projects/computer-use-assignment/capabilities/[REDACTED:email]"
+}

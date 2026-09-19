@@ -1,0 +1,46 @@
+{
+  "inputs": {
+    "member_id": "[pii:9***9]"
+  },
+  "replay": {
+    "status": "failure",
+    "error": {
+      "code": "EXPECTATION_FAILED",
+      "message": "Post-condition failed after \"Click the button \"Search\" in frame main\"",
+      "stepId": "s03-click-search",
+      "stepIndex": 2,
+      "stepName": "Click the button \"Search\" in frame main",
+      "expected": "text \"Search Results\" present in main",
+      "observed": "text \"Search Results\" absent",
+      "evidence": [
+        "failure/fail-s03-click-search.png",
+        "failure/dom-s03-click-search.html"
+      ]
+    }
+  },
+  "proposal": {
+    "class": "business_outcome",
+    "code": "MEMBER_NOT_FOUND",
+    "description": "The inquiry returned no member for the supplied member number.",
+    "message": "No member exists with the supplied member number.",
+    "detectorText": "No member found matching",
+    "dismissRef": null
+  },
+  "condition": {
+    "id": "member_not_found",
+    "description": "The inquiry returned no member for the supplied member number.",
+    "detect": {
+      "kind": "text",
+      "text": "No member found matching",
+      "frame": [
+        "main"
+      ]
+    },
+    "class": "business_outcome",
+    "origin": "probe",
+    "outcome": {
+      "code": "MEMBER_NOT_FOUND",
+      "message": "No member exists with the supplied member number."
+    }
+  }
+}

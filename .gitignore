@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+# The assignment brief is not part of the submission
+*.pdf
+# Local scratch runs (curated evidence lives in /evidence, which IS committed)
+runs/
+.playwright-cache/
+coverage/

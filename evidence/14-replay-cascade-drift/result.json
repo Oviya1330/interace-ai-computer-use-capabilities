@@ -1,0 +1,313 @@
+{
+  "runId": "01M2XP4THBM7E6JZNNHFD4ZM9W",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "cascade",
+  "inputs": {
+    "member_id": "[pii:1***3]"
+  },
+  "startedAt": "2026-09-19T20:36:24.235Z",
+  "endedAt": "2026-09-19T20:36:33.855Z",
+  "durationMs": 9620,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:31.581Z",
+      "durationMs": 533,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "attr",
+        "tier": 2,
+        "matches": 1,
+        "ms": 21
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the link \"Member Lookup\" in frame nav",
+          "frame": [
+            "nav"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "link",
+              "name": "Member Lookup",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Member Lookup",
+              "tag": "a",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "a",
+              "attrs": {
+                "href": "{{base_path}}/inquiry"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > table > tbody > tr:nth-of-type(2) > td > font > a"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/table[1]/tbody[1]/tr[2]/td[1]/font[1]/a[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 12,
+                "y": 101,
+                "w": 104.34375,
+                "h": 16
+              },
+              "template": "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",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "a",
+            "role": "link",
+            "name": "Member Lookup",
+            "bbox": {
+              "x": 12,
+              "y": 101,
+              "w": 104.34375,
+              "h": 16
+            }
+          }
+        },
+        "resolvedVia": "attr"
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:32.114Z",
+      "durationMs": 401,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "css",
+        "tier": 2,
+        "matches": 1,
+        "ms": 15
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the textbox \"Member #\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "label",
+              "text": "Member #",
+              "control": "textbox"
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "name": "mbr_num",
+                "type": "text"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 260.4375,
+                "y": 113,
+                "w": 96,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAEDUlEQVR4Ae3BwUtbdwDA8W9eXqtgXjRSMKTuwU5at4mY4slGYRIt1ENC3aAvaqEXjyWHwf6CDQ/t6KV6KcUSS5t3a+sLHT3UQ2mF0FK0LIceSqwYJ33spbyqeTPrDxIIoXNth06WfD6u4nvUHSoSdYeOTMn6HwV+uLXK/WWLnOVQt//avDLhr71Mf9+Ov/kIZRIlFxNZbjx6Q85yqDsYOcvhxqM3XExkqSRTcn/ZQnj4YwehDg91++/hb28Z/DnDgxd5KkmUmPafCKEOD3UHY6DTg7D51qGSRN2hI/ERisUijuPwIaZpYpomH2KaJqZpUs1xHF69esXOzg7VHMchm82yurpKrZL5B8VikStXrmAYBqlUirKtrS0mJiZIJpMIY2NjzM3N0djYyNbWFhMTEySTSYSxsTHm5uZobGzk5s2bnDt3DkFRFDRN4+rVqwh3795ldHSUst7eXhYWFmhra6OWyOzBsiyam5sRhoeHqaTrOul0GsuyEHp6etB1nVgshq7rpNNpLMtC6OnpQdd1YrEYLS0tPHnyhL6+PjKZDJ2dnVy4cIGTJ0/i8XhYXFykv78f27bp7e0lkUgQj8epJRJ7UBSF169fc/nyZaoZhkEsFkNRFBRFYXx8HMMwEAzDIBaLoSgKiqIwPj6OYRgIp0+fpq+vD6Gjo4Pu7m4eP36MMDg4yKlTp3C5XDQ0NOA4DsePH6fWSOzB5XIRCARobW2l2traGqqqUqaqKtlsFmFtbQ1VVSlTVZVsNku1p0+f8vz5c0KhEJXi8Titra2EQiGi0Si1RuIzFQoF3G43ZZIksbu7i1AoFHC73ZRJksTu7i6VMpkMAwMDXLp0ie7ubippmsbs7CwLCwvcuXOHWiPzmQKBABsbG5Tlcjn8fj9CIBBgY2ODslwuh9/vp2xpaYnR0VGmp6eZmpqiWjAYJBgMsry8TDKZJBqNUkskPlM4HCaRSGDbNrZtMz8/z8jICEI4HCaRSGDbNrZtMz8/z8jICIKu6wwNDTEzM8Pk5CTv3r1je3sb4d69e7x8+RJhc3OTVCrFiRMnqDUye7Asi/b2dvL5PILX6+XatWucPXsWTdNIpVI0NTUhRCIRNE1D0DSNVCpFU1MTQiQSQdM0hNu3b5PP54lGo5R1dXWxsrLCs2fPOHPmDIqikM/niUQixONxao2r+B7vuc6nEYrXg3wK0zQRfD4f1UzTRPD5fHysnZ0d1tfXaWlpwev18n/nOp9GKF4PUibzL/l8Pv6Oz+fjUx09ehRVVallEiXHPDLCYuYtdQfjwYs8wjGPTCWZkm+7FG4tmQz8lKHuYA19pVBJpuQX7QvckotfVyx+zzvU7b82r8zwN81Mf9dOJZkSf/MRElNfUvffk6g7dP4C/oODNXtWnUEAAAAASUVORK5CYII=",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "textbox",
+            "bbox": {
+              "x": 260.4375,
+              "y": 113,
+              "w": 96,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "css"
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:32.515Z",
+      "durationMs": 516,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "css",
+        "tier": 3,
+        "matches": 1,
+        "ms": 5
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the button \"Find\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Find",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Find",
+              "tag": "input",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "type": "button",
+                "value": "Find"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 260.4375,
+                "y": 159,
+                "w": 39.15625,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAACwAAAAXCAYAAABwOa1vAAAAOUlEQVR4AdXBAQEAAAiAIPP/5+qGMPsIkRiJkRiJkRiJkRiJkRiJkRiJkRiJkRiJkRiJkRiJkRiJOdPWBCqDdap+AAAAAElFTkSuQmCC",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "button",
+            "name": "Find",
+            "bbox": {
+              "x": 260.4375,
+              "y": 159,
+              "w": 39.15625,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "css"
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:33.031Z",
+      "durationMs": 468,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:33.499Z",
+      "durationMs": 355,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$2,780.10"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 2,
+      "2": 2,
+      "3": 1
+    },
+    "warnings": [
+      "step s01-click-member-inquiry: primary strategy \"role\" did not resolve; fell back to \"attr\" (tier 2)",
+      "step s02-type-member-number: primary strategy \"label\" did not resolve; fell back to \"css\" (tier 2)",
+      "step s03-click-search: primary strategy \"role\" did not resolve; fell back to \"css\" (tier 3)"
+    ]
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/14-replay-cascade-drift",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 8,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 2780.1
+  }
+}

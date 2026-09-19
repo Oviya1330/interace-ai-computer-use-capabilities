@@ -1,0 +1,153 @@
+{
+  "runId": "01M2XP2KRT1DAHYPH65JQM97VG",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]"
+  },
+  "startedAt": "2026-09-19T20:35:11.771Z",
+  "endedAt": "2026-09-19T20:35:25.308Z",
+  "durationMs": 13537,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "recovered",
+      "startedAt": "2026-09-19T20:35:12.102Z",
+      "durationMs": 11534,
+      "attempts": 2,
+      "recoveries": [
+        {
+          "conditionId": "maintenance_notice",
+          "class": "recoverable",
+          "description": "A 'System Notice' interstitial is shown; acknowledging it returns to the requested screen.",
+          "handled": "resolved",
+          "stepId": "s01-click-member-inquiry",
+          "handler": "dismiss",
+          "attempt": 1
+        }
+      ],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 4
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:23.636Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 8
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:23.988Z",
+      "durationMs": 480,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:24.468Z",
+      "durationMs": 486,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:35:24.954Z",
+      "durationMs": 353,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$312.19"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [
+    {
+      "conditionId": "maintenance_notice",
+      "class": "recoverable",
+      "description": "A 'System Notice' interstitial is shown; acknowledging it returns to the requested screen.",
+      "handled": "resolved",
+      "stepId": "s01-click-member-inquiry",
+      "handler": "dismiss",
+      "attempt": 1
+    }
+  ],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 5
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/07-replay-chaos-maintenance-notice",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 6,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 312.19
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "cascade",
+  "displayName": "Cascade Community Credit Union",
+  "profile": "legacycore-teller",
+  "baseUrl": "http://localhost:4173/t/cascade",
+  "variant": "teller-console 7.3 / cascade branding, relabelled fields, post-login notice",
+  "params": { "base_url": "http://localhost:4173/t/cascade", "teller_user": "teller1" },
+  "secrets": { "teller_password": "env:LEGACYCORE_CASCADE_PASSWORD" }
+}

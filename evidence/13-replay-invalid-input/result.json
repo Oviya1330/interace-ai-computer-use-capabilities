@@ -1,0 +1,42 @@
+{
+  "runId": "01M2XP4TDQNWYPCFPDB3TWW22J",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:***]"
+  },
+  "startedAt": "2026-09-19T20:36:24.119Z",
+  "endedAt": "2026-09-19T20:36:24.152Z",
+  "durationMs": 33,
+  "steps": [],
+  "recoveries": [],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {},
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/13-replay-invalid-input",
+    "events": "events.jsonl",
+    "failureScreenshot": "failure/fail-final.png"
+  },
+  "policy": {
+    "decisions": 0,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "failure",
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "input \"member_id\" does not match ^\\d{5}$",
+    "evidence": [
+      "failure/fail-final.png",
+      "failure/dom-final.html"
+    ]
+  }
+}

@@ -1,0 +1,249 @@
+{
+  "runId": "01M2XP47J75NABEX7PSEEBGV8E",
+  "kind": "replay",
+  "capability": {
+    "name": "member.open_share",
+    "version": "1.0.0",
+    "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]",
+    "share_type": "Money Market",
+    "description": "Rainy day",
+    "initial_deposit": "40.00"
+  },
+  "startedAt": "2026-09-19T20:36:04.807Z",
+  "endedAt": "2026-09-19T20:36:09.834Z",
+  "durationMs": 5027,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:05.145Z",
+      "durationMs": 498,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:05.643Z",
+      "durationMs": 366,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 12
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:06.010Z",
+      "durationMs": 479,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:06.489Z",
+      "durationMs": 487,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-click-new-share",
+      "index": 4,
+      "kind": "click",
+      "name": "Click the button \"New Share\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:06.976Z",
+      "durationMs": 497,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "screenshot": "steps/05-s05-click-new-share.png"
+    },
+    {
+      "stepId": "s06-select-share-type",
+      "index": 5,
+      "kind": "select",
+      "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:07.473Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "screenshot": "steps/06-s06-select-share-type.png"
+    },
+    {
+      "stepId": "s07-type-description",
+      "index": 6,
+      "kind": "type",
+      "name": "Enter {{description}} into the textbox \"Description\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:07.824Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/07-s07-type-description.png"
+    },
+    {
+      "stepId": "s08-type-initial-deposit",
+      "index": 7,
+      "kind": "type",
+      "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:08.175Z",
+      "durationMs": 351,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 2
+      },
+      "screenshot": "steps/08-s08-type-initial-deposit.png"
+    },
+    {
+      "stepId": "s09-click-review",
+      "index": 8,
+      "kind": "click",
+      "name": "Click the button \"Review\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:08.526Z",
+      "durationMs": 479,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/09-s09-click-review.png"
+    },
+    {
+      "stepId": "s10-click-confirm",
+      "index": 9,
+      "kind": "click",
+      "name": "Click the button \"Confirm\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:09.005Z",
+      "durationMs": 484,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "dialog": {
+        "message": "Post this new share to member [pii:1***4]?",
+        "type": "confirm",
+        "response": "accept"
+      },
+      "screenshot": "steps/10-s10-click-confirm.png"
+    },
+    {
+      "stepId": "s11-extract-confirmation-number",
+      "index": 10,
+      "kind": "extract",
+      "name": "Read confirmation_number from the value next to \"Confirmation Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-19T20:36:09.489Z",
+      "durationMs": 344,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 8
+      },
+      "extracted": {
+        "output": "confirmation_number",
+        "raw": "CNF-71ABED3E"
+      },
+      "screenshot": "steps/11-s11-extract-confirmation-number.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 11
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/11-replay-open-share-approved",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 11,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "status": "success",
+  "outputs": {
+    "confirmation_number": "CNF-71ABED3E"
+  }
+}
