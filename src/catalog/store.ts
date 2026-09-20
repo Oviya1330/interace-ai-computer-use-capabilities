@@ -17,6 +17,7 @@ import {
 } from "../core/schema.js";
 import { PolicyConfig } from "../policy/policy.js";
 import type { Redactor } from "../policy/redact.js";
+import { withIntegrity } from "./integrity.js";
 
 export function projectRoot(): string {
   return process.env.CUA_HOME ?? process.cwd();
@@ -108,7 +109,7 @@ export class CapabilityStore {
 
   /** Validate, prove no secret leaked, then write. Returns the file path. */
   save(cap: CapabilityT, redactor: Redactor): string {
-    const parsed = Capability.parse(cap);
+    const parsed = withIntegrity(Capability.parse(cap));
     const text = JSON.stringify(parsed, null, 2) + "\n";
     redactor.assertClean(text, `capability ${parsed.name}@${parsed.version}`, { sensitive: true });
     const file = this.fileFor(parsed.name, parsed.version);

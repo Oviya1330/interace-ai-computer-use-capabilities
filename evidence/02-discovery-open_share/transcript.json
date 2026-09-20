@@ -33,7 +33,7 @@
     {
       "role": "observation",
       "url": "http://localhost:4173/t/summit/",
-      "landmark": "Member Inquiry",
+      "landmark": "Welcome, teller1",
       "results": []
     },
     {
@@ -241,7 +241,7 @@
       "results": [
         {
           "id": "scripted_7_0",
-          "text": "Extracted confirmation_number = \"CNF-35EFEF10\" (raw \"CNF-35EFEF10\")."
+          "text": "Extracted confirmation_number = \"CNF-FB8AC2F8\" (raw \"CNF-FB8AC2F8\")."
         }
       ]
     },

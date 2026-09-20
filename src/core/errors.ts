@@ -26,3 +26,18 @@ export function errorMessage(e: unknown): string {
   if (e instanceof Error) return e.message;
   return String(e);
 }
+
+/**
+ * Raised inside the engine when the run must end with a *business outcome* rather than a
+ * failure (e.g. a duplicate invocation detected by the idempotency ledger).
+ */
+export class BusinessOutcomeSignal extends Error {
+  constructor(
+    public readonly code: string,
+    message: string,
+    public readonly data?: Record<string, unknown>,
+  ) {
+    super(message);
+    this.name = "BusinessOutcomeSignal";
+  }
+}

@@ -19,7 +19,16 @@ import {
   loadTenant,
   projectRoot,
 } from "./catalog/store.js";
+import { AuditLog } from "./hitl/audit.js";
+import { IdempotencyLedger } from "./replay/ledger.js";
 import type { AppProfile, TenantBinding } from "./core/schema.js";
+
+/** Case-insensitive regex sources for the surface's data-classification masking. */
+export function maskPatternsFor(profile: AppProfile): string[] {
+  const escapeRe = (x: string): string => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const labels = profile.dataPolicy.maskLabels.map((l) => `^\\s*${escapeRe(l)}\\s*:?\\s*$`);
+  return [...labels, ...profile.dataPolicy.maskNamePatterns];
+}
 
 export interface RuntimeOptions {
   tenantId: string;
@@ -50,6 +59,10 @@ export interface Runtime {
   session: LiveSessionController | null;
   store: CapabilityStore;
   evidenceRoot: string;
+  /** Durable control-plane state: hash-chained audit log and the idempotency ledger. */
+  audit: AuditLog;
+  ledger: IdempotencyLedger;
+  stateDir: string;
   newEvidence(runId: string, label?: string): RunEvidence;
   close(): Promise<void>;
 }
@@ -65,6 +78,9 @@ export async function createRuntime(o: RuntimeOptions): Promise<Runtime> {
   const secrets = new EnvSecretStore(tenant.secrets, redactor);
   const store = new CapabilityStore(root);
   const evidenceRoot = path.resolve(root, o.evidenceRoot ?? "runs");
+  const stateDir = path.join(root, "state");
+  const audit = new AuditLog(path.join(stateDir, "audit.jsonl"));
+  const ledger = new IdempotencyLedger(path.join(stateDir, "ledger.jsonl"));
 
   let surface: PlaywrightSurface | null = null;
   if (!o.noBrowser) {
@@ -74,6 +90,7 @@ export async function createRuntime(o: RuntimeOptions): Promise<Runtime> {
       contentFrame: profile.contentFrame,
       settle: profile.settle,
       screenshots: policyConfig.data.screenshots,
+      maskPatterns: maskPatternsFor(profile),
       tracing: o.tracing ?? true,
       slowMo: o.slowMo,
       kind: profile.surface === "desktop" ? "web" : profile.surface,
@@ -119,6 +136,9 @@ export async function createRuntime(o: RuntimeOptions): Promise<Runtime> {
     session,
     store,
     evidenceRoot,
+    audit,
+    ledger,
+    stateDir,
     newEvidence: (runId, label) => new RunEvidence(evidenceRoot, runId, redactor, label),
     close: async () => {
       await session?.stopScreencast().catch(() => {});

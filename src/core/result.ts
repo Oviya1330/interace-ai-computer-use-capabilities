@@ -18,6 +18,7 @@ export const FailureCodes = [
   "TARGET_NOT_FOUND",
   "TARGET_AMBIGUOUS",
   "EXPECTATION_FAILED",
+  "PRECONDITION_FAILED",
   "CHECKPOINT_FAILED",
   "TIMEOUT",
   "APP_ERROR",
@@ -106,6 +107,16 @@ export interface InterventionSummary {
   note?: string;
 }
 
+/** One bounded, policy-checked model-assisted recovery at replay time. */
+export interface AssistRecord {
+  stepId: string;
+  reason: string;
+  proposed: { ref: string; role: string; name: string; text: string; frame: string[] } | null;
+  decision: "applied" | "declined" | "no_candidate" | "policy_denied";
+  note?: string;
+  target?: Target;
+}
+
 export interface DriftReport {
   /** Histogram of which strategy tier resolved targets: {"0": 7, "2": 1}. */
   tierHistogram: Record<string, number>;
@@ -129,6 +140,18 @@ export interface RunResultBase {
   evidence: { dir: string; events: string; trace?: string; failureScreenshot?: string };
   /** Which policy decisions were made (allow/deny/confirm) — summarised. */
   policy: { decisions: number; denied: number; confirmations: number };
+  /** Model-assisted recoveries (empty unless assist is enabled and was needed). */
+  assists: AssistRecord[];
+  /** Conditions proposed from what a human did during this run (for `cua promote --conditions`). */
+  proposedConditions: import("./schema.js").Condition[];
+  /** Artifact integrity as seen by this run. */
+  integrity?: {
+    hash: string;
+    approvedHashMatches: boolean | null;
+    effectiveStatus: "draft" | "approved" | "deprecated";
+  };
+  /** Idempotency ledger entries touched by this run. */
+  ledger?: Array<{ key: string; stepId: string; status: string }>;
 }
 
 export interface SuccessResult extends RunResultBase {

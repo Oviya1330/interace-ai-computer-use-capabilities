@@ -31,6 +31,11 @@ escalation:
   timeoutMs: 600000
   console:
     port: 4790
+    token: "" # bearer token operators must present (or CUA_CONSOLE_TOKEN); empty = local dev
+  # webhookUrl: https://hooks.example/cua   # POSTed each intervention request (pager / Slack seam)
+assist:
+  enabled: false # bounded model-assisted recovery at replay (also needs --assist <decider>)
+  maxPerRun: 1
 data:
   screenshots: masked # password fields / sensitive controls blacked out in every screenshot
   redactPatterns: []
@@ -38,3 +43,4 @@ limits:
   maxSteps: 30
   maxRunMs: 600000
   stepTimeoutMs: 10000
+  maxIrreversiblePerRun: 1 # hard cap, whatever the artifact says

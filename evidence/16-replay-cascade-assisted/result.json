@@ -1,0 +1,525 @@
+{
+  "runId": "01M2ZV8C49C4QS4S1YG1RG5HS7",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.0.0",
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+  },
+  "tenant": "cascade",
+  "inputs": {
+    "member_id": "[pii:1***3]"
+  },
+  "startedAt": "2026-09-20T16:44:12.297Z",
+  "endedAt": "2026-09-20T16:44:45.450Z",
+  "durationMs": 33153,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "recovered",
+      "startedAt": "2026-09-20T16:44:12.627Z",
+      "durationMs": 10733,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the link \"Member Lookup\" in frame nav",
+          "frame": [
+            "nav"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "link",
+              "name": "Member Lookup",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Member Lookup",
+              "tag": "a",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "a",
+              "attrs": {
+                "href": "{{base_path}}/inquiry"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > table > tbody > tr:nth-of-type(2) > td > font > a"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/table[1]/tbody[1]/tr[2]/td[1]/font[1]/a[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 12,
+                "y": 101,
+                "w": 104.34375,
+                "h": 16
+              },
+              "template": "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",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "a",
+            "role": "link",
+            "name": "Member Lookup",
+            "bbox": {
+              "x": 12,
+              "y": 101,
+              "w": 104.34375,
+              "h": 16
+            }
+          }
+        },
+        "resolvedVia": "assist"
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "recovered",
+      "startedAt": "2026-09-20T16:44:23.360Z",
+      "durationMs": 10538,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 15
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the textbox \"Member #\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "label",
+              "text": "Member #",
+              "control": "textbox"
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "name": "mbr_num",
+                "type": "text"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 260.4375,
+                "y": 113,
+                "w": 96,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAAa0lEQVR4Ae3BwQ3CQAADwcW6nl2DqwYeQUoFwQ/PvN5fTBUxdQ43tpnnJeHucLFNEuZ5tknCj5g6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmzuGSBNvM85Jwd7hJwvyfmDofil4TaEhUQmwAAAAASUVORK5CYII=",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "textbox",
+            "bbox": {
+              "x": 260.4375,
+              "y": 113,
+              "w": 96,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "assist"
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "recovered",
+      "startedAt": "2026-09-20T16:44:33.898Z",
+      "durationMs": 10704,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 5
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the button \"Find\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Find",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Find",
+              "tag": "input",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "type": "button",
+                "value": "Find"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 260.4375,
+                "y": 159,
+                "w": 39.15625,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAACwAAAAXCAYAAABwOa1vAAACN0lEQVR4AdXBsUojQQCA4X/HUZQsBBRErTZqYyWIqGAhrLMgiKVgM/gCvoJ2IWiwCCiKhQrb+AAhRdjCRqKQ0k4wwSIWNharlRBvIQPhsHDuDm/zfU77F3qIoMdIuoRhyNvbG41GgzTI5XJkMhm01hiSjjAMGRoaYmNjgzSJoogwDNFakxB0xHGMUoq0UUoRxzGGoKPZbJJWzWYTQ9BjBP/Ax8cH7+/v2Hp4eODu7g4bEgtHR0fs7u7SLQgCtra22Nvb4/7+HhvX19fU63UWFxf5LomFdrvN2toap6enGFJKHMdheXmZnyCxNDg4SDabpdvt7S1nZ2ecn59Tq9UoFouMjo5SqVSYn58nn88zMzNDolQqcXx8zMvLC57nsbCwgA2JpZubG7a3tzEKhQJxHPP4+EgijmPq9TonJyfk83n29/e5uLjg4OCAcrnM4eEhl5eXLC0tUSwWabVa2JBYmpqaQmuNkc1m+d3k5CTr6+skVldXKRQKJKrVKpubm/i+T2JiYoJWq4UNiaWxsTGUUnyXEAKjv7+f4eFh/obgB/m+T7lc5unpidfXV2q1GrYkFhzH4StCCLr19fVhOI6DsbKyQqlUYnZ2lsTc3BzT09PYkFjY2dnhK77v4/s+iSAICIIAQymFUoqE67pUq1Wen58ZGRlhYGAAW5L/YHx8nD8l6PA8j7TyPA9D0OG6LlEUkTZRFOG6LoakQ2tNGIZcXV3RaDRIg1wuRyaTQWuNIemitSbtBD3mE729slPK5VhaAAAAAElFTkSuQmCC",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "button",
+            "name": "Find",
+            "bbox": {
+              "x": 260.4375,
+              "y": 159,
+              "w": 39.15625,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "assist"
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:44:44.602Z",
+      "durationMs": 493,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:44:45.095Z",
+      "durationMs": 353,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$2,780.10"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "assists": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "reason": "TARGET_NOT_FOUND: Could not resolve the link \"Member Inquiry\" in frame nav within 10000ms",
+      "proposed": {
+        "ref": "e6",
+        "role": "link",
+        "name": "Member Lookup",
+        "text": "Member Lookup",
+        "frame": [
+          "nav"
+        ]
+      },
+      "decision": "applied",
+      "note": "\"Member Lookup\" best matches the step's intent (score 3.5)",
+      "target": {
+        "description": "the link \"Member Lookup\" in frame nav",
+        "frame": [
+          "nav"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "Member Lookup",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Member Lookup",
+            "tag": "a",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "a",
+            "attrs": {
+              "href": "{{base_path}}/inquiry"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > font > a"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[1]/tbody[1]/tr[2]/td[1]/font[1]/a[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 12,
+              "y": 101,
+              "w": 104.34375,
+              "h": 16
+            },
+            "template": "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",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "a",
+          "role": "link",
+          "name": "Member Lookup",
+          "bbox": {
+            "x": 12,
+            "y": 101,
+            "w": 104.34375,
+            "h": 16
+          }
+        }
+      }
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "reason": "TARGET_NOT_FOUND: Could not resolve the textbox \"Member Number\" in frame main within 10000ms",
+      "proposed": {
+        "ref": "e11",
+        "role": "textbox",
+        "name": "",
+        "text": "",
+        "frame": [
+          "main"
+        ]
+      },
+      "decision": "applied",
+      "note": "\"Member #\" best matches the step's intent (score 4.5)",
+      "target": {
+        "description": "the textbox \"Member #\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Member #",
+            "control": "textbox"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "mbr_num",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 260.4375,
+              "y": 113,
+              "w": 96,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAAa0lEQVR4Ae3BwQ3CQAADwcW6nl2DqwYeQUoFwQ/PvN5fTBUxdQ43tpnnJeHucLFNEuZ5tknCj5g6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmzuGSBNvM85Jwd7hJwvyfmDofil4TaEhUQmwAAAAASUVORK5CYII=",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "textbox",
+          "bbox": {
+            "x": 260.4375,
+            "y": 113,
+            "w": 96,
+            "h": 19
+          }
+        }
+      }
+    },
+    {
+      "stepId": "s03-click-search",
+      "reason": "TARGET_NOT_FOUND: Could not resolve the button \"Search\" in frame main within 10000ms",
+      "proposed": {
+        "ref": "e13",
+        "role": "button",
+        "name": "Find",
+        "text": "Find",
+        "frame": [
+          "main"
+        ]
+      },
+      "decision": "applied",
+      "note": "\"Find (the only button on the screen)\" best matches the step's intent (score 1)",
+      "target": {
+        "description": "the button \"Find\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Find",
+            "exact": true
+          },
+          {
+            "kind": "text",
+            "text": "Find",
+            "tag": "input",
+            "exact": true
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "type": "button",
+              "value": "Find"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+          },
+          {
+            "kind": "visual",
+            "bbox": {
+              "x": 260.4375,
+              "y": 159,
+              "w": 39.15625,
+              "h": 19
+            },
+            "template": "iVBORw0KGgoAAAANSUhEUgAAACwAAAAXCAYAAABwOa1vAAACN0lEQVR4AdXBsUojQQCA4X/HUZQsBBRErTZqYyWIqGAhrLMgiKVgM/gCvoJ2IWiwCCiKhQrb+AAhRdjCRqKQ0k4wwSIWNharlRBvIQPhsHDuDm/zfU77F3qIoMdIuoRhyNvbG41GgzTI5XJkMhm01hiSjjAMGRoaYmNjgzSJoogwDNFakxB0xHGMUoq0UUoRxzGGoKPZbJJWzWYTQ9BjBP/Ax8cH7+/v2Hp4eODu7g4bEgtHR0fs7u7SLQgCtra22Nvb4/7+HhvX19fU63UWFxf5LomFdrvN2toap6enGFJKHMdheXmZnyCxNDg4SDabpdvt7S1nZ2ecn59Tq9UoFouMjo5SqVSYn58nn88zMzNDolQqcXx8zMvLC57nsbCwgA2JpZubG7a3tzEKhQJxHPP4+EgijmPq9TonJyfk83n29/e5uLjg4OCAcrnM4eEhl5eXLC0tUSwWabVa2JBYmpqaQmuNkc1m+d3k5CTr6+skVldXKRQKJKrVKpubm/i+T2JiYoJWq4UNiaWxsTGUUnyXEAKjv7+f4eFh/obgB/m+T7lc5unpidfXV2q1GrYkFhzH4StCCLr19fVhOI6DsbKyQqlUYnZ2lsTc3BzT09PYkFjY2dnhK77v4/s+iSAICIIAQymFUoqE67pUq1Wen58ZGRlhYGAAW5L/YHx8nD8l6PA8j7TyPA9D0OG6LlEUkTZRFOG6LoakQ2tNGIZcXV3RaDRIg1wuRyaTQWuNIemitSbtBD3mE729slPK5VhaAAAAAElFTkSuQmCC",
+            "threshold": 0.92
+          }
+        ],
+        "recorded": {
+          "tag": "input",
+          "role": "button",
+          "name": "Find",
+          "bbox": {
+            "x": 260.4375,
+            "y": 159,
+            "w": 39.15625,
+            "h": 19
+          }
+        }
+      }
+    }
+  ],
+  "proposedConditions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 5
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/16-replay-cascade-assisted",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 5,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "integrity": {
+    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 2780.1
+  }
+}

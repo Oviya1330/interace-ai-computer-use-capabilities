@@ -59,6 +59,9 @@ export async function startCapabilityServer(o: {
       ),
     );
 
+  app.get("/healthz", (_req, res) => {
+    res.json({ ok: true, tenants: [...runtimes.keys()] });
+  });
   app.get("/capabilities", (_req, res) => {
     const list = store.list();
     res.json({
@@ -77,6 +80,10 @@ export async function startCapabilityServer(o: {
     const tenant = String(req.body?.tenant ?? "summit");
     const inputs = (req.body?.inputs ?? {}) as Record<string, unknown>;
     const approval = req.body?.approval as { by: string; reason: string } | undefined;
+    const requestedBy = req.body?.requestedBy ? String(req.body.requestedBy) : undefined;
+    const idempotencyKey = req.body?.idempotencyKey
+      ? String(req.body.idempotencyKey)
+      : (req.headers["idempotency-key"] as string | undefined);
     try {
       const result = await serialised(tenant, async () => {
         const rt = await runtimeFor(tenant);
@@ -84,7 +91,10 @@ export async function startCapabilityServer(o: {
           capability: req.params.name,
           tenant,
           inputs,
-          approve: approval ? `${approval.reason} (by ${approval.by})` : undefined,
+          approve: approval?.reason,
+          approvedBy: approval?.by,
+          requestedBy,
+          idempotencyKey,
           runtime: rt,
           evidenceRoot: o.evidenceRoot,
           log: () => {},

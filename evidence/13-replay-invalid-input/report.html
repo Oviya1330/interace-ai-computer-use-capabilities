@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><title>replay member.lookup_savings_balance@1.0.0 — FAILURE</title>
+<style>
+body{font:14px/1.45 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0;padding:20px 28px;color:#1b1f24;background:#f6f7f9}
+h1{font-size:20px;margin:0 0 4px} h2{font-size:15px;margin:22px 0 8px;border-bottom:1px solid #d0d7de;padding-bottom:4px}
+.muted{color:#57606a} code{background:#eef1f4;padding:1px 4px;border-radius:3px;font-size:12px}
+.badge{display:inline-block;padding:0 7px;border-radius:9px;font-size:11px;background:#e7ecf1;text-transform:uppercase}
+.badge.success,.badge.ok{background:#d3f9d8} .badge.business_outcome,.badge.recovered,.badge.approval{background:#fff3bf} .badge.failure,.badge.failed{background:#ffe3e3} .badge.skipped{background:#e7ecf1}
+.cards{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0} .card{background:#fff;border:1px solid #d0d7de;border-radius:6px;padding:8px 12px;min-width:140px} .card .k{font-size:11px;color:#57606a;text-transform:uppercase} .card .v{font-size:14px}
+.headline{background:#fff;border-left:4px solid #adb5bd;padding:8px 12px;border-radius:4px} .headline.ok{border-color:#2b8a3e} .headline.warn{border-color:#e67700} .headline.bad{border-color:#c92a2a} .bad{color:#c92a2a}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px} .step{background:#fff;border:1px solid #d0d7de;border-radius:6px;padding:10px} .step img,.gallery img{width:100%;border:1px solid #d0d7de;border-radius:4px;margin-top:8px} .step-meta{font-size:12px;color:#57606a;margin-top:4px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+table.events{border-collapse:collapse;font-size:12px;background:#fff} table.events td{border-bottom:1px solid #eef1f4;padding:3px 8px;vertical-align:top}
+</style></head><body>
+<h1>replay member.lookup_savings_balance@1.0.0 — FAILURE</h1>
+<div class="muted">run 01M2ZV806GH4ZTFD4HT7HFXH09 · directory <code>13-replay-invalid-input</code></div>
+<div class="cards"><div class="card"><div class="k">Status</div><div class="v"><span class="badge failure">failure</span></div></div><div class="card"><div class="k">Tenant</div><div class="v">summit</div></div><div class="card"><div class="k">Duration</div><div class="v">0.0 s</div></div><div class="card"><div class="k">Policy decisions</div><div class="v">0 <span class="muted">(0 denied, 0 confirmations)</span></div></div><div class="card"><div class="k">Artifact integrity</div><div class="v"><code>ee886ddb9c9e29cd…</code> <span class="muted">effective draft</span></div></div></div>
+<p class="headline bad"><strong>INVALID_INPUT</strong> — input &quot;member_id&quot; does not match ^\d{5}$</p>
+
+<h2>Failure evidence</h2><ul><li><a href="failure/fail-final.png">failure/fail-final.png</a></li><li><a href="failure/dom-final.html">failure/dom-final.html</a></li></ul>
+<h2>Event timeline</h2><details><summary>3 events</summary><table class="events"><tr><td class="muted">16:44:00.080</td><td><code>run.start</code></td><td>Replay member.lookup_savings_balance@1.0.0 on tenant summit</td></tr><tr><td class="muted">16:44:00.080</td><td><code>integrity</code></td><td>Artifact hash ee886ddb9c9e… effective status draft</td></tr><tr><td class="muted">16:44:00.112</td><td><code>run.end</code></td><td>Replay ended: failure (INVALID_INPUT at ?) in 32ms</td></tr></table></details>
+</body></html>

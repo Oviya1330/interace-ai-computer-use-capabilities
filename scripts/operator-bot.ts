@@ -33,6 +33,11 @@ const clickName = opt("click");
 const resolveKind = opt("resolve", clickName ? "retry" : "approve")!;
 const timeoutMs = Number(opt("timeout", "120000"));
 const operator = opt("operator", "operator-bot")!;
+const token = opt("token", process.env.CUA_CONSOLE_TOKEN ?? "")!;
+const headers = (): Record<string, string> => ({
+  "content-type": "application/json",
+  ...(token ? { authorization: `Bearer ${token}` } : {}),
+});
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function waitForIntervention(): Promise<Intervention> {
@@ -68,7 +73,9 @@ async function main(): Promise<void> {
     });
     if (!res.ok) throw new Error(`take-control failed: ${await res.text()}`);
     process.stderr.write(`[operator-bot] took control of the live session\n`);
-    const ws = new WebSocket(`${consoleUrl.replace(/^http/, "ws")}/ws`);
+    const ws = new WebSocket(
+      `${consoleUrl.replace(/^http/, "ws")}/ws${token ? `?token=${encodeURIComponent(token)}` : ""}`,
+    );
     await new Promise<void>((resolve, reject) => {
       ws.once("open", () => resolve());
       ws.once("error", reject);
@@ -108,7 +115,7 @@ async function main(): Promise<void> {
 
   const res = await fetch(`${consoleUrl}/api/interventions/${it.id}/resolve`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: headers(),
     body: JSON.stringify({
       kind: resolveKind,
       operator,

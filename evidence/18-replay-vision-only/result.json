@@ -1,0 +1,385 @@
+{
+  "runId": "01M2ZV9S7EK38FJHCHARHY1XFJ",
+  "kind": "replay",
+  "capability": {
+    "name": "member.lookup_savings_balance",
+    "version": "1.2.0",
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***3]"
+  },
+  "startedAt": "2026-09-20T16:44:58.478Z",
+  "endedAt": "2026-09-20T16:45:01.432Z",
+  "durationMs": 2954,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:44:58.808Z",
+      "durationMs": 584,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "visual",
+        "tier": 5,
+        "matches": 1,
+        "ms": 89
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the link \"Member Inquiry\" in frame nav",
+          "frame": [
+            "nav"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "link",
+              "name": "Member Inquiry",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Member Inquiry",
+              "tag": "a",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "a",
+              "attrs": {
+                "href": "{{base_path}}/inquiry"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > table > tbody > tr:nth-of-type(2) > td > font > a"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/table[1]/tbody[1]/tr[2]/td[1]/font[1]/a[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 12,
+                "y": 101,
+                "w": 104.140625,
+                "h": 16
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAAG0AAAAUCAYAAACH1bNfAAAHIUlEQVR4Ae3BCVBUhwGA4X8fyy0iCDiCdyOKF3JEUagil7eiomJQtMZEgkmMDGFwEg/UGBuvqEWJWoXUSJJGDR4JVamWgEcNUlRQsAhBBOQKIMuywL7tvJm+mS2DqQo6wwzfp6iuU+vo0qkIdOl0BLp0OgJdOh2BLp2OgB5R1KHVirRFqxURRR0vS+r1W6SkZ/KyiaIOrVZEqxURRR2vSn1DI09UajqCEj3LIj7j9r0C9m5axe/HjET2Q8o/+Wj7ETxcnTiwdTUvw6X0f6Fq1ODr6cLL5DbtHWTmZiaknfycV2Hd9qPUPlFxZEck7aVEjyjqkOw7+j2e7iMQBAUtWi37j51GIooind2F439k/c4EDJVK1n0QwquyYtFUWrQiHUFJK0HTJ/DduVQuXcnE18uVC6k3Uas1+E9wo7auHllNXT2xCadJvX4LVUMjbiMdiQpbgENvG8qraoiIicPXy4WUtEwKi8twG+nI6jfnkJh0ib+nZ2JnY0XIHB9m+HogKyuvZsPOBNJu3EGpNCAk0JfQIH9kl69mcTjxR7LzCunvYMei2T4snOWN5OBX51BrNAzqZ8/Fn24i2RMTTms21pYYGxliaKjExsoSSXlVDRExcQRMcONi2k0eFJXi7+XK8uCp9LW3RVJZXcvuwyf4x7VbGBsZ4vRaP2rqVBzbG43krahdLA0KwGvMCCQFxWWs+yyePZvC6dmjO1cz7qJSq3F2GoRk9Yb9TPIcTUVlDT/fymXEkEHcyLpHaJA/fl6uyPYcOYm6sYno8GBkAq30srFi2YIAYr88g6apmS+OnWHV0lmYm5ogE0UdH2w8QNGjx2z5cDkHtq6muaWFg8fPIWnSNJOdV0hKWibLFgSw4+OV3MktYN7bMZgaG7Ft7Vt4ezizbns8T1RqZLfvFWDfy4ZPopbj7eHM7sMnyP+lBMmVjBzWxBxgpp8HJw9vZNnCKWzb/zVFj8qRlD6uIv7b85xKTsNt5GDGuw3jWTVpmsnOK+R8agYhgb7s3hBO1r0CEpMuIdFqRSK3HCQ7t5C17y7iwNbV9LG3JTuvENndfxdRW69CpmlsIjuvkObmFiQl5VU8LKlEdie3gJhdX1JYXMakcaMZMbQ//eztOPjVOXQ6HZKyimrivz2P+yhH9Am0IXSePwVFpURuOYha08QMv3Hoy84rJCsnn2k+YzEyNEAURTxcnDh94SrqxiZkGyOW4OflioerE35erowZPYSIt4N43dmR0CB/JLdyHiDzn+DGysXT8XB1Yu27i7DuYcG1zLtIEpMuMXLoQIa+1pe6OhUD+/Siv4MdF366iczTfThHdkQSGuTPwlnePK+NEUuY7O3O686OzJ3qSUr6TST3C4rJyskncuUCpvuMxXFQH8a6DKW91qyYxydRywmePYlJ40YTMseH+wWPuJGVi+SvZ1Oxs+mB9zhn9Clpg5WlBSsXz+CLY2fZEvUHjAyV6Cstr0JyITUDfZ7uw6mpq6ctpqbGiKIOmamJERJNczNPM8xxAFk5DwgJ9KXgYSmSQ8d/QNanty2CoEBmZmZCR+lmboaqoRHJo8dVSEY5DaQjmZoYoc9pcH/cRznyl5MpDHMcwDdnLrMqdBZKAwP0KXmKN2ZPwtzUhMkT3WnNrqcVkqh3FtLPwY7WiksqaK8WrZbMO/eZO8ULSd/etthaW7Ipchmv2rDB/ZEUFD/G2WkQT6PRNNFeoUH+vL8+ll2HvkPV0MgMPw9aE3iK7hbmLJnnh9LAgNacBvejv4MdH28/yt37v1BTV09WTj4bdiagaWrmRZWVV/OwpILikgpiE5JQNTQy2dsdyUzfcZy5eI1vTl+m8tdaHpZUcCo5nVPJ6TyPyupaNE3NaDTNVP5ay7PobWfN4IEO7D50gisZOVy+msWfE5PR5zN+NGdTrlNQXEbG7fv8KT6JFzHebTgOvW049WMaS+cHYNHNjNaU6BEEBb9FEAQkxkaG7Nv8Hp/GJvLGe58i83B1QhAEZAoUyBQKEAQFv+VBUSmzlq9Dtn7NEoY7DkAyzXcMT1QN7Iv/nm37v0Zi3cOC6FXBPI/AFRtQNTQiCXwzj7STnyNToECm4H99GLaQNTH7WfXRXszNTBjvPpzsvEJk82dMZPOeY8xdsRHJTD8P9ClQoE+pNEChUNCagYFAYIAnsQlJzJ8+kbYoquvUOtqhUdNEdc0Telp1x9jIkPZSNTRSXl2DvV1PjI0MaU2n01FZXYtgIGBtaYFCoeBVEUUdNXX1WFl24/K1LCJi4shMjkPfo7Iq7Gx6YKg04EUtfn8bfext2Ba9grYo+S+XKWF0eTaZyXHoc5kSRkfITI4jKyef7LxCosIX4DIlDNnpI5vpa2+LRFFdp9bR5bnl5j/k1N/SiQ4PpiOdT/2ZB0WlhC2eydMo6fJChvyuL9HhwXS0gAnu/D8CXTqd/wBvr7wbLoRQ7AAAAABJRU5ErkJggg==",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "a",
+            "role": "link",
+            "name": "Member Inquiry",
+            "bbox": {
+              "x": 12,
+              "y": 101,
+              "w": 104.140625,
+              "h": 16
+            }
+          }
+        },
+        "resolvedVia": "visual"
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:44:59.392Z",
+      "durationMs": 535,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "visual",
+        "tier": 4,
+        "matches": 1,
+        "ms": 162
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the textbox \"Member Number\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "label",
+              "text": "Member Number",
+              "control": "textbox"
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "name": "memberno",
+                "type": "text"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[1]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 300.296875,
+                "y": 113,
+                "w": 96,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAEP0lEQVR4Ae3BT2hTdwDA8e97eWrT9BkKkpaYCGn90+zPCxI81T9rNxd66KVgdtBAIYhTUPyDC7v4J5AseJCBF6EIUqtoQe91ycGBPUw8SDNbMT2YzEek0bL+NNE2IfNBAqG4Th12ZcnnI5XfomFFkWlYcRQqsn8u8MONP7idnOPZXJGGT69trcK3X6zl3HcO2q2rqJKpOHo1w5XxFzybK9KwPJ7NFbky/oKjVzPUUqi4nZzDcOfHLezc0kLDp3dn6iVfxR6ReCioJVMxmy9h2LmlhYblsaurBUPuZZFaMg0rjsx7KJVKlEol3kXXdQqFAu+i6zqFQoHF8vk8T548oVwus9jr16+Znp7m+fPn1CuFf/DmzRsCgQBer5dQKERVOp2mr6+PTCaDEIJYLEYoFMKQTqfp6+sjk8kghCAWixEKhTAcOXKECxcuYHA4HJw6dYr9+/djOH36NOFwGFVVEUIwODjI0NAQiqJQTxSWEI/H2b17Nwav10utcDiMpmkkk0kmJibweDz4/X5cLhfhcBhN00gmk0xMTODxePD7/bhcLjweD+l0GofDwfXr1zlw4AD79u3DbDazceNGUqkUnZ2dPH78mM2bN3Po0CG2bdtGPZFZwo4dO3j69Cl79uxhsdHRUYLBIJIkoWka3d3dJBIJDKOjowSDQSRJQtM0uru7SSQSGILBIE6nE0mS8Pl8CCGYmprCEAgE6OzsxCDLMoa2tjbqjcIS1qxZg91ux2KxUGt+fh4hBE6nk6qOjg50XWd+fh4hBE6nk6qOjg50XWexa9euYbPZcLvdVOXzeQYGBhgfH+fixYts2LCBeiPzEYrFIgaTyUSVLMuUSiWKxSIGk8lElSzLlEolat26dYvDhw9z8+ZNmpqaqFq9ejWhUIgzZ85w8uRJpqenqTcyH6G5uRlVVcnlclRls1lsNhvNzc2oqkoul6Mqm81is9mounTpEgcPHuTu3bts376dWoqi0NPTw/Hjx+nq6iKRSFBvZD5Sf38/w8PDlMtlUqkUY2Nj9Pb2Yujv72d4eJhyuUwqlWJsbIze3l4MJ06cIBqNEo/H2bp1K4VCgYWFBQwjIyPMzs5iePDgAffu3WPTpk3UG4UlxONxBgYGEEJgiEQiTE5Osn79eiKRCD6fD6vVihCCaDSK2+3GEIlE8Pl8WK1WhBBEo1HcbjeGoaEhhBBomkbVsWPHOH/+PCMjIwQCAVRVRQjB2bNn6enpod5I5bd4Sxq8j6F82cuH0HWd1tZWzGYzi+m6TmtrK2azmff16tUrZmZmaG9vp6mpif87afA+hvJlL1UK/5Ldbufv2O12PpTFYsFisVDPZCrWtSgYfn30koblkXgoMKxrUailUPH1Zyo3fptl10+PaFhe33yuUkuh4ue9TkyyxC+/zzEjijR8em1rFXxfWjnnd1BLoaLduoqr37to+O/JNKw4fwEKVI2yHapRUgAAAABJRU5ErkJggg==",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "textbox",
+            "bbox": {
+              "x": 300.296875,
+              "y": 113,
+              "w": 96,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "visual"
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:44:59.927Z",
+      "durationMs": 632,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "visual",
+        "tier": 5,
+        "matches": 1,
+        "ms": 147
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the button \"Search\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Search",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "Search",
+              "tag": "input",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "type": "button",
+                "value": "Search"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 300.296875,
+                "y": 159,
+                "w": 54.078125,
+                "h": 19
+              },
+              "template": "iVBORw0KGgoAAAANSUhEUgAAADsAAAAXCAYAAAC1Szf+AAAAOUlEQVR4AeXBAQEAAAiAIPP/5+qHMPuIkBAJkRAJkRAJkRAJkRAJkRAJkRAJkRAJkRAJkRAJkRAJOdDwBCrqSqJaAAAAAElFTkSuQmCC",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "button",
+            "name": "Search",
+            "bbox": {
+              "x": 300.296875,
+              "y": 159,
+              "w": 54.078125,
+              "h": 19
+            }
+          }
+        },
+        "resolvedVia": "visual"
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:45:00.559Z",
+      "durationMs": 519,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "text",
+        "tier": 1,
+        "matches": 1,
+        "ms": 8
+      },
+      "proposedOverride": {
+        "target": {
+          "description": "the link \"{{member_id}}\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "link",
+              "name": "{{member_id}}",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "{{member_id}}",
+              "tag": "a",
+              "exact": true
+            },
+            {
+              "kind": "table",
+              "headers": [
+                "Member #",
+                "Name",
+                "Status"
+              ],
+              "row": {
+                "column": "Member #",
+                "equals": "{{member_id}}"
+              },
+              "column": "Member #",
+              "inner": "link"
+            },
+            {
+              "kind": "attr",
+              "tag": "a",
+              "attrs": {
+                "href": "javascript:goMember('{{member_id}}')"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td:nth-of-type(1) > a"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/table[2]/tbody[1]/tr[2]/td[1]/a[1]"
+            }
+          ],
+          "recorded": {
+            "tag": "a",
+            "role": "link",
+            "name": "{{member_id}}",
+            "bbox": {
+              "x": 182,
+              "y": 134,
+              "w": 34.96875,
+              "h": 13
+            }
+          }
+        },
+        "resolvedVia": "text"
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-extract-savings-balance",
+      "index": 4,
+      "kind": "extract",
+      "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:45:01.079Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "table",
+        "tier": 0,
+        "matches": 1,
+        "ms": 8
+      },
+      "extracted": {
+        "output": "savings_balance",
+        "raw": "$4,250.37"
+      },
+      "screenshot": "steps/05-s05-extract-savings-balance.png"
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 1,
+      "1": 1,
+      "4": 1,
+      "5": 2
+    },
+    "warnings": [
+      "step s01-click-member-inquiry: primary strategy \"role\" did not resolve; fell back to \"visual\" (tier 5)",
+      "step s02-type-member-number: primary strategy \"label\" did not resolve; fell back to \"visual\" (tier 4)",
+      "step s03-click-search: primary strategy \"role\" did not resolve; fell back to \"visual\" (tier 5)",
+      "step s04-click-member-id: primary strategy \"role\" did not resolve; fell back to \"text\" (tier 1)"
+    ]
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/18-replay-vision-only",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 5,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "integrity": {
+    "hash": "33180148f933d885d0de1d4e4b2306650240e0719f56dbffc61b70642eaea780",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
+  },
+  "status": "success",
+  "outputs": {
+    "savings_balance": 4250.37
+  }
+}

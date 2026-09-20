@@ -262,5 +262,12 @@
     "domQuietMs": 300,
     "maxMs": 8000
   },
-  "defaultStepTimeoutMs": 10000
+  "defaultStepTimeoutMs": 10000,
+  "dataPolicy": {
+    "maskLabels": ["SSN", "Social Security", "Card Number", "Password"],
+    "maskNamePatterns": ["ssn", "passw", "cardno"]
+  },
+  "locatorPolicy": {
+    "allow": ["role", "label", "text", "table", "attr", "css", "xpath", "visual"]
+  }
 }

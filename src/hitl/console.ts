@@ -19,6 +19,8 @@ export interface ConsoleOptions {
   session: () => LiveSessionController | null;
   /** Serve evidence files for screenshots. */
   evidenceRoot?: () => string | null;
+  /** Bearer token operators must present (also accepted as ?token=). Empty = open. */
+  token?: string;
 }
 
 export interface OperatorConsole {
@@ -31,6 +33,18 @@ export async function startOperatorConsole(o: ConsoleOptions): Promise<OperatorC
   const app = express();
   app.use(express.json());
   const html = fs.readFileSync(new URL("./console.html", import.meta.url), "utf8");
+  const token = o.token ?? "";
+  const presented = (req: {
+    headers: Record<string, unknown>;
+    query: Record<string, unknown>;
+  }): string =>
+    String(req.headers.authorization ?? "").replace(/^Bearer\s+/i, "") ||
+    String(req.query.token ?? "");
+  app.use("/api", (req, res, next) => {
+    if (token && presented(req as never) !== token)
+      return res.status(401).json({ error: "operator token required" });
+    next();
+  });
 
   app.get("/", (_req, res) => {
     res.type("html").send(html);
@@ -86,7 +100,16 @@ export async function startOperatorConsole(o: ConsoleOptions): Promise<OperatorC
   });
 
   const server = http.createServer(app);
-  const wss = new WebSocketServer({ server, path: "/ws" });
+  const wss = new WebSocketServer({ noServer: true });
+  server.on("upgrade", (req, socket, head) => {
+    const url = new URL(req.url ?? "/", "http://localhost");
+    if (url.pathname !== "/ws") return socket.destroy();
+    if (token && url.searchParams.get("token") !== token) {
+      socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+      return socket.destroy();
+    }
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit("connection", ws, req));
+  });
   const broadcast = (msg: unknown) => {
     const text = JSON.stringify(msg);
     for (const c of wss.clients) if (c.readyState === WebSocket.OPEN) c.send(text);

@@ -31,6 +31,7 @@ import type {
   SimpleExpectation,
   Target,
   TargetStrategy,
+  TargetStrategyKind,
 } from "../core/schema.js";
 import { interpolate, parameterize, templateToRegex, type Params } from "../core/template.js";
 import { RunFailure, errorMessage } from "../core/errors.js";
@@ -45,6 +46,8 @@ export interface WebSurfaceOptions {
   contentFrame: string[];
   settle: { domQuietMs: number; maxMs: number };
   screenshots: "masked" | "full" | "none";
+  /** Regex sources (case-insensitive) matched against labels / column headers / field names. */
+  maskPatterns?: string[];
   tracing?: boolean;
   slowMo?: number;
   kind?: "web" | "legacy_web";
@@ -203,10 +206,10 @@ export class PlaywrightSurface implements Surface {
       let frameSig = "";
       try {
         await this.ensureInjected(frame);
-        entries = (await frame.evaluate(
-          (max) => (window as unknown as CuaWindow).__cua.index({ maxReadable: max }),
-          opts.maxReadable ?? 150,
-        )) as RawEntry[];
+        entries = (await frame.evaluate((o) => (window as unknown as CuaWindow).__cua.index(o), {
+          maxReadable: opts.maxReadable ?? 150,
+          maskPatterns: this.opts.maskPatterns ?? [],
+        })) as RawEntry[];
         text = (await frame.evaluate(() =>
           (window as unknown as CuaWindow).__cua.visibleText(),
         )) as string;
@@ -226,6 +229,12 @@ export class PlaywrightSurface implements Surface {
       for (const e of entries) {
         const ref = `e${refCounter++}`;
         refs.push(ref);
+        // Classified data never reaches the model's element list or the evidence log.
+        if (e.sensitive && this.opts.screenshots !== "full") {
+          if (!e.interactive) e.text = "[masked]";
+          if (e.value !== undefined && e.role !== "password") e.value = "[masked]";
+          e.name = e.interactive ? e.name : "[masked]";
+        }
         elements.push({
           ...e,
           ref,
@@ -326,12 +335,24 @@ export class PlaywrightSurface implements Surface {
   async resolve(
     target: Target,
     params: Params,
-    opts: { timeoutMs?: number } = {},
+    opts: {
+      timeoutMs?: number;
+      allowedKinds?: TargetStrategyKind[];
+      preferKinds?: TargetStrategyKind[];
+    } = {},
   ): Promise<Resolved> {
     const timeoutMs = opts.timeoutMs ?? 10_000;
     const started = Date.now();
     const tried = new Map<string, string>();
     let ambiguous = false;
+    const allowed = opts.allowedKinds ? new Set(opts.allowedKinds) : null;
+    // The artifact's order is the default; an explicit preference reorders (tier stays the
+    // artifact index so drift reporting keeps its meaning).
+    const indexed = target.strategies.map((strategy, tier) => ({ strategy, tier }));
+    const order = opts.preferKinds;
+    const attempts = order
+      ? [...indexed].sort((a, b) => order.indexOf(a.strategy.kind) - order.indexOf(b.strategy.kind))
+      : indexed;
 
     while (true) {
       const frame = this.frameByPath(target.frame);
@@ -341,8 +362,14 @@ export class PlaywrightSurface implements Surface {
         } catch {
           /* frame navigating */
         }
-        for (let tier = 0; tier < target.strategies.length; tier++) {
-          const strategy = target.strategies[tier]!;
+        for (const { strategy, tier } of attempts) {
+          if (
+            (allowed && !allowed.has(strategy.kind)) ||
+            (order && !order.includes(strategy.kind))
+          ) {
+            tried.set(strategy.kind, "not allowed by locator policy");
+            continue;
+          }
           let found: { handles: ElementHandle[]; point?: { x: number; y: number } };
           try {
             found = await this.resolveStrategy(frame, strategy, params);
@@ -981,7 +1008,7 @@ export class PlaywrightSurface implements Surface {
 /** Shape of the injected indexer API (browser side). */
 interface CuaWindow {
   __cua: {
-    index(opts: { maxReadable: number }): unknown;
+    index(opts: { maxReadable: number; maskPatterns: string[] }): unknown;
     elementAt(i: number): Element | null;
     register(el: Element): unknown;
     describeAt(x: number, y: number): unknown;

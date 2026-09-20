@@ -1,5 +1,5 @@
 {
-  "runId": "01M2XP3QRTDGK2AJ8YE46TC5BM",
+  "runId": "01M2ZV6N30ZV2PN1GR06EA5TC2",
   "runKind": "replay",
   "type": "failure",
   "capability": {
@@ -182,17 +182,17 @@
     "abort"
   ],
   "timeoutMs": 600000,
-  "id": "int_24d08357",
-  "raisedAt": "2026-09-19T20:35:59.598Z",
+  "id": "int_f93623b2",
+  "raisedAt": "2026-09-20T16:43:26.867Z",
   "status": "resolved",
   "control": {
     "owner": "automation",
-    "since": "2026-09-19T20:36:02.255Z"
+    "since": "2026-09-20T16:43:29.550Z"
   },
   "controlTransfers": 1,
   "humanActions": [
     {
-      "at": "2026-09-19T20:36:00.674Z",
+      "at": "2026-09-20T16:43:27.967Z",
       "kind": "click",
       "x": 231,
       "y": 151,
@@ -262,13 +262,13 @@
           }
         }
       },
-      "screenshot": "interventions/int_24d08357/human-1.png"
+      "screenshot": "interventions/int_f93623b2/human-1.png"
     }
   ],
   "resolution": {
     "kind": "retry",
     "note": "Acknowledged \"I Acknowledge\" manually, handing back with retry",
     "operator": "operator-bot",
-    "at": "2026-09-19T20:36:02.255Z"
+    "at": "2026-09-20T16:43:29.550Z"
   }
 }

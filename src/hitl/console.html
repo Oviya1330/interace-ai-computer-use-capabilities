@@ -239,7 +239,7 @@
       ${res("approve", "primary")}${res("deny")}${res("retry", "primary")}${res("resume", "primary")}${res("skip")}${res("abort", "danger")}
       <input type="text" id="note" placeholder="note for the evidence log (what you did / why)">
     </div>
-    <div id="view">${inControl ? '<canvas id="live" class="live" tabindex="0" width="1280" height="800"></canvas><div class="muted">Click into the frame to send mouse/keyboard input. Every action is recorded.</div>' : `<img class="shot" src="/api/interventions/${i.id}/screenshot.png" alt="screenshot at the time of the request">`}</div>
+    <div id="view">${inControl ? '<canvas id="live" class="live" tabindex="0" width="1280" height="800"></canvas><div class="muted">Click into the frame to send mouse/keyboard input. Every action is recorded.</div>' : `<img class="shot" src="/api/interventions/${i.id}/screenshot.png${token ? "?token=" + encodeURIComponent(token) : ""}" alt="screenshot at the time of the request">`}</div>
     <div><strong>Human actions (${i.humanActions.length})</strong> · control transfers: ${i.controlTransfers}</div>
     <pre>${esc(i.humanActions.map((a) => a.at.slice(11, 19) + " " + a.kind + (a.element ? " → " + a.element.role + ' "' + (a.element.name || a.element.text) + '"' : "") + (a.key ? " " + a.key : "") + (a.text ? ' "' + a.text + '"' : "")).join("\n") || "(none)")}</pre>
     <details><summary>Interactive elements at request time (${i.elements.length})</summary><pre>${esc(i.elements.map((e) => `${e.ref} ${e.role} "${e.name || e.text}" @${Math.round(e.bbox.x)},${Math.round(e.bbox.y)} [${e.frame.join("/") || "top"}]`).join("\n"))}</pre></details>`;

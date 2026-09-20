@@ -101,6 +101,20 @@ export const ConditionProposal = z.object({
 });
 export type ConditionProposal = z.infer<typeof ConditionProposal>;
 
+export const AssistProposal = z.object({
+  /** Ref of the visible element that fulfils the step's intent, or null when none does. */
+  ref: z.string().nullable(),
+  reason: z.string(),
+});
+export type AssistProposal = z.infer<typeof AssistProposal>;
+
+export interface AssistInput {
+  observation: Observation;
+  step: { id: string; kind: string; name: string; intent?: string; targetDescription?: string };
+  failure: { code: string; message: string };
+  goal: string;
+}
+
 export interface FinalizeInput {
   goal: string;
   inputs: Record<string, string>;
@@ -133,6 +147,8 @@ export interface Decider {
   decide(input: DecisionInput): Promise<AgentAction[]>;
   finalize(input: FinalizeInput): Promise<ContractProposal>;
   classify(input: ClassifyInput): Promise<ConditionProposal>;
+  /** Bounded replay-time recovery: which visible element matches a step that failed to resolve? */
+  assist(input: AssistInput): Promise<AssistProposal>;
   /** Redacted, image-free transcript for evidence. */
   transcript(): unknown;
   usage(): LlmUsage;

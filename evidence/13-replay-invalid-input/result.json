@@ -1,21 +1,23 @@
 {
-  "runId": "01M2XP4TDQNWYPCFPDB3TWW22J",
+  "runId": "01M2ZV806GH4ZTFD4HT7HFXH09",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:***]"
   },
-  "startedAt": "2026-09-19T20:36:24.119Z",
-  "endedAt": "2026-09-19T20:36:24.152Z",
-  "durationMs": 33,
+  "startedAt": "2026-09-20T16:44:00.080Z",
+  "endedAt": "2026-09-20T16:44:00.112Z",
+  "durationMs": 32,
   "steps": [],
   "recoveries": [],
   "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
   "drift": {
     "tierHistogram": {},
     "warnings": []
@@ -29,6 +31,11 @@
     "decisions": 0,
     "denied": 0,
     "confirmations": 0
+  },
+  "integrity": {
+    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
   },
   "status": "failure",
   "error": {

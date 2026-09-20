@@ -1,5 +1,5 @@
 {
-  "runId": "01M2XP00W70C4NMZ2QHF8MRY5V",
+  "runId": "01M2ZV2V2NJSYPC31M93D5F70G",
   "kind": "discovery",
   "status": "success",
   "goal": "Look up member [pii:1***3] and read their current savings balance",
@@ -27,13 +27,13 @@
     "artifact": "artifact.json",
     "trace": "trace.zip"
   },
-  "startedAt": "2026-09-19T20:33:46.888Z",
-  "endedAt": "2026-09-19T20:33:53.122Z",
-  "durationMs": 6234,
+  "startedAt": "2026-09-20T16:41:10.998Z",
+  "endedAt": "2026-09-20T16:41:17.760Z",
+  "durationMs": 6762,
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
   },
   "artifactPath": "/Users/saa/Developer/Projects/computer-use-assignment/capabilities/[REDACTED:email]"
 }

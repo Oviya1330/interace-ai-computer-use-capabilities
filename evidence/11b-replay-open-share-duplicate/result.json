@@ -1,0 +1,238 @@
+{
+  "runId": "01M2ZV79B3PEZ74ZZ507BMDKA5",
+  "kind": "replay",
+  "capability": {
+    "name": "member.open_share",
+    "version": "1.0.0",
+    "id": "01M2ZV3NZBFA6SKP278SXGBCSR"
+  },
+  "tenant": "summit",
+  "inputs": {
+    "member_id": "[pii:1***4]",
+    "share_type": "Money Market",
+    "description": "Rainy day",
+    "initial_deposit": "40.00"
+  },
+  "startedAt": "2026-09-20T16:43:36.675Z",
+  "endedAt": "2026-09-20T16:43:40.875Z",
+  "durationMs": 4200,
+  "steps": [
+    {
+      "stepId": "s01-click-member-inquiry",
+      "index": 0,
+      "kind": "click",
+      "name": "Click the link \"Member Inquiry\" in frame nav",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:37.011Z",
+      "durationMs": 497,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 16
+      },
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
+    },
+    {
+      "stepId": "s02-type-member-number",
+      "index": 1,
+      "kind": "type",
+      "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:37.508Z",
+      "durationMs": 369,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 13
+      },
+      "screenshot": "steps/02-s02-type-member-number.png"
+    },
+    {
+      "stepId": "s03-click-search",
+      "index": 2,
+      "kind": "click",
+      "name": "Click the button \"Search\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:37.877Z",
+      "durationMs": 480,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/03-s03-click-search.png"
+    },
+    {
+      "stepId": "s04-click-member-id",
+      "index": 3,
+      "kind": "click",
+      "name": "Click the link \"{{member_id}}\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:38.357Z",
+      "durationMs": 486,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 9
+      },
+      "screenshot": "steps/04-s04-click-member-id.png"
+    },
+    {
+      "stepId": "s05-click-new-share",
+      "index": 4,
+      "kind": "click",
+      "name": "Click the button \"New Share\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:38.843Z",
+      "durationMs": 481,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 10
+      },
+      "screenshot": "steps/05-s05-click-new-share.png"
+    },
+    {
+      "stepId": "s06-select-share-type",
+      "index": 5,
+      "kind": "select",
+      "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:39.324Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 7
+      },
+      "screenshot": "steps/06-s06-select-share-type.png"
+    },
+    {
+      "stepId": "s07-type-description",
+      "index": 6,
+      "kind": "type",
+      "name": "Enter {{description}} into the textbox \"Description\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:39.676Z",
+      "durationMs": 352,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/07-s07-type-description.png"
+    },
+    {
+      "stepId": "s08-type-initial-deposit",
+      "index": 7,
+      "kind": "type",
+      "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:40.028Z",
+      "durationMs": 350,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/08-s08-type-initial-deposit.png"
+    },
+    {
+      "stepId": "s09-click-review",
+      "index": 8,
+      "kind": "click",
+      "name": "Click the button \"Review\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:40.378Z",
+      "durationMs": 480,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "role",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "screenshot": "steps/09-s09-click-review.png"
+    },
+    {
+      "stepId": "s10-click-confirm",
+      "index": 9,
+      "kind": "click",
+      "name": "Click the button \"Confirm\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-20T16:43:40.858Z",
+      "durationMs": 0,
+      "attempts": 1,
+      "recoveries": []
+    }
+  ],
+  "recoveries": [],
+  "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
+  "drift": {
+    "tierHistogram": {
+      "0": 9
+    },
+    "warnings": []
+  },
+  "evidence": {
+    "dir": "/Users/saa/Developer/Projects/computer-use-assignment/evidence/11b-replay-open-share-duplicate",
+    "events": "events.jsonl"
+  },
+  "policy": {
+    "decisions": 10,
+    "denied": 0,
+    "confirmations": 0
+  },
+  "integrity": {
+    "hash": "f007caaff4c0ef093ce527ee41eb8e499ff9c405b38d01f8721f8e40df859340",
+    "approvedHashMatches": true,
+    "effectiveStatus": "approved"
+  },
+  "ledger": [
+    {
+      "key": "CU-4411",
+      "stepId": "s10-click-confirm",
+      "status": "duplicate"
+    }
+  ],
+  "status": "business_outcome",
+  "outcome": {
+    "code": "DUPLICATE_INVOCATION",
+    "message": "This invocation (idempotency key CU-4411) already posted \"Click the button \"Confirm\" in frame main\" in run 01M2ZV74DWA3EJH3NMY028KDY6; the earlier result is returned instead of posting twice",
+    "conditionId": "ledger",
+    "data": {
+      "priorRunId": "01M2ZV74DWA3EJH3NMY028KDY6",
+      "priorAt": "2026-09-20T16:43:36.673Z",
+      "outputs": {
+        "confirmation_number": "CNF-D10A032D"
+      }
+    }
+  }
+}

@@ -54,6 +54,8 @@ export const PolicyConfig = z.object({
           "\\bapply\\b",
           "\\bremove\\b",
         ]),
+      /** Four-eyes: the invocation approver must differ from the requester for irreversible steps. */
+      fourEyes: z.boolean().default(true),
     })
     .prefault({}),
   modes: z
@@ -71,7 +73,26 @@ export const PolicyConfig = z.object({
     .object({
       onHardFailure: z.boolean().default(true),
       timeoutMs: z.number().int().positive().default(600_000),
-      console: z.object({ port: z.number().int().default(4790) }).default({ port: 4790 }),
+      console: z
+        .object({
+          port: z.number().int().default(4790),
+          /** Bearer token operators must present; empty = open (local development only). */
+          token: z.string().default(""),
+        })
+        .prefault({}),
+      /** POSTed the intervention request (JSON) when one is raised; a pager/Slack seam. */
+      webhookUrl: z.string().optional(),
+    })
+    .prefault({}),
+  /**
+   * Bounded model-assisted recovery at replay: when a step cannot resolve its target or its
+   * post-condition fails with no known condition, ask the model ONCE which visible element
+   * matches the step's intent, run it through the same policy gate, and record the proposal.
+   */
+  assist: z
+    .object({
+      enabled: z.boolean().default(false),
+      maxPerRun: z.number().int().positive().default(1),
     })
     .prefault({}),
   data: z
@@ -85,6 +106,8 @@ export const PolicyConfig = z.object({
       maxSteps: z.number().int().positive().default(30),
       maxRunMs: z.number().int().positive().default(600_000),
       stepTimeoutMs: z.number().int().positive().default(10_000),
+      /** Hard cap on irreversible actions per run, whatever the artifact says. */
+      maxIrreversiblePerRun: z.number().int().nonnegative().default(1),
     })
     .prefault({}),
 });
@@ -109,6 +132,9 @@ export interface PolicyContext {
   artifactStatus?: "draft" | "approved" | "deprecated";
   /** Caller supplied an explicit approval for risky steps on this invocation. */
   invocationApproved?: boolean;
+  /** Who asked for the invocation and who approved it (four-eyes rule). */
+  requestedBy?: string;
+  approvedBy?: string;
 }
 
 export type Decision =
@@ -204,6 +230,20 @@ export class PolicyGate {
         return { verdict: "confirm", risk, rule: "modes.replay=confirm", reason: why };
       case "approved_only":
         if (ctx.artifactStatus === "approved" && ctx.invocationApproved) {
+          if (
+            risk === "irreversible" &&
+            this.config.risk.fourEyes &&
+            ctx.approvedBy &&
+            ctx.requestedBy &&
+            ctx.approvedBy === ctx.requestedBy
+          ) {
+            return {
+              verdict: "confirm",
+              risk,
+              rule: "risk.fourEyes",
+              reason: `${why} was approved by its own requester (${ctx.approvedBy}); a second person must approve`,
+            };
+          }
           return {
             verdict: "allow",
             risk,

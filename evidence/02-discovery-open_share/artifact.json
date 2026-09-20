@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20",
+  "id": "01M2ZV3NZBFA6SKP278SXGBCSR",
   "name": "member.open_share",
   "version": "1.0.0",
   "status": "draft",
@@ -128,7 +128,38 @@
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "intent": "Open the member inquiry function from the menu",
       "risk": "safe",
-      "expect": []
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/home(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Welcome, {{teller_user}}",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Inquiry",
+          "frame": [
+            "main"
+          ]
+        }
+      ]
     },
     {
       "kind": "type",
@@ -191,6 +222,22 @@
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "intent": "Enter the member number to search for",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Inquiry",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     },
     {
@@ -257,6 +304,22 @@
       "name": "Click the button \"Search\" in frame main",
       "intent": "Run the search",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Inquiry",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "text",
@@ -333,6 +396,22 @@
       "name": "Click the link \"{{member_id}}\" in frame main",
       "intent": "Open the matching member's profile",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Search Results",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "url",
@@ -414,6 +493,22 @@
       "name": "Click the button \"New Share\" in frame main",
       "intent": "Start the new share (sub-account) form",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Profile",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "url",
@@ -490,6 +585,22 @@
       "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
       "intent": "Choose the share type",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     },
     {
@@ -566,6 +677,22 @@
       "name": "Enter {{description}} into the textbox \"Description\" in frame main",
       "intent": "Describe the new share",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     },
     {
@@ -642,6 +769,22 @@
       "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
       "intent": "Fund the share with the initial deposit",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     },
     {
@@ -718,6 +861,22 @@
       "name": "Click the button \"Review\" in frame main",
       "intent": "Review the new share before posting",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "text",
@@ -792,6 +951,22 @@
       "name": "Click the button \"Confirm\" in frame main",
       "intent": "Post the new share after review",
       "risk": "irreversible",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/new(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Review New Share",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "url",
@@ -854,6 +1029,22 @@
       "name": "Read confirmation_number from the value next to \"Confirmation Number\" in frame main",
       "intent": "Capture the confirmation number for the caller",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/confirm(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Share Opened",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     }
   ],
@@ -897,19 +1088,24 @@
   ],
   "overrides": {},
   "provenance": {
-    "recordedAt": "2026-09-19T20:34:10.888Z",
+    "recordedAt": "2026-09-20T16:41:38.539Z",
     "recordedBy": {
       "kind": "scripted",
       "model": "scripted"
     },
-    "discoveryRunId": "01M2XP0JJWQQEVFH8N805MYFK3",
+    "discoveryRunId": "01M2ZV3FR88TV0NP60EKDRDMAD",
     "tenant": "summit",
     "tools": {
       "@anthropic-ai/sdk": "unknown",
       "playwright": "1.63.0",
       "node": "v24.14.1"
     },
-    "transcriptRef": "transcript.json"
+    "transcriptRef": "transcript.json",
+    "verification": {
+      "status": "skipped",
+      "at": "2026-09-20T16:41:52.879Z",
+      "reason": "riskClass irreversible: verification would post for real; run with --verify-mutating to opt in"
+    }
   },
   "stats": {
     "replays": 0,

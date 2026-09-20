@@ -1,10 +1,10 @@
 {
-  "runId": "01M2XP0RAASY569XERK1CSW73X",
+  "runId": "01M2ZV3NZE29TGXS2G5J6ZWK92",
   "kind": "replay",
   "capability": {
     "name": "member.open_share",
     "version": "1.0.0",
-    "id": "01M2XP0RA8V1Y2NHK6C1Z3ZZ20"
+    "id": "01M2ZV3NZBFA6SKP278SXGBCSR"
   },
   "tenant": "summit",
   "inputs": {
@@ -13,9 +13,9 @@
     "description": "Vacation fund",
     "initial_deposit": "1.00"
   },
-  "startedAt": "2026-09-19T20:34:10.890Z",
-  "endedAt": "2026-09-19T20:34:25.174Z",
-  "durationMs": 14284,
+  "startedAt": "2026-09-20T16:41:38.542Z",
+  "endedAt": "2026-09-20T16:41:52.810Z",
+  "durationMs": 14268,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -23,7 +23,7 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:11.226Z",
+      "startedAt": "2026-09-20T16:41:38.875Z",
       "durationMs": 502,
       "attempts": 1,
       "recoveries": [],
@@ -41,15 +41,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:11.728Z",
-      "durationMs": 365,
+      "startedAt": "2026-09-20T16:41:39.377Z",
+      "durationMs": 349,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 11
+        "ms": 12
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -59,8 +59,8 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:12.093Z",
-      "durationMs": 484,
+      "startedAt": "2026-09-20T16:41:39.726Z",
+      "durationMs": 482,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -77,8 +77,8 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:12.577Z",
-      "durationMs": 482,
+      "startedAt": "2026-09-20T16:41:40.208Z",
+      "durationMs": 490,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -95,15 +95,15 @@
       "kind": "click",
       "name": "Click the button \"New Share\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:13.060Z",
-      "durationMs": 478,
+      "startedAt": "2026-09-20T16:41:40.699Z",
+      "durationMs": 494,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 8
+        "ms": 9
       },
       "screenshot": "steps/05-s05-click-new-share.png"
     },
@@ -113,15 +113,15 @@
       "kind": "select",
       "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:13.538Z",
-      "durationMs": 354,
+      "startedAt": "2026-09-20T16:41:41.193Z",
+      "durationMs": 350,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 7
+        "ms": 8
       },
       "screenshot": "steps/06-s06-select-share-type.png"
     },
@@ -131,15 +131,15 @@
       "kind": "type",
       "name": "Enter {{description}} into the textbox \"Description\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:13.893Z",
-      "durationMs": 351,
+      "startedAt": "2026-09-20T16:41:41.543Z",
+      "durationMs": 354,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 3
+        "ms": 4
       },
       "screenshot": "steps/07-s07-type-description.png"
     },
@@ -149,8 +149,8 @@
       "kind": "type",
       "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:14.244Z",
-      "durationMs": 347,
+      "startedAt": "2026-09-20T16:41:41.897Z",
+      "durationMs": 349,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -167,7 +167,7 @@
       "kind": "click",
       "name": "Click the button \"Review\" in frame main",
       "status": "failed",
-      "startedAt": "2026-09-19T20:34:14.591Z",
+      "startedAt": "2026-09-20T16:41:42.246Z",
       "durationMs": 0,
       "attempts": 1,
       "recoveries": [],
@@ -189,6 +189,8 @@
   ],
   "recoveries": [],
   "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
   "drift": {
     "tierHistogram": {
       "0": 8
@@ -204,6 +206,11 @@
     "decisions": 9,
     "denied": 0,
     "confirmations": 0
+  },
+  "integrity": {
+    "hash": "ca8600acfc373708bf39a7ec7a95c64edb4452109c917b95c4b42549f2e451c5",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
   },
   "status": "failure",
   "error": {

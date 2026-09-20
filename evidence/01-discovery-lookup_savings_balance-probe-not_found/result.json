@@ -1,18 +1,18 @@
 {
-  "runId": "01M2XP070FRVVMCAY8ED78F013",
+  "runId": "01M2ZV31QFRQD4T1E3027BTZ6A",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:9***9]"
   },
-  "startedAt": "2026-09-19T20:33:53.167Z",
-  "endedAt": "2026-09-19T20:34:04.952Z",
-  "durationMs": 11785,
+  "startedAt": "2026-09-20T16:41:17.807Z",
+  "endedAt": "2026-09-20T16:41:29.575Z",
+  "durationMs": 11768,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -20,15 +20,15 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "ok",
-      "startedAt": "2026-09-19T20:33:53.502Z",
-      "durationMs": 500,
+      "startedAt": "2026-09-20T16:41:18.143Z",
+      "durationMs": 498,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 15
+        "ms": 16
       },
       "screenshot": "steps/01-s01-click-member-inquiry.png"
     },
@@ -38,15 +38,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:33:54.002Z",
-      "durationMs": 349,
+      "startedAt": "2026-09-20T16:41:18.642Z",
+      "durationMs": 351,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 11
+        "ms": 12
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -56,7 +56,7 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "failed",
-      "startedAt": "2026-09-19T20:33:54.351Z",
+      "startedAt": "2026-09-20T16:41:18.993Z",
       "durationMs": 0,
       "attempts": 1,
       "recoveries": [],
@@ -78,6 +78,8 @@
   ],
   "recoveries": [],
   "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
   "drift": {
     "tierHistogram": {
       "0": 2
@@ -93,6 +95,11 @@
     "decisions": 3,
     "denied": 0,
     "confirmations": 0
+  },
+  "integrity": {
+    "hash": "13ef5fb26b9079c5e09be32e02f7ec26c29bc1eead875c4b7cdbd3540fa8b157",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
   },
   "status": "failure",
   "error": {

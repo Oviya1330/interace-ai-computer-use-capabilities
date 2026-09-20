@@ -9,8 +9,10 @@ import { LlmDecider, toolVersions } from "../agent/llm.js";
 import { SCRIPTED_FLOWS } from "../agent/scripts.js";
 import type { Decider } from "../agent/decider.js";
 import type { RunResult } from "../core/result.js";
-import type { Capability, Sensitivity } from "../core/schema.js";
+import type { Capability, Condition, Sensitivity, TargetStrategyKind } from "../core/schema.js";
 import { ulid } from "../core/ids.js";
+import { writeRunReport } from "../evidence/report.js";
+import { checkIntegrity } from "../catalog/integrity.js";
 
 export interface ChaosSpec {
   scenario: string;
@@ -63,6 +65,10 @@ export interface DiscoverArgs {
   model?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
   policyFile?: string;
+  /** Replay the fresh artifact once, model-free, before it is considered recorded (default true). */
+  verify?: boolean;
+  /** Also verify mutating/irreversible capabilities (they post for real; default false). */
+  verifyMutating?: boolean;
   runtime?: Runtime;
   log?: (line: string) => void;
 }
@@ -72,6 +78,20 @@ export interface DiscoverOutcome {
   probes: ProbeResult[];
   capability?: Capability;
   artifactPath?: string;
+}
+
+/** Close the browser and console on Ctrl-C so no headless Chromium is left behind. */
+function onShutdown(rt: Runtime): () => void {
+  const handler = () => {
+    process.stderr.write("\n[cua] interrupted; closing the session\n");
+    void rt.close().finally(() => process.exit(130));
+  };
+  process.once("SIGINT", handler);
+  process.once("SIGTERM", handler);
+  return () => {
+    process.off("SIGINT", handler);
+    process.off("SIGTERM", handler);
+  };
 }
 
 export function makeDecider(
@@ -107,6 +127,7 @@ export async function discoverCommand(a: DiscoverArgs): Promise<DiscoverOutcome>
       policyFile: a.policyFile,
     }));
   const own = !a.runtime;
+  const offShutdown = own ? onShutdown(rt) : () => {};
   try {
     if (rt.console) log(`[cua] operator console: ${rt.console.url}`);
     const runId = ulid();
@@ -170,8 +191,60 @@ export async function discoverCommand(a: DiscoverArgs): Promise<DiscoverOutcome>
       evidence.saveJson("artifact.json", capability);
       result.artifactPath = saved;
     }
+    // Verification replay: an artifact that did not replay once, model-free, is not "recorded".
+    if (result.status === "success" && capability && a.verify !== false) {
+      const risky = capability.policy.riskClass !== "safe";
+      if (risky && !a.verifyMutating) {
+        capability.provenance.verification = {
+          status: "skipped",
+          at: new Date().toISOString(),
+          reason: `riskClass ${capability.policy.riskClass}: verification would post for real; run with --verify-mutating to opt in`,
+        };
+      } else {
+        const ve = rt.newEvidence(`${runId}-verify`, `${a.label ?? `discovery-${runId}`}-verify`);
+        ve.onEvent((e) => log(`  ${e.type.padEnd(20)} ${e.msg}`));
+        rt.session?.setEvidence(ve);
+        const vr = await new ReplayEngine({
+          capability,
+          profile: rt.profile,
+          tenant: rt.tenant,
+          inputs: a.inputs,
+          surface: rt.surface,
+          policy: rt.policy,
+          secrets: rt.secrets,
+          redactor: rt.redactor,
+          evidence: ve,
+          broker: null,
+          ledger: rt.ledger,
+          audit: rt.audit,
+          runId: `${runId}-verify`,
+        }).run();
+        capability.provenance.verification = {
+          status: vr.status === "success" ? "passed" : "failed",
+          runId: vr.runId,
+          at: vr.endedAt,
+          ...(vr.status !== "success"
+            ? {
+                reason:
+                  vr.status === "failure"
+                    ? `${vr.error.code}: ${vr.error.message}`
+                    : `business outcome ${vr.outcome.code}`,
+              }
+            : {}),
+        };
+        writeRunReport(ve.dir);
+        log(`[cua] verification replay: ${vr.status}`);
+      }
+      const saved = rt.store.save(capability, rt.redactor);
+      evidence.saveJson("artifact.json", capability);
+      result.artifactPath = saved;
+      result.capability = capability;
+    }
+    writeRunReport(evidence.dir);
+    for (const p of probes) if (p.replay.evidence.dir) writeRunReport(p.replay.evidence.dir);
     return { result, probes, capability, artifactPath: result.artifactPath };
   } finally {
+    offShutdown();
     if (own) await rt.close();
   }
 }
@@ -181,6 +254,16 @@ export interface ReplayArgs {
   tenant: string;
   inputs: Record<string, unknown>;
   approve?: string;
+  /** Who approved the invocation (four-eyes: must differ from requestedBy for irreversible steps). */
+  approvedBy?: string;
+  /** Who is asking (an agent id, a user); recorded in evidence and the audit log. */
+  requestedBy?: string;
+  /** Makes irreversible steps idempotent across invocations (see the ledger). */
+  idempotencyKey?: string;
+  /** Restrict locator strategies for action steps, e.g. ["visual"] to prove the desktop path. */
+  locators?: TargetStrategyKind[];
+  /** Enable bounded model-assisted recovery with this decider spec ("llm" or "scripted:<flow>"). */
+  assist?: string;
   chaos?: ChaosSpec;
   times?: number;
   headed?: boolean;
@@ -204,6 +287,7 @@ export async function replayCommand(a: ReplayArgs): Promise<RunResult[]> {
       policyFile: a.policyFile,
     }));
   const own = !a.runtime;
+  const offShutdown = own ? onShutdown(rt) : () => {};
   try {
     if (rt.console) log(`[cua] operator console: ${rt.console.url}`);
     const cap = rt.store.load(a.capability);
@@ -225,6 +309,9 @@ export async function replayCommand(a: ReplayArgs): Promise<RunResult[]> {
         ...Object.fromEntries(Object.entries(a.inputs).map(([k, v]) => [k, String(v)])),
       });
       rt.session?.setEvidence(evidence);
+      const stringInputs = Object.fromEntries(
+        Object.entries(a.inputs).map(([k, v]) => [k, String(v)]),
+      );
       const engine = new ReplayEngine({
         capability: cap,
         profile: rt.profile,
@@ -236,15 +323,30 @@ export async function replayCommand(a: ReplayArgs): Promise<RunResult[]> {
         redactor: rt.redactor,
         evidence,
         broker: rt.broker,
-        approval: a.approve ? { by: process.env.USER ?? "caller", reason: a.approve } : undefined,
+        approval: a.approve
+          ? { by: a.approvedBy ?? process.env.USER ?? "caller", reason: a.approve }
+          : undefined,
+        requestedBy: a.requestedBy ?? process.env.USER ?? "caller",
+        idempotencyKey: a.idempotencyKey,
+        ledger: rt.ledger,
+        audit: rt.audit,
+        assist: a.assist
+          ? {
+              decider: makeDecider(a.assist, stringInputs, rt.profile.contentFrame, {}),
+              maxPerRun: rt.policy.config.assist.maxPerRun,
+            }
+          : null,
+        locatorKinds: a.locators,
         runId,
       });
       const result = await engine.run();
       results.push(result);
       updateStats(rt, cap, result);
+      writeRunReport(evidence.dir);
     }
     return results;
   } finally {
+    offShutdown();
     if (own) await rt.close();
   }
 }
@@ -278,9 +380,61 @@ export function promoteOverrides(
       overrides: { ...cap.overrides, [tenant]: existing },
       version: `${maj}.${(min ?? 0) + 1}.0`,
       status: "draft",
+      provenance: {
+        ...cap.provenance,
+        derivedFrom: {
+          id: cap.id,
+          version: cap.version,
+          reason: `overrides for ${tenant} promoted from run ${result.runId}`,
+        },
+      },
       review: { notes: `overrides for ${tenant} promoted from run ${result.runId}` },
     },
     promoted,
+  };
+}
+
+/** Add conditions a human's actions produced during a run to the artifact (draft, new version). */
+export function promoteConditions(
+  cap: Capability,
+  proposed: Condition[],
+): { capability: Capability; promoted: string[] } {
+  const promoted: string[] = [];
+  const conditions = [...cap.conditions];
+  for (const c of proposed) {
+    if (conditions.some((x) => x.id === c.id)) continue;
+    conditions.unshift(c);
+    promoted.push(c.id);
+  }
+  if (promoted.length === 0) return { capability: cap, promoted };
+  const [maj, min] = cap.version.split(".").map(Number);
+  return {
+    capability: {
+      ...cap,
+      conditions,
+      version: `${maj}.${(min ?? 0) + 1}.0`,
+      status: "draft",
+      provenance: {
+        ...cap.provenance,
+        derivedFrom: {
+          id: cap.id,
+          version: cap.version,
+          reason: `conditions learned from operator actions: ${promoted.join(", ")}`,
+        },
+      },
+      review: { notes: `conditions ${promoted.join(", ")} promoted from operator actions` },
+    },
+    promoted,
+  };
+}
+
+/** Approve an artifact: binds the approval to the current content hash. */
+export function approveCapability(cap: Capability, by: string, notes?: string): Capability {
+  const { hash } = checkIntegrity(cap);
+  return {
+    ...cap,
+    status: "approved",
+    review: { approvedBy: by, approvedAt: new Date().toISOString(), approvedHash: hash, notes },
   };
 }
 
@@ -339,6 +493,20 @@ export function formatResult(r: RunResult): string {
       `  interventions: ${r.interventions.map((i) => `${i.type}→${i.resolution ?? "?"} (${i.humanActions} human actions, ${i.controlTransfers} transfers)`).join(", ")}`,
     );
   if (r.drift.warnings.length) lines.push(`  drift: ${r.drift.warnings.join(" | ")}`);
+  if (r.assists?.length)
+    lines.push(
+      `  assists: ${r.assists.map((a) => `${a.stepId}→${a.decision}${a.proposed ? ` (${a.proposed.role} "${a.proposed.name || a.proposed.text}")` : ""}`).join(", ")}`,
+    );
+  if (r.proposedConditions?.length)
+    lines.push(
+      `  proposed conditions: ${r.proposedConditions.map((c) => c.id).join(", ")} (cua promote --conditions)`,
+    );
+  if (r.ledger?.length)
+    lines.push(`  ledger: ${r.ledger.map((l) => `${l.stepId}:${l.status}`).join(", ")}`);
+  if (r.integrity && r.integrity.effectiveStatus !== undefined)
+    lines.push(
+      `  integrity: ${r.integrity.hash.slice(0, 12)}… effective status ${r.integrity.effectiveStatus}`,
+    );
   lines.push(`  evidence: ${r.evidence.dir}`);
   return lines.join("\n");
 }

@@ -1,12 +1,16 @@
 /**
  * Executes ONE artifact step against a surface. Shared by session bootstrap (login flow),
- * replay, and condition handlers. No LLM anywhere in here.
+ * replay, condition handlers and assisted recovery. No LLM anywhere in here.
+ *
+ * Order of operations, deliberately: pre-conditions (are we on the screen the recorder saw?)
+ * -> resolve the target (multi-strategy, unique visible match) -> policy gate -> pre-act hook
+ * (irreversible caps, idempotency ledger) -> act -> settle -> dialogs -> post-conditions.
  */
-import type { Step, Expectation } from "../core/schema.js";
+import type { Step, Expectation, TargetStrategyKind } from "../core/schema.js";
 import type { Params, SecretResolver } from "../core/template.js";
 import { describeValue, resolveValue, templateToRegex } from "../core/template.js";
 import { RunFailure } from "../core/errors.js";
-import type { Surface, Resolved, DialogRecord } from "../surface/types.js";
+import type { Surface, Resolved, DialogRecord, ElementInfo } from "../surface/types.js";
 import type { PolicyContext, PolicyGate, Decision, ProposedAction } from "../policy/policy.js";
 import type { EventSink } from "../core/events.js";
 import type { Resolution } from "../core/result.js";
@@ -23,19 +27,27 @@ export interface StepContext {
   defaultTimeoutMs: number;
   /** Called when the gate requires confirmation. Return true to proceed. */
   confirm?: (step: Step, decision: Extract<Decision, { verdict: "confirm" }>) => Promise<boolean>;
+  /** Called right before the action is performed (after the gate). May throw to stop. */
+  beforeAct?: (step: Step, decision: Decision | null) => Promise<void>;
+  /** Locator strategies this run may use for action steps (profile policy). */
+  locatorKinds?: TargetStrategyKind[];
+  /** Explicit preference order for action steps (CLI --locators); implies the allow list. */
+  preferKinds?: TargetStrategyKind[];
   /** Step label for events (e.g. "login-submit" vs "3/7"). */
   label?: string;
 }
 
 export interface StepOutcome {
   resolution?: Resolution;
-  resolvedElement?: import("../surface/types.js").ElementInfo | null;
+  resolvedElement?: ElementInfo | null;
   dialogs: DialogRecord[];
   extracted?: { output: string; raw: string; value: ParsedValue };
   expectations: Array<{ expectation: Expectation; ok: boolean; observed: string }>;
+  /** True once the action itself has been performed (used for ledger bookkeeping). */
+  acted: boolean;
 }
 
-function describeExpectation(e: Expectation): string {
+export function describeExpectation(e: Expectation): string {
   switch (e.kind) {
     case "url":
       return `url matches ${e.pattern}`;
@@ -55,34 +67,58 @@ function describeExpectation(e: Expectation): string {
       return `any of: ${e.of.map(describeExpectation).join("; ")}`;
   }
 }
-export { describeExpectation };
 
 export async function executeStep(step: Step, ctx: StepContext): Promise<StepOutcome> {
   const { surface, events, params } = ctx;
   const timeoutMs = step.timeoutMs ?? ctx.defaultTimeoutMs;
   const label = ctx.label ?? step.id;
-  const outcome: StepOutcome = { dialogs: [], expectations: [] };
+  const outcome: StepOutcome = { dialogs: [], expectations: [], acted: false };
+
+  // 0. Pre-conditions: never act blindly on the wrong screen.
+  for (const e of step.precondition) {
+    const r = await surface.check(e, params, { timeoutMs: Math.min(timeoutMs, 5000) });
+    if (!r.ok) {
+      events.emit(
+        "step.expect",
+        `[${label}] precondition ${describeExpectation(e)} → FAILED (${truncate(r.observed, 120)})`,
+        {
+          stepId: step.id,
+          phase: "precondition",
+          ok: false,
+          observed: r.observed,
+        },
+      );
+      throw new RunFailure(
+        "PRECONDITION_FAILED",
+        `The screen is not the one "${step.name}" expects before acting`,
+        {
+          expected: describeExpectation(e),
+          observed: r.observed,
+        },
+      );
+    }
+  }
 
   // 1. Resolve the target (stable, multi-strategy).
   let resolved: Resolved | undefined;
   if ("target" in step) {
-    resolved = await surface.resolve(step.target, params, { timeoutMs });
+    const allowedKinds = step.kind === "extract" ? undefined : ctx.locatorKinds;
+    const preferKinds = step.kind === "extract" ? undefined : ctx.preferKinds;
+    resolved = await surface.resolve(step.target, params, { timeoutMs, allowedKinds, preferKinds });
     outcome.resolution = resolved.resolution;
     outcome.resolvedElement = resolved.element;
     events.emit(
       "step.resolve",
       `[${label}] resolved ${step.target.description} via ${resolved.resolution.strategy} (tier ${resolved.resolution.tier}, ${resolved.resolution.ms}ms)`,
-      {
-        stepId: step.id,
-        resolution: resolved.resolution,
-      },
+      { stepId: step.id, resolution: resolved.resolution },
     );
   }
 
   // 2. Policy gate.
   const proposed = toProposedAction(step, ctx, resolved);
+  let decision: Decision | null = null;
   if (proposed) {
-    const decision = ctx.policy.evaluate(proposed, ctx.policyCtx);
+    decision = ctx.policy.evaluate(proposed, ctx.policyCtx);
     events.emit(
       "policy.decision",
       `[${label}] ${decision.verdict} (${decision.rule}, risk=${decision.risk})`,
@@ -114,7 +150,8 @@ export async function executeStep(step: Step, ctx: StepContext): Promise<StepOut
     }
   }
 
-  // 3. Act.
+  // 3. Pre-act hook (irreversible caps, idempotency ledger), then act.
+  if (ctx.beforeAct) await ctx.beforeAct(step, decision);
   surface.expectDialog(
     step.dialog
       ? {
@@ -124,6 +161,7 @@ export async function executeStep(step: Step, ctx: StepContext): Promise<StepOut
       : null,
   );
   try {
+    outcome.acted = true;
     await act(step, ctx, resolved, outcome);
   } finally {
     surface.expectDialog(null);
@@ -177,7 +215,7 @@ export async function executeStep(step: Step, ctx: StepContext): Promise<StepOut
   return outcome;
 }
 
-function toProposedAction(
+export function toProposedAction(
   step: Step,
   ctx: StepContext,
   resolved?: Resolved,

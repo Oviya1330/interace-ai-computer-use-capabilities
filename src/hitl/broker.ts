@@ -14,6 +14,7 @@ import type { EventSink } from "../core/events.js";
 import type { Target } from "../core/schema.js";
 import type { ElementInfo } from "../surface/types.js";
 import { shortId } from "../core/ids.js";
+import type { AuditLog } from "./audit.js";
 
 export type InterventionType = "stuck" | "approval" | "failure" | "agent_request";
 export type ResolutionKind = "resume" | "retry" | "skip" | "abort" | "approve" | "deny";
@@ -87,9 +88,27 @@ export interface RaiseInput extends Omit<
   screenshotPng?: Buffer;
 }
 
+export interface BrokerOptions {
+  audit?: AuditLog | null;
+  /** POSTed the intervention (without the screenshot) when raised. */
+  webhookUrl?: string;
+}
+
 export class InterventionBroker extends EventEmitter {
   private pending = new Map<string, Pending>();
   private history: InterventionRequest[] = [];
+
+  constructor(private readonly opts: BrokerOptions = {}) {
+    super();
+  }
+
+  private audit(type: string, actor: string, data: Record<string, unknown>, runId?: string): void {
+    try {
+      this.opts.audit?.record(type, actor, data, runId);
+    } catch {
+      /* the audit log must never break a run; failures surface in `cua audit verify` */
+    }
+  }
 
   /** Raise an intervention and block until a human resolves it (or it times out). */
   raise(input: RaiseInput, events: EventSink): Promise<InterventionResolution> {
@@ -116,6 +135,38 @@ export class InterventionBroker extends EventEmitter {
         allowedResolutions: req.allowedResolutions,
       },
     );
+    this.audit(
+      "intervention.raised",
+      "automation",
+      {
+        id: req.id,
+        type: req.type,
+        reason: req.reason.code,
+        step: req.step?.id,
+        capability: req.capability?.name,
+      },
+      req.runId,
+    );
+    if (this.opts.webhookUrl) {
+      const { elements: _e, ...payload } = req;
+      fetch(this.opts.webhookUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then((r) =>
+          events.emit("intervention.raised", `Webhook notified (${r.status})`, {
+            id: req.id,
+            webhook: true,
+            status: r.status,
+          }),
+        )
+        .catch((e) =>
+          events.emit("error", `Webhook failed: ${e instanceof Error ? e.message : String(e)}`, {
+            id: req.id,
+          }),
+        );
+    }
     return new Promise<InterventionResolution>((resolve, reject) => {
       const timer = setTimeout(() => {
         if (!this.pending.has(req.id)) return;
@@ -164,6 +215,7 @@ export class InterventionBroker extends EventEmitter {
     p.req.control = { owner: "human", since: new Date().toISOString(), operator };
     p.req.status = "in_control";
     p.req.controlTransfers++;
+    this.audit("control.transfer", operator, { id, owner: "human" }, p.req.runId);
     p.events.emit("control.transfer", `Control → human (${operator}) for ${id}`, {
       id,
       owner: "human",
@@ -178,6 +230,12 @@ export class InterventionBroker extends EventEmitter {
     const p = this.mustPending(id);
     if (p.req.control.owner !== "human") throw new Error("Human does not hold control");
     p.req.humanActions.push(action);
+    this.audit(
+      "human.action",
+      p.req.control.operator ?? "human",
+      { id, kind: action.kind, element: action.element ?? null },
+      p.req.runId,
+    );
     p.events.emit(
       "human.action",
       `Human ${action.kind}${action.element ? ` on ${action.element.role} "${action.element.name || action.element.text}"` : ""}`,
@@ -206,6 +264,12 @@ export class InterventionBroker extends EventEmitter {
     }
     const full: InterventionResolution = { ...resolution, at: new Date().toISOString() };
     p.req.resolution = full;
+    this.audit(
+      "intervention.resolved",
+      full.operator ?? "operator",
+      { id, kind: full.kind, note: full.note ?? null, humanActions: p.req.humanActions.length },
+      p.req.runId,
+    );
     p.req.status = "resolved";
     clearTimeout(p.timer);
     this.pending.delete(id);

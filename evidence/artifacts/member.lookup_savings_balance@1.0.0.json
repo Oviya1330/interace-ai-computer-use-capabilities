@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "id": "01M2XP06YY8KGFRTR8A4YMNRXC",
+  "id": "01M2ZV31NVVS3A1HXNXJH3TNR1",
   "name": "member.lookup_savings_balance",
   "version": "1.0.0",
   "status": "draft",
@@ -108,6 +108,22 @@
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "intent": "Open the member inquiry function from the menu",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/home(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Welcome, {{teller_user}}",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "url",
@@ -186,6 +202,22 @@
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "intent": "Enter the member number to search for",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Inquiry",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     },
     {
@@ -252,6 +284,22 @@
       "name": "Click the button \"Search\" in frame main",
       "intent": "Run the search",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Inquiry",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "text",
@@ -328,6 +376,22 @@
       "name": "Click the link \"{{member_id}}\" in frame main",
       "intent": "Open the matching member's profile",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/inquiry(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Search Results",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": [
         {
           "kind": "url",
@@ -397,6 +461,22 @@
       "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
       "intent": "Read the current balance of the Savings share",
       "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Member Profile",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
       "expect": []
     }
   ],
@@ -440,26 +520,35 @@
   ],
   "overrides": {},
   "provenance": {
-    "recordedAt": "2026-09-19T20:33:53.119Z",
+    "recordedAt": "2026-09-20T16:41:17.755Z",
     "recordedBy": {
       "kind": "scripted",
       "model": "scripted"
     },
-    "discoveryRunId": "01M2XP00W70C4NMZ2QHF8MRY5V",
+    "discoveryRunId": "01M2ZV2V2NJSYPC31M93D5F70G",
     "tenant": "summit",
     "tools": {
       "@anthropic-ai/sdk": "unknown",
       "playwright": "1.63.0",
       "node": "v24.14.1"
     },
-    "transcriptRef": "transcript.json"
+    "transcriptRef": "transcript.json",
+    "verification": {
+      "status": "passed",
+      "runId": "01M2ZV2V2NJSYPC31M93D5F70G-verify",
+      "at": "2026-09-20T16:41:32.165Z"
+    }
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6"
   },
   "stats": {
-    "replays": 10,
-    "successes": 7,
+    "replays": 11,
+    "successes": 8,
     "businessOutcomes": 2,
     "failures": 1,
-    "lastReplayAt": "2026-09-19T20:36:33.855Z",
-    "stabilityScore": 0.9
+    "lastReplayAt": "2026-09-20T16:44:45.450Z",
+    "stabilityScore": 0.909
   }
 }

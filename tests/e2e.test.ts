@@ -9,7 +9,13 @@ import os from "node:os";
 import path from "node:path";
 import { startLegacyCore } from "../apps/legacycore/server.js";
 import { createRuntime, type Runtime } from "../src/runtime.js";
-import { discoverCommand, promoteOverrides, replayCommand, resetApp } from "../src/cli/commands.js";
+import {
+  approveCapability,
+  discoverCommand,
+  promoteOverrides,
+  replayCommand,
+  resetApp,
+} from "../src/cli/commands.js";
 import { Capability } from "../src/core/schema.js";
 import type { InterventionRequest } from "../src/hitl/broker.js";
 import { capabilityToTool } from "../src/catalog/tools.js";
@@ -327,10 +333,7 @@ describe("safety: risky actions and approvals", () => {
   });
 
   it("replays unattended once the artifact is approved and the invocation carries an approval", async () => {
-    const cap = rt.store.load("member.open_share");
-    cap.status = "approved";
-    cap.review = { approvedBy: "tester", approvedAt: new Date().toISOString() };
-    rt.store.save(cap, rt.redactor);
+    rt.store.save(approveCapability(rt.store.load("member.open_share"), "tester"), rt.redactor);
     const [r] = await replayCommand({
       capability: "member.open_share",
       tenant: "summit",
@@ -341,6 +344,8 @@ describe("safety: risky actions and approvals", () => {
         initial_deposit: "40.00",
       },
       approve: "ticket CU-1",
+      approvedBy: "supervisor",
+      requestedBy: "agent",
       runtime: rt,
       log: quiet,
     });
@@ -360,6 +365,8 @@ describe("safety: risky actions and approvals", () => {
         initial_deposit: "1.00",
       },
       approve: "ticket CU-2",
+      approvedBy: "supervisor",
+      requestedBy: "agent",
       runtime: rt,
       log: quiet,
     });

@@ -10,3 +10,5 @@ dist/
 runs/
 .playwright-cache/
 coverage/
+# Durable control-plane state (audit chain, idempotency ledger); the demo copies a snapshot into evidence/
+state/

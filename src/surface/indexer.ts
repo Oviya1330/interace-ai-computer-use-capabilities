@@ -12,7 +12,7 @@
  *   mark(entries) / unmark() -> numbered overlay boxes (set-of-marks) for screenshots
  *   visibleText() / signature()
  */
-export const INDEXER_VERSION = 6;
+export const INDEXER_VERSION = 7;
 
 export const INDEXER_SCRIPT = String.raw`
 (() => {
@@ -23,6 +23,8 @@ export const INDEXER_SCRIPT = String.raw`
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
   const stripColon = (s) => norm(s).replace(/[:：]\s*$/, '');
   let registry = [];
+  let maskRes = [];
+  const isMasked = (e) => maskRes.length > 0 && maskRes.some((re) => (e.labelText && re.test(e.labelText)) || (e.table && e.table.columnHeader && re.test(e.table.columnHeader)) || (e.attrs.name && re.test(e.attrs.name)) || (e.attrs['aria-label'] && re.test(e.attrs['aria-label'])));
 
   function visible(el) {
     if (!(el instanceof Element)) return false;
@@ -209,11 +211,13 @@ export const INDEXER_SCRIPT = String.raw`
     else if (tag === 'td' || tag === 'th') { const l = nearbyLabel(el, true); if (l && l !== text) e.labelText = l; }
     const t = tableCtx(el);
     if (t && t.headers.length >= 2) e.table = t;
+    if (!e.sensitive && isMasked(e)) e.sensitive = true;
     return e;
   }
   function index(opts) {
     opts = opts || {};
     const maxReadable = opts.maxReadable || 200;
+    maskRes = (opts.maskPatterns || []).map((p) => new RegExp(p, 'i'));
     registry = [];
     const entries = [];
     const all = document.querySelectorAll('*');

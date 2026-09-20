@@ -93,6 +93,29 @@ export class Recorder {
     this.steps.push(step);
   }
 
+  /**
+   * What the screen showed when the recorder acted: the content frame's url pattern and its
+   * heading. Replay checks these BEFORE acting so it never clicks blindly on the wrong screen.
+   */
+  private derivePrecondition(before: Observation): Expectation[] {
+    const out: Expectation[] = [];
+    const contentKey = this.contentFrame.join("/");
+    const content = before.frames.find((f) => f.path.join("/") === contentKey);
+    if (content && /^https?:/.test(content.url)) {
+      out.push({
+        kind: "url",
+        pattern: canonicalUrlPattern(content.url, this.params, this.baseUrl),
+        frame: content.path,
+      });
+    }
+    if (before.landmark) {
+      const text = parameterize(before.landmark, this.params);
+      if (!/\d/.test(text) || text.includes("{{"))
+        out.push({ kind: "text", text, frame: this.contentFrame });
+    }
+    return out;
+  }
+
   private deriveExpectations(before: Observation, after: Observation): Expectation[] {
     const out: Expectation[] = [];
     const contentKey = this.contentFrame.join("/");
@@ -133,6 +156,7 @@ export class Recorder {
       name,
       intent: "why" in action ? parameterize(action.why, this.params) : undefined,
       risk,
+      precondition: this.derivePrecondition(before),
       expect: [] as Expectation[],
     });
     const label = el

@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { AppProfile, Capability, TenantBinding, Sensitivity } from "../core/schema.js";
 import { Capability as CapabilitySchema } from "../core/schema.js";
-import type { Params } from "../core/template.js";
+import { resolveValue, type Params } from "../core/template.js";
 import { RunFailure, errorMessage } from "../core/errors.js";
 import type { InterventionSummary, RunError } from "../core/result.js";
 import type { Observation, ElementInfo, Resolved, Surface } from "../surface/types.js";
@@ -171,6 +171,15 @@ export class DiscoveryEngine {
       policyCtx: this.policyCtx(),
       events: this.o.evidence,
     });
+    // Recordings must start from a defined screen (the app entry), never from whatever the
+    // previous run left in the browser, so the first step's pre-condition is reproducible.
+    const entry = resolveValue(
+      this.o.profile.session.login.entry,
+      this.params,
+      this.o.secrets,
+    ).value;
+    await this.o.surface.navigate(entry);
+    await this.o.surface.settle();
   }
 
   private async loop(): Promise<void> {

@@ -192,6 +192,11 @@ const stepBase = {
   intent: z.string().optional(),
   risk: RiskClass.default("safe"),
   timeoutMs: z.number().int().positive().optional(),
+  /**
+   * Pre-conditions: what the screen must show BEFORE the action is taken (derived from the
+   * observation the recorder acted on). Replay refuses to act blindly on the wrong screen.
+   */
+  precondition: z.array(Expectation).default([]),
   /** Post-conditions verified after the action. */
   expect: z.array(Expectation).default([]),
   onFailure: z.enum(["fail", "escalate", "skip"]).optional(),
@@ -350,6 +355,17 @@ export const Provenance = z.object({
   tools: z.record(z.string(), z.string()).default({}),
   /** Path to the redacted transcript in evidence — the transcript is NOT part of the artifact. */
   transcriptRef: z.string().optional(),
+  /** Result of the verification replay run right after recording (model-free). */
+  verification: z
+    .object({
+      status: z.enum(["passed", "failed", "skipped"]),
+      runId: z.string().optional(),
+      at: z.string(),
+      reason: z.string().optional(),
+    })
+    .optional(),
+  /** Lineage: the artifact id/version this one was derived from (override promotion, re-record). */
+  derivedFrom: z.object({ id: z.string(), version: z.string(), reason: z.string() }).optional(),
 });
 
 export const Stats = z.object({
@@ -397,9 +413,16 @@ export const Capability = z.object({
     .object({
       approvedBy: z.string().optional(),
       approvedAt: z.string().optional(),
+      /** Content hash the approval was given for; any later edit silently demotes to draft. */
+      approvedHash: z.string().optional(),
       notes: z.string().optional(),
     })
     .optional(),
+  /**
+   * Tamper evidence: sha256 over the canonical artifact without integrity/review/stats/status.
+   * Computed on save; `cua validate` and replay verify it.
+   */
+  integrity: z.object({ algorithm: z.literal("sha256"), hash: z.string() }).optional(),
   stats: Stats.default({ replays: 0, successes: 0, businessOutcomes: 0, failures: 0 }),
 });
 export type Capability = z.infer<typeof Capability>;
@@ -438,6 +461,27 @@ export const AppProfile = z.object({
     })
     .default({ domQuietMs: 300, maxMs: 8000 }),
   defaultStepTimeoutMs: z.number().int().default(10000),
+  /**
+   * Data classification for this app: controls/cells whose label or column header matches
+   * are masked in every screenshot and hidden from the model's element list.
+   */
+  dataPolicy: z
+    .object({
+      maskLabels: z.array(z.string()).default([]),
+      maskNamePatterns: z.array(z.string()).default([]),
+    })
+    .prefault({}),
+  /**
+   * Which locator strategies this surface can execute, in preference order. A desktop
+   * profile would list role and visual only; the web default allows everything.
+   */
+  locatorPolicy: z
+    .object({
+      allow: z
+        .array(z.enum(["role", "label", "text", "table", "attr", "css", "xpath", "visual"]))
+        .default(["role", "label", "text", "table", "attr", "css", "xpath", "visual"]),
+    })
+    .prefault({}),
 });
 export type AppProfile = z.infer<typeof AppProfile>;
 

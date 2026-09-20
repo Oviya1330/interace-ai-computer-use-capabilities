@@ -4,7 +4,13 @@
  * a desktop implementation would expose the same Observation/Resolved shapes built from the
  * OS accessibility tree and screenshots.
  */
-import type { BBox, DialogPolicy, Expectation, Target } from "../core/schema.js";
+import type {
+  BBox,
+  DialogPolicy,
+  Expectation,
+  Target,
+  TargetStrategyKind,
+} from "../core/schema.js";
 import type { Params } from "../core/template.js";
 import type { Resolution } from "../core/result.js";
 import type { z } from "zod";
@@ -109,7 +115,17 @@ export type DialogPolicyT = z.infer<typeof DialogPolicy>;
 export interface Surface {
   readonly kind: "web" | "legacy_web" | "desktop";
   observe(opts?: { marks?: boolean; maxReadable?: number }): Promise<Observation>;
-  resolve(target: Target, params: Params, opts?: { timeoutMs?: number }): Promise<Resolved>;
+  resolve(
+    target: Target,
+    params: Params,
+    opts?: {
+      timeoutMs?: number;
+      /** Only these strategy kinds may be used (profile locator policy). */
+      allowedKinds?: TargetStrategyKind[];
+      /** Try strategies in THIS order instead of the artifact's (an explicit locator preference). */
+      preferKinds?: TargetStrategyKind[];
+    },
+  ): Promise<Resolved>;
   resolveRef(obs: Observation, ref: string): Promise<Resolved>;
   /** Build a multi-strategy Target for an observed element (used by the recorder). */
   describeTarget(el: ElementInfo, params: Params, screenshotPlain: Buffer): Target;

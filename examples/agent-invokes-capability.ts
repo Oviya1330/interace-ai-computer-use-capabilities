@@ -50,7 +50,13 @@ async function main(): Promise<void> {
       const r = await fetch(`${API}/capabilities/${name}/invoke`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tenant: "summit", inputs: u.input }),
+        // The idempotency key makes a retried tool call safe: an irreversible step never posts twice.
+        body: JSON.stringify({
+          tenant: "summit",
+          inputs: u.input,
+          requestedBy: "agent:servicing-assistant",
+          idempotencyKey: `${u.id}`,
+        }),
       });
       const body = (await r.json()) as {
         status: string;

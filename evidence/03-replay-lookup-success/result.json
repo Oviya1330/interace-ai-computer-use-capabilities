@@ -1,18 +1,18 @@
 {
-  "runId": "01M2XP16B8HJRSPRY87789F92V",
+  "runId": "01M2ZV43ZZA1GKT89AQS30XVV1",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:1***3]"
   },
-  "startedAt": "2026-09-19T20:34:25.256Z",
-  "endedAt": "2026-09-19T20:34:31.174Z",
-  "durationMs": 5918,
+  "startedAt": "2026-09-20T16:41:52.895Z",
+  "endedAt": "2026-09-20T16:41:58.830Z",
+  "durationMs": 5935,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -20,8 +20,8 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:29.021Z",
-      "durationMs": 498,
+      "startedAt": "2026-09-20T16:41:56.657Z",
+      "durationMs": 496,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -38,7 +38,7 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:29.519Z",
+      "startedAt": "2026-09-20T16:41:57.154Z",
       "durationMs": 352,
       "attempts": 1,
       "recoveries": [],
@@ -46,7 +46,7 @@
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 11
+        "ms": 14
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -56,7 +56,7 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:29.871Z",
+      "startedAt": "2026-09-20T16:41:57.506Z",
       "durationMs": 481,
       "attempts": 1,
       "recoveries": [],
@@ -64,7 +64,7 @@
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 3
+        "ms": 4
       },
       "screenshot": "steps/03-s03-click-search.png"
     },
@@ -74,15 +74,15 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:30.353Z",
-      "durationMs": 467,
+      "startedAt": "2026-09-20T16:41:57.987Z",
+      "durationMs": 486,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 10
+        "ms": 9
       },
       "screenshot": "steps/04-s04-click-member-id.png"
     },
@@ -92,8 +92,8 @@
       "kind": "extract",
       "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:34:30.820Z",
-      "durationMs": 353,
+      "startedAt": "2026-09-20T16:41:58.474Z",
+      "durationMs": 354,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -111,6 +111,8 @@
   ],
   "recoveries": [],
   "interventions": [],
+  "assists": [],
+  "proposedConditions": [],
   "drift": {
     "tierHistogram": {
       "0": 5
@@ -125,6 +127,11 @@
     "decisions": 8,
     "denied": 0,
     "confirmations": 0
+  },
+  "integrity": {
+    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
   },
   "status": "success",
   "outputs": {

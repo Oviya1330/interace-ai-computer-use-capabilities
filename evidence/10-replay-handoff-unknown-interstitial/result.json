@@ -1,27 +1,27 @@
 {
-  "runId": "01M2XP3QRTDGK2AJ8YE46TC5BM",
+  "runId": "01M2ZV6N30ZV2PN1GR06EA5TC2",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2XP06YY8KGFRTR8A4YMNRXC"
+    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:1***7]"
   },
-  "startedAt": "2026-09-19T20:35:48.634Z",
-  "endedAt": "2026-09-19T20:36:04.806Z",
-  "durationMs": 16172,
+  "startedAt": "2026-09-20T16:43:15.936Z",
+  "endedAt": "2026-09-20T16:43:31.641Z",
+  "durationMs": 15705,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
       "index": 0,
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
-      "status": "ok",
-      "startedAt": "2026-09-19T20:35:48.967Z",
-      "durationMs": 14101,
+      "status": "recovered",
+      "startedAt": "2026-09-20T16:43:16.270Z",
+      "durationMs": 13634,
       "attempts": 2,
       "recoveries": [],
       "error": {
@@ -37,13 +37,7 @@
           "failure/dom-s01-click-member-inquiry.html"
         ]
       },
-      "screenshot": "steps/01-s01-click-member-inquiry.png",
-      "resolution": {
-        "strategy": "role",
-        "tier": 0,
-        "matches": 1,
-        "ms": 3
-      }
+      "screenshot": "steps/01-s01-click-member-inquiry.png"
     },
     {
       "stepId": "s02-type-member-number",
@@ -51,8 +45,8 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:36:03.068Z",
-      "durationMs": 386,
+      "startedAt": "2026-09-20T16:43:29.904Z",
+      "durationMs": 368,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -69,8 +63,8 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:36:03.454Z",
-      "durationMs": 480,
+      "startedAt": "2026-09-20T16:43:30.272Z",
+      "durationMs": 478,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -87,8 +81,8 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:36:03.934Z",
-      "durationMs": 509,
+      "startedAt": "2026-09-20T16:43:30.750Z",
+      "durationMs": 522,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -105,15 +99,15 @@
       "kind": "extract",
       "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-19T20:36:04.443Z",
-      "durationMs": 362,
+      "startedAt": "2026-09-20T16:43:31.272Z",
+      "durationMs": 368,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "table",
         "tier": 0,
         "matches": 1,
-        "ms": 7
+        "ms": 8
       },
       "extracted": {
         "output": "savings_balance",
@@ -125,21 +119,100 @@
   "recoveries": [],
   "interventions": [
     {
-      "id": "int_24d08357",
+      "id": "int_f93623b2",
       "type": "failure",
       "reason": "Post-condition failed after \"Click the link \"Member Inquiry\" in frame nav\"",
-      "raisedAt": "2026-09-19T20:35:59.598Z",
+      "raisedAt": "2026-09-20T16:43:26.867Z",
       "humanActions": 1,
       "controlTransfers": 1,
-      "resolvedAt": "2026-09-19T20:36:02.255Z",
+      "resolvedAt": "2026-09-20T16:43:29.550Z",
       "resolution": "retry",
       "operator": "operator-bot",
       "note": "Acknowledged \"I Acknowledge\" manually, handing back with retry"
     }
   ],
+  "assists": [],
+  "proposedConditions": [
+    {
+      "id": "human_security_bulletin",
+      "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M2ZV6N30ZV2PN1GR06EA5TC2)",
+      "detect": {
+        "kind": "text",
+        "text": "Security Bulletin",
+        "frame": [
+          "main"
+        ]
+      },
+      "class": "recoverable",
+      "handler": {
+        "kind": "dismiss",
+        "target": {
+          "description": "the button \"I Acknowledge\" in frame main",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "I Acknowledge",
+              "exact": true
+            },
+            {
+              "kind": "text",
+              "text": "I Acknowledge",
+              "tag": "input",
+              "exact": true
+            },
+            {
+              "kind": "attr",
+              "tag": "input",
+              "attrs": {
+                "type": "button",
+                "value": "I Acknowledge"
+              }
+            },
+            {
+              "kind": "css",
+              "selector": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td > input"
+            },
+            {
+              "kind": "xpath",
+              "expression": "/html[1]/body[1]/table[2]/tbody[1]/tr[2]/td[1]/input[1]"
+            },
+            {
+              "kind": "visual",
+              "bbox": {
+                "x": 183,
+                "y": 141,
+                "w": 96.734375,
+                "h": 19
+              },
+              "template": "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",
+              "threshold": 0.92
+            }
+          ],
+          "recorded": {
+            "tag": "input",
+            "role": "button",
+            "name": "I Acknowledge",
+            "bbox": {
+              "x": 183,
+              "y": 141,
+              "w": 96.734375,
+              "h": 19
+            }
+          }
+        },
+        "then": "retry_step"
+      },
+      "safeAfterMutation": false,
+      "origin": "human"
+    }
+  ],
   "drift": {
     "tierHistogram": {
-      "0": 5
+      "0": 4
     },
     "warnings": []
   },
@@ -148,9 +221,14 @@
     "events": "events.jsonl"
   },
   "policy": {
-    "decisions": 6,
+    "decisions": 5,
     "denied": 0,
     "confirmations": 0
+  },
+  "integrity": {
+    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6",
+    "approvedHashMatches": null,
+    "effectiveStatus": "draft"
   },
   "status": "success",
   "outputs": {

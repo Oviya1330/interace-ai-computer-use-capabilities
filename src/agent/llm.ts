@@ -12,10 +12,12 @@ import { RunFailure, errorMessage } from "../core/errors.js";
 import { AGENT_TOOLS } from "./tools.js";
 import { SYSTEM_PROMPT, renderObservation, renderTask } from "./prompt.js";
 import {
+  AssistProposal,
   ConditionProposal,
   ContractProposal,
   type ActionResult,
   type AgentAction,
+  type AssistInput,
   type ClassifyInput,
   type DecisionInput,
   type Decider,
@@ -267,7 +269,22 @@ detectorText must be a short exact substring of the visible text that identifies
     return res;
   }
 
-  private async structured<T extends typeof ContractProposal | typeof ConditionProposal>(
+  async assist(input: AssistInput): Promise<AssistProposal> {
+    const obsText = renderObservation(input.observation, this.opts.contentFrame);
+    const prompt = `A deterministic replay of a recorded capability could not find the control for one step. Pick the ONE visible element that fulfils the step's intent on the current screen, or answer null if none does. Do not pick an element that would do something different from the recorded step.
+
+GOAL OF THE CAPABILITY: ${input.goal}
+STEP: ${input.step.name} (${input.step.kind})${input.step.intent ? `\nINTENT: ${input.step.intent}` : ""}${input.step.targetDescription ? `\nRECORDED TARGET: ${input.step.targetDescription}` : ""}
+FAILURE: ${input.failure.code} — ${input.failure.message}
+
+CURRENT SCREEN:
+${obsText}`;
+    return this.structured(prompt, AssistProposal, "assist", input.observation);
+  }
+
+  private async structured<
+    T extends typeof ContractProposal | typeof ConditionProposal | typeof AssistProposal,
+  >(
     prompt: string,
     schema: T,
     what: string,
