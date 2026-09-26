@@ -1,18 +1,18 @@
 {
-  "runId": "01M2ZV31QFRQD4T1E3027BTZ6A",
+  "runId": "01M3F9H7F3SX9F4BMTN33JEMPM",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+    "id": "01M3F9H7CQW0HMR9YZE2EM03EG"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:9***9]"
   },
-  "startedAt": "2026-09-20T16:41:17.807Z",
-  "endedAt": "2026-09-20T16:41:29.575Z",
-  "durationMs": 11768,
+  "startedAt": "2026-09-26T16:42:18.979Z",
+  "endedAt": "2026-09-26T16:42:30.782Z",
+  "durationMs": 11803,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -20,15 +20,15 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "ok",
-      "startedAt": "2026-09-20T16:41:18.143Z",
-      "durationMs": 498,
+      "startedAt": "2026-09-26T16:42:19.339Z",
+      "durationMs": 444,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 16
+        "ms": 24
       },
       "screenshot": "steps/01-s01-click-member-inquiry.png"
     },
@@ -38,15 +38,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:41:18.642Z",
-      "durationMs": 351,
+      "startedAt": "2026-09-26T16:42:19.784Z",
+      "durationMs": 394,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 12
+        "ms": 13
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -56,7 +56,7 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "failed",
-      "startedAt": "2026-09-20T16:41:18.993Z",
+      "startedAt": "2026-09-26T16:42:20.178Z",
       "durationMs": 0,
       "attempts": 1,
       "recoveries": [],
@@ -97,7 +97,7 @@
     "confirmations": 0
   },
   "integrity": {
-    "hash": "13ef5fb26b9079c5e09be32e02f7ec26c29bc1eead875c4b7cdbd3540fa8b157",
+    "hash": "8e011e03581582e592484a786d985c003181e9c9d2cd52c3058c8a7769e2d43c",
     "approvedHashMatches": null,
     "effectiveStatus": "draft"
   },

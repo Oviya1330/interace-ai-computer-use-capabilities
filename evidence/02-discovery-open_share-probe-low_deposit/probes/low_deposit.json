@@ -23,15 +23,15 @@
   },
   "proposal": {
     "class": "business_outcome",
-    "code": "VALIDATION_ERROR",
-    "description": "The New Share form rejected the supplied values.",
-    "message": "The application rejected the new share request; see the validation message.",
+    "code": "INITIAL_DEPOSIT_BELOW_MINIMUM",
+    "description": "The application rejected the new share because the initial deposit is below the required minimum for this share type. It shows the validation message 'Initial deposit must be at least $X' on the New Share form.",
+    "message": "The share could not be opened: the initial deposit is below the minimum required for this share type.",
     "detectorText": "Initial deposit must be at least",
     "dismissRef": null
   },
   "condition": {
-    "id": "validation_error",
-    "description": "The New Share form rejected the supplied values.",
+    "id": "initial_deposit_below_minimum",
+    "description": "The application rejected the new share because the initial deposit is below the required minimum for this share type. It shows the validation message 'Initial deposit must be at least $X' on the New Share form.",
     "detect": {
       "kind": "text",
       "text": "Initial deposit must be at least",
@@ -42,8 +42,8 @@
     "class": "business_outcome",
     "origin": "probe",
     "outcome": {
-      "code": "VALIDATION_ERROR",
-      "message": "The application rejected the new share request; see the validation message."
+      "code": "INITIAL_DEPOSIT_BELOW_MINIMUM",
+      "message": "The share could not be opened: the initial deposit is below the minimum required for this share type."
     }
   }
 }

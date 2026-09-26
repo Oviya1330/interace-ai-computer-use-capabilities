@@ -1,5 +1,12 @@
+import fs from "node:fs";
 import { describe, it, expect } from "vitest";
-import { Capability, SCHEMA_VERSION, capabilityJsonSchema } from "../src/core/schema.js";
+import {
+  AppProfile,
+  Capability,
+  SCHEMA_VERSION,
+  capabilityJsonSchema,
+} from "../src/core/schema.js";
+import { maskPatternsFor } from "../src/runtime.js";
 import {
   interpolate,
   parameterize,
@@ -11,7 +18,9 @@ import { PolicyGate, PolicyConfig } from "../src/policy/policy.js";
 import { Redactor } from "../src/policy/redact.js";
 import { EnvSecretStore, SecretUnavailableError } from "../src/policy/secrets.js";
 import { parseValue } from "../src/replay/parse.js";
-import { canonicalUrlPattern, inferParse } from "../src/agent/recorder.js";
+import { Recorder, canonicalUrlPattern, inferParse } from "../src/agent/recorder.js";
+import type { AgentAction } from "../src/agent/decider.js";
+import type { ElementInfo, Observation, Surface } from "../src/surface/types.js";
 
 describe("template", () => {
   it("interpolates and rejects missing params", () => {
@@ -170,6 +179,17 @@ describe("policy gate", () => {
 });
 
 describe("redactor", () => {
+  it("classifies member name, address and phone by exact label, not neighbouring labels", () => {
+    const profile = AppProfile.parse(
+      JSON.parse(fs.readFileSync("profiles/legacycore-teller.json", "utf8")),
+    );
+    const res = maskPatternsFor(profile).map((p) => new RegExp(p, "i"));
+    const masked = (label: string) => res.some((re) => re.test(label));
+    for (const l of ["Name", "Name:", "Member", "Address", "Phone", "SSN"])
+      expect(masked(l)).toBe(true);
+    for (const l of ["Last Name", "Member #", "Member Since", "Share Type", "Nickname"])
+      expect(masked(l)).toBe(false);
+  });
   it("masks secrets, sensitive values, patterns and secret-looking keys", () => {
     const r = new Redactor();
     r.registerSecret("Summit#2024!");
@@ -247,5 +267,136 @@ describe("artifact schema", () => {
   it("exports a JSON schema for reviewers", () => {
     const js = capabilityJsonSchema();
     expect(js).toHaveProperty("properties");
+  });
+});
+
+describe("recorder", () => {
+  const stubSurface = {
+    describeTarget: (el: ElementInfo) => ({ description: `the "${el.text}" cell`, strategies: [] }),
+  } as unknown as Surface;
+  const el = (ref: string, text: string): ElementInfo =>
+    ({ ref, frame: ["main"], role: "cell", name: "", text, attrs: {} }) as unknown as ElementInfo;
+  const obs = (landmark: string): Observation =>
+    ({
+      frames: [{ path: ["main"], url: "http://x/t/summit/member/10023" }],
+      elements: [],
+      dialogs: [],
+      texts: {},
+      landmark,
+      screenshotPlain: Buffer.alloc(0),
+    }) as unknown as Observation;
+  const act = (a: object) => a as unknown as AgentAction;
+
+  it("never turns an extracted value into the checkpoint text", () => {
+    const r = new Recorder(stubSurface, { member_id: "10023" }, "http://x/t/summit", ["main"]);
+    const balance = el("e39", "$4,250.37");
+    const screen = obs("Member Detail");
+    r.recordAction(
+      act({
+        id: "1",
+        tool: "extract",
+        ref: "e39",
+        output: "savings_balance",
+        parse: "currency",
+        why: "read",
+      }),
+      balance,
+      screen,
+      "safe",
+      [],
+      { raw: "$4,250.37", value: 4250.37 },
+    );
+    r.recordAction(
+      act({ id: "2", tool: "done", evidence_ref: "e39", summary: "ok" }),
+      balance,
+      screen,
+      "safe",
+      [],
+    );
+    const texts = r
+      .buildCheckpoint(screen)
+      .expect.flatMap((e) => (e.kind === "text" ? [e.text] : []));
+    expect(texts).not.toContain("$4,250.37");
+    expect(texts).toContain("Member Detail");
+  });
+
+  it("never turns a masked (classified) cell into the checkpoint text", () => {
+    const r = new Recorder(stubSurface, {}, "http://x/t/summit", ["main"]);
+    const nameCell = { ...el("e9", "[masked]"), sensitive: true } as ElementInfo;
+    r.recordAction(
+      act({ id: "1", tool: "done", evidence_ref: "e9", summary: "ok" }),
+      nameCell,
+      obs("Share Opened"),
+      "safe",
+      [],
+    );
+    const texts = r
+      .buildCheckpoint(obs("Share Opened"))
+      .expect.flatMap((e) => (e.kind === "text" ? [e.text] : []));
+    expect(texts).toEqual(["Share Opened"]);
+  });
+
+  it("keeps a non-data evidence element as the checkpoint", () => {
+    const r = new Recorder(stubSurface, {}, "http://x/t/summit", ["main"]);
+    const heading = el("e2", "Share Opened");
+    r.recordAction(
+      act({ id: "1", tool: "done", evidence_ref: "e2", summary: "ok" }),
+      heading,
+      obs("x"),
+      "safe",
+      [],
+    );
+    const texts = r
+      .buildCheckpoint(obs("x"))
+      .expect.flatMap((e) => (e.kind === "text" ? [e.text] : []));
+    expect(texts).toEqual(["Share Opened"]);
+  });
+
+  it("guards a digits-only input with a pattern when the model proposes none", () => {
+    const r = new Recorder(stubSurface, { member_id: "10023", nickname: "Alice" }, "http://x", [
+      "main",
+    ]);
+    const cap = r.assemble({
+      contract: {
+        name: "member.lookup",
+        title: "Lookup",
+        description: "Look up a member",
+        inputs: [
+          {
+            name: "member_id",
+            type: "string",
+            description: "id",
+            sensitivity: "pii",
+            pattern: null,
+          },
+          {
+            name: "nickname",
+            type: "string",
+            description: "n",
+            sensitivity: "none",
+            pattern: null,
+          },
+        ],
+        outputs: [],
+        checkpointDescription: "",
+        sideEffects: "none",
+      },
+      version: "1.0.0",
+      goal: "g",
+      profileId: "p",
+      surface: "legacy_web",
+      family: "f",
+      tenant: "t",
+      runId: "r",
+      decider: { kind: "llm", model: "m" },
+      checkpoint: { description: "", expect: [] },
+      allowedOrigins: [],
+      inputSensitivity: {},
+      tenantParamNames: [],
+      toolVersions: {},
+    });
+    expect(cap.inputs.member_id?.pattern).toBe("^\\d+$");
+    expect(new RegExp(cap.inputs.member_id!.pattern!).test("abc")).toBe(false);
+    expect(cap.inputs.nickname?.pattern).toBeUndefined();
   });
 });

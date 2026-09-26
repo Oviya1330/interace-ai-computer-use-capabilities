@@ -408,7 +408,12 @@ program
   )
   .argument("<capability>")
   .option("--tenant <id>", "tenant binding id", "summit")
-  .option("--input <name=value>", "input values baked into the script (repeatable)", parseKV, {})
+  .option(
+    "--input <name=value>",
+    "inputs the script takes (repeatable); values are passed at run time, never baked in",
+    parseKV,
+    {},
+  )
   .option("--out <file>", "write to this file instead of stdout")
   .action((ref: string, o) => {
     const cap = new CapabilityStore().load(ref);
@@ -417,7 +422,7 @@ program
     const code = generatePlaywrightScript(cap, profile, tenant, o.input);
     if (o.out) {
       fs.writeFileSync(o.out, code);
-      console.log(`wrote ${o.out} (run with: npx tsx ${o.out})`);
+      console.log(`wrote ${o.out} (run with: npx tsx ${o.out} '${JSON.stringify(o.input)}')`);
     } else process.stdout.write(code);
   });
 

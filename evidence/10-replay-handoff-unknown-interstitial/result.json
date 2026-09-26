@@ -1,18 +1,18 @@
 {
-  "runId": "01M2ZV6N30ZV2PN1GR06EA5TC2",
+  "runId": "01M3F9PK368JJ8QKK80TS1V6Q6",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+    "id": "01M3F9H7CQW0HMR9YZE2EM03EG"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:1***7]"
   },
-  "startedAt": "2026-09-20T16:43:15.936Z",
-  "endedAt": "2026-09-20T16:43:31.641Z",
-  "durationMs": 15705,
+  "startedAt": "2026-09-26T16:45:14.726Z",
+  "endedAt": "2026-09-26T16:45:30.643Z",
+  "durationMs": 15917,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -20,8 +20,8 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "recovered",
-      "startedAt": "2026-09-20T16:43:16.270Z",
-      "durationMs": 13634,
+      "startedAt": "2026-09-26T16:45:15.068Z",
+      "durationMs": 13646,
       "attempts": 2,
       "recoveries": [],
       "error": {
@@ -45,15 +45,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:29.904Z",
-      "durationMs": 368,
+      "startedAt": "2026-09-26T16:45:28.714Z",
+      "durationMs": 391,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 13
+        "ms": 15
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -63,15 +63,15 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:30.272Z",
-      "durationMs": 478,
+      "startedAt": "2026-09-26T16:45:29.105Z",
+      "durationMs": 551,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 4
+        "ms": 5
       },
       "screenshot": "steps/03-s03-click-search.png"
     },
@@ -81,8 +81,8 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:30.750Z",
-      "durationMs": 522,
+      "startedAt": "2026-09-26T16:45:29.656Z",
+      "durationMs": 556,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -99,8 +99,8 @@
       "kind": "extract",
       "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:31.272Z",
-      "durationMs": 368,
+      "startedAt": "2026-09-26T16:45:30.212Z",
+      "durationMs": 428,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -119,13 +119,13 @@
   "recoveries": [],
   "interventions": [
     {
-      "id": "int_f93623b2",
+      "id": "int_7560bc96",
       "type": "failure",
       "reason": "Post-condition failed after \"Click the link \"Member Inquiry\" in frame nav\"",
-      "raisedAt": "2026-09-20T16:43:26.867Z",
+      "raisedAt": "2026-09-26T16:45:25.605Z",
       "humanActions": 1,
       "controlTransfers": 1,
-      "resolvedAt": "2026-09-20T16:43:29.550Z",
+      "resolvedAt": "2026-09-26T16:45:28.347Z",
       "resolution": "retry",
       "operator": "operator-bot",
       "note": "Acknowledged \"I Acknowledge\" manually, handing back with retry"
@@ -135,7 +135,7 @@
   "proposedConditions": [
     {
       "id": "human_security_bulletin",
-      "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M2ZV6N30ZV2PN1GR06EA5TC2)",
+      "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M3F9PK368JJ8QKK80TS1V6Q6)",
       "detect": {
         "kind": "text",
         "text": "Security Bulletin",
@@ -184,11 +184,11 @@
               "kind": "visual",
               "bbox": {
                 "x": 183,
-                "y": 141,
+                "y": 140.5,
                 "w": 96.734375,
-                "h": 19
+                "h": 19.5
               },
-              "template": "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",
+              "template": "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",
               "threshold": 0.92
             }
           ],
@@ -198,9 +198,9 @@
             "name": "I Acknowledge",
             "bbox": {
               "x": 183,
-              "y": 141,
+              "y": 140.5,
               "w": 96.734375,
-              "h": 19
+              "h": 19.5
             }
           }
         },
@@ -226,7 +226,7 @@
     "confirmations": 0
   },
   "integrity": {
-    "hash": "ee886ddb9c9e29cd6f678542495ddd3ba81821352f512bfd75424502583506c6",
+    "hash": "0defcf54b14cadcf27e390f02aa25a39d777a118161cb611184219146ab3394f",
     "approvedHashMatches": null,
     "effectiveStatus": "draft"
   },

@@ -391,7 +391,9 @@ export class DiscoveryEngine {
     el: ElementInfo | null,
     obs: Observation,
     shot: string,
-  ): Promise<{ ok: true; risk: Decision["risk"] } | { ok: false; text: string }> {
+  ): Promise<
+    { ok: true; risk: Decision["risk"]; approved?: boolean } | { ok: false; text: string }
+  > {
     const kind =
       action.tool === "type_secret"
         ? "type"
@@ -444,6 +446,8 @@ export class DiscoveryEngine {
           ok: false,
           text: `The operator DENIED the ${decision.risk} action "${proposed.controlName ?? action.tool}". Do not retry it; find another way or give_up.`,
         };
+      // The operator approved this exact action, which covers the confirm() it opens.
+      return { ok: true, risk: decision.risk, approved: true };
     }
     return { ok: true, risk: decision.risk };
   }
@@ -526,7 +530,9 @@ export class DiscoveryEngine {
       switch (action.tool) {
         case "click":
           surface.expectDialog(
-            action.accept_dialog ? { messagePattern: ".*", response: "accept" } : null,
+            action.accept_dialog || gate.approved
+              ? { messagePattern: ".*", response: "accept" }
+              : null,
           );
           try {
             await surface.click(resolved!);
@@ -588,7 +594,7 @@ export class DiscoveryEngine {
     for (const d of dialogs) {
       evidence.emit(
         "dialog",
-        `${d.type} dialog "${truncate(d.message, 80)}" → ${d.response}${d.expected ? " (accepted per agent request)" : " (dismissed: not pre-approved)"}`,
+        `${d.type} dialog "${truncate(d.message, 80)}" → ${d.response}${d.expected ? ` (accepted ${gate.approved ? "under operator approval" : "per agent request"})` : " (dismissed: not pre-approved)"}`,
         { dialog: d },
       );
       text += d.expected

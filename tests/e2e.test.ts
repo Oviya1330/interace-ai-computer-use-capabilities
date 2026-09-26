@@ -40,7 +40,7 @@ beforeAll(async () => {
   fs.copyFileSync("policy.yaml", path.join(root, "policy.yaml"));
   rt = await createRuntime({
     tenantId: "summit",
-    headless: true,
+    headless: process.env.HEADED !== "1",
     root,
     evidenceRoot: path.join(root, "runs"),
     consolePort: 0,
@@ -180,7 +180,7 @@ describe("deterministic replay", () => {
   it("fails fast with debuggable evidence when no operator is available", async () => {
     const noConsole = await createRuntime({
       tenantId: "summit",
-      headless: true,
+      headless: process.env.HEADED !== "1",
       root,
       evidenceRoot: path.join(root, "runs"),
       console: false,
@@ -391,7 +391,7 @@ describe("multi-tenant reuse", () => {
   it("replays on a relabelled tenant via fallback tiers, then promotes overrides to restore tier-0 targeting", async () => {
     const cascade = await createRuntime({
       tenantId: "cascade",
-      headless: true,
+      headless: process.env.HEADED !== "1",
       root,
       evidenceRoot: path.join(root, "runs"),
       console: false,

@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "id": "01M2ZV3NZBFA6SKP278SXGBCSR",
+  "id": "01M3F9KEWK8YSXBJBA1XZCCG1P",
   "name": "member.open_share",
   "version": "1.0.0",
   "status": "draft",
-  "title": "Open a new share (sub-account) for a member",
-  "description": "Finds the member, fills the New Share form (type, description, initial deposit), reviews it and posts it, returning the confirmation number.",
+  "title": "Open a New Share (Sub-Account) for a Member",
+  "description": "Opens a new share sub-account (e.g., {{share_type}}) for an existing member in LegacyCore Teller Console v7 and funds it with an initial deposit. The flow opens Member Inquiry, searches for the member by member number, opens the member record, starts a New Share, sets the share type, description and initial deposit amount, reviews, and confirms. Requires the member number, a share type that exactly matches an option in the 'Share Type' dropdown, a free-text description, and the initial deposit amount. Returns the confirmation number and the new share ID shown on the confirmation screen. This creates a new account record and posts a monetary deposit to it, so it should only be invoked with explicit authorization.",
   "goal": "Open a new {{share_type}} sub-account (share) for member {{member_id}} with a {{initial_deposit}} initial deposit and reach the confirmation screen",
   "app": {
     "profile": "legacycore-teller",
@@ -22,42 +22,48 @@
   "inputs": {
     "member_id": {
       "type": "string",
-      "description": "Five-digit member number",
+      "description": "Member number of the existing member who will own the new share (e.g., \"{{member_id}}\"). Used to search Member Inquiry and open the member record.",
       "required": true,
-      "pattern": "^\\d{5}$",
+      "pattern": "^[0-9]+$",
       "sensitivity": "pii"
     },
     "share_type": {
       "type": "string",
-      "description": "Share product to open (Savings, {{share_type}}, Money Market)",
+      "description": "Type of share sub-account to open. Must exactly match an option in the 'Share Type' dropdown (e.g., \"{{share_type}}\").",
       "required": true,
       "example": "{{share_type}}",
       "sensitivity": "none"
     },
     "description": {
       "type": "string",
-      "description": "Free-text description for the new share",
+      "description": "Free-text description/nickname for the new share (e.g., \"{{description}}\").",
       "required": true,
       "example": "{{description}}",
       "sensitivity": "none"
     },
     "initial_deposit": {
-      "type": "number",
-      "description": "Initial deposit in USD (minimum 5.00), moved from the member's funding share",
+      "type": "string",
+      "description": "Initial deposit amount used to fund the new share, as a decimal with two places and no currency symbol (e.g., \"{{initial_deposit}}\").",
       "required": true,
+      "pattern": "^[0-9]+\\.[0-9]{2}$",
       "sensitivity": "financial"
     }
   },
   "outputs": {
     "confirmation_number": {
       "type": "string",
-      "description": "Confirmation number of the posted share",
+      "description": "Confirmation number shown on the confirmation screen for the share opening (e.g., \"CNF-26C27DBE\").",
       "sensitivity": "none"
+    },
+    "share_id": {
+      "type": "string",
+      "description": "Identifier of the newly created share sub-account under the member (e.g., \"0030\"); kept as text to preserve leading zeros.",
+      "sensitivity": "pii"
     }
   },
   "policy": {
     "riskClass": "irreversible",
-    "sideEffects": "creates_record",
+    "sideEffects": "moves_money",
     "requiresApproval": true,
     "allowedOrigins": [
       "http://localhost:4173",
@@ -104,11 +110,11 @@
             "kind": "visual",
             "bbox": {
               "x": 12,
-              "y": 101,
+              "y": 100.5,
               "w": 104.140625,
-              "h": 16
+              "h": 15.5
             },
-            "template": "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",
+            "template": "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",
             "threshold": 0.92
           }
         ],
@@ -118,15 +124,15 @@
           "name": "Member Inquiry",
           "bbox": {
             "x": 12,
-            "y": 101,
+            "y": 100.5,
             "w": 104.140625,
-            "h": 16
+            "h": 15.5
           }
         }
       },
       "id": "s01-click-member-inquiry",
       "name": "Click the link \"Member Inquiry\" in frame nav",
-      "intent": "Open the member inquiry function from the menu",
+      "intent": "Open Member Inquiry to locate member {{member_id}} where sub-accounts are managed.",
       "risk": "safe",
       "precondition": [
         {
@@ -195,10 +201,10 @@
             "bbox": {
               "x": 300.296875,
               "y": 113,
-              "w": 96,
-              "h": 19
+              "w": 91,
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAGUAAAAXCAYAAAASloEFAAAAa0lEQVR4Ae3BwQ3CQAADwcW6nl2DqwYeQUoFwQ/PvN5fTBUxdQ43tpnnJeHucLFNEuZ5tknCj5g6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmjpg6YuqIqSOmzuGSBNvM85Jwd7hJwvyfmDofil4TaEhUQmwAAAAASUVORK5CYII=",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAGAAAAAYCAYAAAAF6fiUAAAAqklEQVR4Ae3BOxHEMAxF0buagHAlEmnMwzCMTRMaxuEqLPZTZMYEvGreOa/3F5LGkFQHi/u+iQjmnMge7k5rjVIKPweLiOA8T3rvyB5jDCKC3js/xmLOSa0V2afWypyThyGpDEllSCpDUhmSypBUhqQyJJUhqQxJZUgqQ1IZksqQVIakMhbuzhgD2WeMgbvzOFi01ogIrutC9nB3Wms8DhalFHrvyP8YkuoDy44qnjqIk5EAAAAASUVORK5CYII=",
             "threshold": 0.92
           }
         ],
@@ -208,8 +214,8 @@
           "bbox": {
             "x": 300.296875,
             "y": 113,
-            "w": 96,
-            "h": 19
+            "w": 91,
+            "h": 19.5
           }
         }
       },
@@ -218,9 +224,10 @@
         "name": "member_id"
       },
       "clear": true,
+      "pressEnter": true,
       "id": "s02-type-member-number",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
-      "intent": "Enter the member number to search for",
+      "intent": "Search for the member by number.",
       "risk": "safe",
       "precondition": [
         {
@@ -280,11 +287,11 @@
             "kind": "visual",
             "bbox": {
               "x": 300.296875,
-              "y": 159,
-              "w": 54.078125,
-              "h": 19
+              "y": 160,
+              "w": 54.0703125,
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAADsAAAAXCAYAAAC1Szf+AAAD3klEQVR4AeXBT0hTDwDA8e8eL9wf5+ZKhgcPA8HD2CAaUVEbltFpKB6yrNcg1kU0pQKpy5gkYnSwYGR/bisRDaaSxHAFwW6DYgNlXvYOwWCMTMwF6RPzwQZD6Nfmr98P0s9Hs72DA0LgABEpEw6HKRQKyLLM38xms2EwGJAkiXIiReFwGJ1Oh9frZT+IxWKEw2EkSaJEoKhQKNDW1sZ+0dbWRqFQoJxAkSzL7DeyLFNO4AAR2IPv37+Ty+XY2tri/5JKpUilUvwbIlVYXl7m/v37vHnzhhKfz8fY2Bj/tUgkgsrpdLJXIlXo6+ujpaUFWZapra0lmUwyPj7O30KkQoqikEgkuH37NmazGdWxY8d4/vw5JU+ePCEUCrGxscGVK1fo7+/HbDYTDAZ59eoV+Xweu93O8PAwHo+H9fV1zp8/z8DAANPT01itVkKhEC9evODp06fkcjlcLhePHj1ClUwm8Xq9xONxLl++zOjoKEajkUqJVEgURW7evMmlS5fw+Xw4HA5OnDiB3W5HNTc3x7Nnz4hEIlitVm7dusXr16/x+/20t7fT09NDfX09ExMTDAwM8OnTJ7a2tkin07x//57e3l7MZjMzMzMMDQ3x8uVLjh49ysLCApubm6hWVlZ4+PAhTU1NdHV18e7dOzo6OqiUSBWCwSBer5f5+Xmi0Sh37txBkiQeP35MNBpFq9USCoVQZbNZZmdn8fv9qAKBAEtLS2SzWfL5POUePHiAyWRCNT4+zsWLF3G73ag6OzspaW1txeVyofJ4PCSTSTo6OqiUSJVcLhculwvVx48fOXfuHPfu3WNjY4MzZ85w9epVSnQ6Haurq7S2tjI2NkYgEGBtbY3jx4/zK4qioNPp+B1BEKiWQIW+fv3K9evXSaVSKIrC+vo6Hz58wGg0UldXh9vtZmFhAYvFgtPppLGxkUwmw+rqKqqzZ89y+PBh4vE4/+TUqVNEIhHS6TSqRCLB58+f+RNEKlRTU8Pm5iYej4eS5uZmpqam0Ov1dHd3k8lkcDgcGI1Gvn37xuDgIBcuXODGjRs4nU5Up0+fZjeNRkPJtWvXWFxc5OTJkxiNRrRaLW/fvmU3jUbD9vY21dBs72DH4OAgd+/e5XcURSGfz6PX6zGZTOymKApfvnzBYrFw6NAhSlZWVhAEAbPZTCV+/PjB2toaR44cQaPRsBcjIyOMjo5SIlIlURRpbGzkV0RRxGq1spvFYqEaNTU1NDQ08CcJFNlsNvYbm81GOYEig8FALBZjv4jFYhgMBsqJFEmSRDgcZnJyElmW+ZvZbDYMBgOSJFFOpIwkSexnAgfIT2stYfHmIwtwAAAAAElFTkSuQmCC",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAADsAAAAYCAYAAABEHYUrAAAECElEQVR4AeXBT0jTCwDA8e9+7+dv/tyPNaczvQRGB0nZwZYIjg018yBCdIksCVJB8KBm4kHRiehBEUSylLx6kEoxDAnBQ+zgQYUt+qMHBYUpTfyXTtum5g8aDHn1nK/3wPx8NIdHOCcEzhGRMBMTE4yPj3NwcMBZJwgCeXl55OTkECIS5sOHD1RXVyNJEmed3+9ncHCQxMRErl69ikogTHJyMpIk8SeQJInk5GQ8Hg8hAueIwDkicAq7u7t8+fKF/f19/i9utxu3282/IRKBubk5WlpaGB0dJeTBgwd0dXXxXxseHkZlNps5LZEIVFRUkJKSwsLCAoqi4HK56O3t5awQOaFgMMjU1BSPHz/GYDCgunbtGs+fPyfk2bNnPHnyhEAgwL1796isrMRgMNDc3MzAwABer5fU1FRaW1ux2+3s7OyQm5tLdXU1L1684OLFi/T09NDf309fXx8rKytcv36d7u5uVC6Xi8LCQpxOJ3fv3qW9vR1FUTipvxxH+GFubo5Lly7xdwRBYHd3l9raWlZWVvB4PGi1WkwmE6rXr1/T2dnJq1evqKmpYXBwkK9fv5Keno7BYKCqqorGxkYkScLhcFBeXs7e3h4NDQ3ExMRQUlJCVlYWk5OT1NXV0dfXR2trKzqdDpPJhNvt5tOnT7S1tdHQ0MDTp09JSEggJSWFn1lcXEQURS5fvoxKJALNzc0UFhby5s0bxsbGqKmpobi4mO7ubt6+fYtWq6WnpwfV8vIyIyMjlJaWompqauLjx494PB68Xi/hOjo60Ov1qHp7e7lz5w42mw3V7du3CcnOzsZisaCy2+24XC5u3brFSYlEyGKxYLFYUM3MzJCbm0t9fT1+vx+bzcb9+/cJkWWZjY0NsrOz6erqwuFwsLm5SUZGBj8TCASQZZl/IggCkRI4ofX1dR4+fIjb7SYYDLKzs8O7d+9QFAW9Xo/NZmN8fJy4uDjMZjNJSUksLCywsbGBKicnB6PRiNPp5FesVitDQ0PMzs6impqaYmlpid9B5ISio6MJBALY7XZCrly5wsuXL5FlmaKiIubn50lLS0NRFLa3t6mrq+PmzZuUlZVhNptRWa1WjtNoNIQUFxfz/v17MjMzURQFWZYZGxvjOI1Gw+HhIZHQHB7hh9HRUaxWK78SDAZZXV1FlmUuXLjAccFgkLW1NWJjY4mKiiJkbW0NQRAwGAycxLdv39ja2iI+Ph6NRsNpOJ1OoqOjuXHjBiqRCImiSGJiIj8jiiIJCQkcZzQaiYRWq8VkMvE7CZwjAmF8Ph9/Ep/PhyRJhIiEmZ2dRRUTE8NZ5/P5+Pz5M/n5+YSIhHn06BHT09P4/X7OOr1eT0FBATqdjhCRMDqdDpvNxp9K4Bz5DuWwaYVwxjNVAAAAAElFTkSuQmCC",
             "threshold": 0.92
           }
         ],
@@ -294,15 +301,15 @@
           "name": "Search",
           "bbox": {
             "x": 300.296875,
-            "y": 159,
-            "w": 54.078125,
-            "h": 19
+            "y": 160,
+            "w": 54.0703125,
+            "h": 19.5
           }
         }
       },
       "id": "s03-click-search",
       "name": "Click the button \"Search\" in frame main",
-      "intent": "Run the search",
+      "intent": "Submit the member search.",
       "risk": "safe",
       "precondition": [
         {
@@ -386,15 +393,15 @@
           "name": "{{member_id}}",
           "bbox": {
             "x": 182,
-            "y": 134,
+            "y": 134.5,
             "w": 34.96875,
-            "h": 13
+            "h": 13.5
           }
         }
       },
       "id": "s04-click-member-id",
       "name": "Click the link \"{{member_id}}\" in frame main",
-      "intent": "Open the matching member's profile",
+      "intent": "Open member {{member_id}}'s record.",
       "risk": "safe",
       "precondition": [
         {
@@ -469,11 +476,11 @@
             "kind": "visual",
             "bbox": {
               "x": 181,
-              "y": 366,
+              "y": 365,
               "w": 75.984375,
-              "h": 19
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAFAAAAAXCAYAAACcTMh5AAAFG0lEQVR4Ae3BXUiTCwPA8b9zGGuMZllgZnMaIW7pQpOIsnSWdCEVrYRggSOXUcEqYWxBy9mQoovRhX1eFGOVWWSxC2nDoA8SAqmoGH09dZPVwGb7SLLa2wMORuck03o558B+v6zED2RMmYSM3yIlhcfjIRaLIQgCGX+lVquRy+UYjUaSpIzzeDzIZDIaGxvJ+LVAIIDH48FoNCKSMC4Wi1FfX0/GxOrr64nFYiRJGCcIAhnpEQSBJAkZv0XCf8C7d++IRqOk6u/vZ2hoiH+alEnIzc1F9OzZM2bPno1o8eLFnDlzhsrKSv40t9uN1+vlxYsXiBYsWEBXVxdLlizB6XSyf/9+8vPz+SdJmaTS0lLcbjcul4ukRCLBn9bf3097ezt+v5/KykrC4TBnz57lw4cP/JtImaSOjg42bdqE2WxGpVKRShAErFYrAwMDVFVVsX37dhoaGrBYLKxatYr169dz69Yt3G43V65cISsri82bN2O329HpdKQKBoNUVFRQVVWFKDc3lz179pCqt7cXu93OyMgIZrOZtrY2RO3t7Xi9XkKhEBqNBpfLxcqVK7l37x5dXV0sXboUn8+HwWCgqakJh8NBT08PBQUFbN26lR07dpAuCZNUWlqKyWSis7OTVN++fWPLli0sW7aMYDCI1WqlpaWFsbEx5s+fT19fH6Lu7m5u3rzJgwcPeP/+PX6/n4ULF/KzxsZGXr16hV6v58iRI/h8PuLxOKm+fv1Kd3c3169fx+VyMTQ0hGjdunXcvXuXUCiE2WzGYrEgikaj+Hw+otEoBw4coLa2lo6ODoaHhxkcHKSnp4dTp07x+PFj0iVlCvbt24dGo2HXrl0kvXnzhmAwyPPnz7Hb7YgikQj379+npqaGEydOEI/H8fv92Gw2ent7qa6uRq/XM336dH5WWFjIkydPuHz5MoODg1y4cIG9e/dy6dIldDodIoPBQHFxMSKNRsOjR4/Iz89H5HA4ePr0KW/fviUUCpFUUVGB1Wol6erVq2i1Wg4dOkRSX18fWq2WdEiZgrlz59LW1obT6STpy5cviLZt20Z2djYik8mESqVCLpczOjrKyZMnaWhooKmpidWrVzM2NoZer+dXFAoFzc3NNDc38/37d4xGI+fPn0en0/GzadOmIQqHw9TW1uJ2u3E4HHz69Inq6mp+ZXR0lI0bN7Jo0SJEJpOJvLw80iVhinbu3MnAwACvX79GVFxcTEFBAbdv30ar1VJWVsbHjx+Jx+NIpVLWrFmD0+lkw4YNqFQqSkpKOH78ODU1NfydY8eOce7cOcLhMIlEAkEQePjwIYWFhUwkHA4jqqurY9asWdy5c4eJrF27lkAgQElJCeXl5eTk5DA0NES6pEyRUqnEZrNht9vJysoiJycHr9dLa2srR48eJRKJUFRUxLVr1xDV1dVx48YNVqxYgchgMPDy5UvKysr4OyqVioMHD2KxWEgym820trYykaKiIlpaWigvL0e0fPlyUmVnZ5PK5XKxe/du5s2bh0KhQHT69GnSlZX4gR+sVis2m40/YWRkhEQigVKp5HdFIhEikQhz5sxBKpWSruHhYSQSCUqlknR8/vyZSCRCXl4eEomEiXR2dnL48GFEUv4PZsyYwZ+iUChQKBRM1syZM5kMmUyGTCZjsiSMU6vVZKRHrVaTJGGcXC4nEAiQMbFAIIBcLidJyjij0YjH4+HixYsIgkDGX6nVauRyOUajkSQpKYxGIxmTIyHjt/wPoInaWOSQTEUAAAAASUVORK5CYII=",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAFAAAAAYCAYAAABtGnqsAAAFH0lEQVR4Ae3BW0iTCwDA8b+fIy0GTWmkmW2KYGxLl5oElZlfGfTQhZoSFDGrZWSwwrJZoZOGVC+jh6zwoR401hALfZAUgy4kBCYRXeyyYmAuIbeaLVy10wcORhxlaodzDuz3iwv9QsyMCcTMiowJHo8Hp9OJ2+0mZnLp6ekYDAYWLlyIRMYEp9OJRqNh165dxEyuv78fp9NJVVUVEoEJbrebvLw8YqaWl5eH2+0mTCBmVgRiZkXgf8Dj8TA2Nkak3t5ehoeH+bfJmIakpCQkg4ODKJVKJMuXL6e5uZn8/Hz+NLvdTktLC69fv0aSlZVFU1MTBQUFNDQ0cOrUKVJSUvg3yZim7Oxs7HY7NpuNsFAoxJ/W29uL1Wqlu7ub/Px8vF4vV69exePx8F8iY5psNhs7duzAZDKhUqmI5HK5OH78OH19faxYsYLKykpKS0sxm80UFxezdetW7t69i91up62tjbi4OAwGAydPnkSv1xPpxYsX5ObmUlBQgCQpKYkjR44Qqb29HYvFgs/nw2QyUV1djcRqtdLS0sLIyAharRabzcbatWt5+PAhFy9eZOXKlXR0dFBWVkZ5eTmnT5/G6XSSlpbGnj17OHjwINESmKalS5diNBppbGwk0o8fP9i5cyerVq1icHCQEydOsHfvXoLBIEuWLKGrqwuJw+Hgzp07DAwM8PHjR3p6esjOzuZ3mzdv5s2bN4iiyLlz5+js7CQQCBDp+/fvOBwOOjo6sNlsDA8PI9myZQsPHjxgZGQEk8mE2WxGMjY2RmdnJ36/n7q6OoqLi2loaGB0dJTHjx/T1tbGlStXePr0KdGSMQPHjh1Do9FQVVVF2Pv373n58iWvXr3CYrEg8fv9PHr0iKKiIi5dukQgEKC7uxuLxcLNmzcpLCxEFEXmzp3L7xYvXszz589xOp309/dz/fp1jh49yo0bN9Dr9UgMBgOZmZlItFotT548ISUlBUldXR3Pnj1jaGiIkZERwnJzc6mpqSGsvb0dnU7HmTNnCOvq6kKn0xENGTOQmppKdXU1VquVsGAwiGTfvn3Ex8cjqaioQK1WM2/ePAKBAJcvX2bjxo2Ul5ezYcMGgsEgoigyGblcjtFoxGg08vPnT3bv3k1rayt6vZ7fJSQkIPF6vaxbtw673U59fT0+n4/CwkImEwgE2L59O8uWLUNSUVGBUqkkWgIzdOjQIfr6+nj37h2SjIwMFi1axL1799DpdGg0GkZHR/n69SsymYzS0lKsVivbtm1DpVKRmZlJU1MTRUVF/J0LFy5w7do1vF4voVAIl8vFwMAA6enpTMXr9SIpKSkhOTmZ+/fvM5VNmzbR09NDVlYWOTk5JCQkMDQ0RLRkzJBCoaC2tpba2lri4uKYM2cOra2tHDhwgPPnz+P3+1Gr1dy6dQuJKIrcvn2bNWvWICkrK+Pt27doNBr+jkqlor6+HrPZTJjJZKKyspKpqNVq9u/fT05ODpLVq1cTKT4+nkg2m43Dhw+TlpaGXC5H0tzcTLTiQr/wS01NDRaLhT/B5/MRCoVQKBTMlt/v58uXLyiVSmQyGdH69OkTgiCgUCiIxrdv3/j8+TMLFixAEASm0tjYyNmzZ5HI+AfMnz+fP0UulyOXy5mu5ORkpiMxMZHExESmSyBmVgQmCILA+Pg4MVMbHx9HEATCZEwQRRGHw0FGRgYxk3O5XIiiSJiMCevXryc1NZUPHz4QM7mSkhK0Wi1hMiJotVq0Wi0x0ROImZW/AMdf2E+MS6GKAAAAAElFTkSuQmCC",
             "threshold": 0.92
           }
         ],
@@ -483,15 +490,15 @@
           "name": "New Share",
           "bbox": {
             "x": 181,
-            "y": 366,
+            "y": 365,
             "w": 75.984375,
-            "h": 19
+            "h": 19.5
           }
         }
       },
       "id": "s05-click-new-share",
       "name": "Click the button \"New Share\" in frame main",
-      "intent": "Start the new share (sub-account) form",
+      "intent": "Start opening a new share sub-account for this member.",
       "risk": "safe",
       "precondition": [
         {
@@ -557,12 +564,12 @@
           {
             "kind": "visual",
             "bbox": {
-              "x": 282.125,
-              "y": 133,
+              "x": 282.1171875,
+              "y": 132.5,
               "w": 100,
-              "h": 17
+              "h": 17.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAGkAAAAVCAYAAABFYsCAAAAE9ElEQVR4Ae3BXUhTCwDA8b/HA+bWaILIZrMVllQmoZFF1iZIFNRS82V9QNjaQyYktTiBhImEnT0sM9KUfIk+NIkZQRZU2gYxDArqIbADCq2mBj7EksKptwMNxqWr1g3ave73S5r5hoS4JpAQ90RiSJJEwp8nyzKxRL6TJAlZlkn48yRJQpZlogQS4p5AQtwTmKeJiQlGRkaYmpri34hEIkxMTJAwfyJzePPmDbW1tXi9XqKcTift7e38ijt37uByuXj37h0LhcfjYf/+/RgMBmKNjIzQ2dlJTU0NsxGZw+HDh1m7di3j4+PodDpevHjBxYsX+VU2mw2r1cpC0draysmTJ2ltbcXn82E0GlGFQiEsFguKoqDVanE6nfwTkVlEIhECgQC1tbWkpaWhKiws5MaNG6jevn3L7t27GRwcRKfTsW/fPpqbm/H7/bjdbh48eIAgCKjKysqoqqpCq9XS3NxMV1cXfr+fhoYGDAYDPT09bN68mQsXLpCbm8vMzAznz5+nqamJsbExioqK2LZtG42Njfh8PlwuF8+fPycnJ4czZ85w8OBB4lF5eTlutxtFUbBYLPj9flQWiwVFUVi5ciU2m43ZiMxCFEVOnTqFzWbD6XSSn5/P1q1bycvLQ5Wenk5nZye5ubl8+vQJq9WK1+ultLSUQCBAX18fJSUlDAwM8OTJE27dusXTp09RFAVVOBwmEAhw7do1PB4P9fX1XLlyhUuXLtHV1UVTUxPd3d1s3LiRs2fPEgwGUVVWVnLixAmePXuGoigMDw8TrwwGA36/n+LiYhRFYcuWLaiGhobIzs7G5/NhMBiYjcgc3G43FRUV9PT0cO/ePaqqqnA4HFy9ehWtVsujR49wuVwEg0EGBwcZHR0lNTWVmpoa2traKCkpob29nePHj5OamsrfrVq1irKyMlQ7duygrq4O1cOHD7Hb7VgsFlRZWVl8+PAB1YYNG2hpaeHz589YLBZ27txJPDOZTPT19WG1WhkaGkKVnZ1Nf38/RqORuQjMw6ZNm2hsbOT+/fsMDAzQ0dFBKBSivr6eu3fv4vF4ePnyJYcOHSLK4XDQ3d3Nq1ev6Ojo4MiRI8wlOTmZKL1eT0pKCj9y8+ZNGhoaeP/+PaWlpdTV1RHvsrKy8Pl8mEwmli9fTn9/PyaTifkQmcX4+DhHjx7l9OnT5OXl8eXLFx4/foxOp2PJkiWMjo6yfv161q1bRzAY5PXr1+Tn56Mym82Ul5ezfft2KioqMJvN/Ixdu3Zx4MABioqK0Ov13L59G7PZjOr69evY7Xb27t3L0qVL6e3t5b/AZDLh8/kQRRGTycR8icxi0aJFTE5OUlBQQFROTg69vb1oNBqOHTvGnj17aGlpISMjA71ejyAIRFVXV+P1eqmuriZKEARiJScnE5WUlERUcXExsixz7tw5dDod6enppKSkoGpra6OyspKMjAzMZjOXL1/mv2LFihX8rKSZb/hGkiRkWeZHIpEIY2NjaDQa9Ho9saanpwkGg2RmZiKKIr/L1NQUX79+RaPRMD09jd1up7CwEJfLhSocDjM5OUlaWhr/N5IkIcsyUSLzIIoimZmZ/IggCCxbtozf7ePHjxiNRgoKCgiHw6xZswaHw0HU4sWLWShE4pTBYGB4eJhQKMTq1avR6/UsVCLfybKMJEkk/HmyLBNLJIYsyyTEH4GEuPcXCa3FUlBv5ScAAAAASUVORK5CYII=",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAGkAAAAWCAYAAADD9rIuAAAE1ElEQVR4Ae3BXUhTCwDA8f+OJ2zZYNFBltZZEPZBUeQgBsNcD1HSl/M8tDAIk6CcUA8jn+JwiMgjZLJQsqiXIrIY6+PBisrWLE71VtRDhcga1TQqcIhi6u2AA4muWjdwXff7WSRJGiUro4m9vb1kZTaBrIwnMubjx4+Ew2Hi8ThZ00eWZRRFweFwkCYyJhwO43K5CAQCZE0fwzAIh8MEAgHSBMbE43HcbjdZ08vtdhOPxxlPICvjCUzR58+f+fLlC//Vt2/f6O/vJ2vqRCZx8+ZNdF3n0aNHmGw2GydOnGDfvn38jnA4TDAY5N27d8wUDx48wOv18rtEJtDT00NlZSUNDQ3cu3eP4eFh2tvbefnyJb9r27ZtlJaWMpNEo1Gi0SiqqvIjTdMwqarKvxGZQDwep6+vj507d5Kbm4tJURQURcH05s0btm7dyuvXr7HZbOzatYtQKEQsFqOhoYFbt24hCAKm8vJyampqyMvLIxQK0dbWRiwW4+jRozgcDq5du4bb7ebkyZOsXLmS0dFR6uvraWpqoqenB4/HQ0lJCcePH+fhw4cEg0GePXvG0qVLOXLkCLt37yZTqaqKpmlomoaqqqRpmoZJVVUmIjABl8tFcXExq1ev5vDhw1y4cIH379+TJkkSly9fZnBwkK6uLjo7O4lEIng8HgzDoKOjA9PTp0+5f/8+JSUl9PX18fbtW0ypVArDMKioqKCrq4tly5Zx+vRpTG1tbTQ1NXH16lX6+/vxeDwkEglMVVVV7Nmzh6GhIa5fv44kSWQ6VVUxaZqGSdM0TKqqMhmBCVgsFp48eUIoFGJgYIBTp05RWFjI+fPnMeXl5XH37l3KysrweDy8evWKZDKJ1Wrl0KFDtLa2Yjpz5gwHDx7EarXyo6KiIsrLy5EkiU2bNvH48WNMt2/fxu/3s379eqxWK4sWLSLN5XLR0tJCY2MjX79+ZfPmzfwNVFXFtGHDBkyqqjIVIpMQRRGfz4fP58PU2NiIruvs3bsXTdOIRqM0NzdTVFRETU0NadXV1SxevJjnz59z7tw5uru7mUxOTg5pdrudWbNm8TOXLl3ixo0bRKNRduzYwf79+9E0jb+BqqqUlpbi9XqZKpEJ3Llzh46ODg4cOIAsyySTSTo7O1myZAmmZDLJmjVrWLVqFYlEghcvXrB27VpMTqcTn8/Hxo0bURQFp9PJr9iyZQuVlZV4PB7sdjtXrlzB6XRiunjxIn6/n4qKCgoLC2lvb+dv4vV6+RUiEygoKCAWi1FfX09aWVkZZ8+exRQIBNi+fTstLS3k5+djt9sRBIG02tpaIpEItbW1pAmCwHg5OTmkWSwW0rxeL7quc+zYMWw2G5IkkZubi6m1tZWqqiry8/NxOp00Nzfzf2YZ/Y7v6urq0HWdnxkYGODTp0/Mnz8fq9XKeCMjIyQSCQoKChBFkT9leHiYwcFB5syZw8jICH6/n3Xr1hEMBjGlUimGhoaYN28e/zd1dXXouk6ayBTMnj2bhQsX8jOCICDLMn9ab28vCxYsoLi4mFQqxYoVK6iuriZt7ty5zBQiY2RZxjAM3G43mcDhcNDd3c2HDx9Yvnw5drudmcAwDGRZZjyRMYqiEA6HiUQiZE0fWZZRFIXxRMY4HA4CgQBZmUcgK+P9AzWpt1Ag9Vn7AAAAAElFTkSuQmCC",
             "threshold": 0.92
           }
         ],
@@ -570,10 +577,10 @@
           "tag": "select",
           "role": "combobox",
           "bbox": {
-            "x": 282.125,
-            "y": 133,
+            "x": 282.1171875,
+            "y": 132.5,
             "w": 100,
-            "h": 17
+            "h": 17.5
           }
         }
       },
@@ -583,7 +590,7 @@
       },
       "id": "s06-select-share-type",
       "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
-      "intent": "Choose the share type",
+      "intent": "Set share type as required.",
       "risk": "safe",
       "precondition": [
         {
@@ -648,12 +655,12 @@
           {
             "kind": "visual",
             "bbox": {
-              "x": 282.125,
+              "x": 282.1171875,
               "y": 154,
-              "w": 222,
-              "h": 19
+              "w": 208,
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAOMAAAAXCAYAAAD5jfhDAAAAfklEQVR4Ae3BwQ3CQBAEwWZ0OW8MEzXwMJIjMPvoqtf7C0l/FyStcLiZGSQ9oy13h8vM0BZJz5gZ2vITJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK0QJK1wuLRlZpD0jLbcHW7aIuk/gqQVPp3PE2hhR6Z1AAAAAElFTkSuQmCC",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAANUAAAAYCAYAAABtNrjpAAAAvklEQVR4Ae3BsW3EMBAAwfVBRShiE0rYB8tgbYTaYB2M1MXbgR5QKMAX7szP5w+S0gSSUm3crutijMFaC0nvlFJorbHvO18btzEGx3HQe0fSO3NOxhj03vkKbmstaq1Ieq/WylqLp0BSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSqkBSquBWSmHOiaT35pyUUnjauLXWGGNwnieS3iml0FrjaeO27zu9dyT9TyAp1S9TxyqeS2OUUwAAAABJRU5ErkJggg==",
             "threshold": 0.92
           }
         ],
@@ -661,10 +668,10 @@
           "tag": "input",
           "role": "textbox",
           "bbox": {
-            "x": 282.125,
+            "x": 282.1171875,
             "y": 154,
-            "w": 222,
-            "h": 19
+            "w": 208,
+            "h": 19.5
           }
         }
       },
@@ -675,7 +682,7 @@
       "clear": true,
       "id": "s07-type-description",
       "name": "Enter {{description}} into the textbox \"Description\" in frame main",
-      "intent": "Describe the new share",
+      "intent": "Enter the description.",
       "risk": "safe",
       "precondition": [
         {
@@ -740,12 +747,12 @@
           {
             "kind": "visual",
             "bbox": {
-              "x": 282.125,
-              "y": 177,
-              "w": 82,
-              "h": 19
+              "x": 282.1171875,
+              "y": 177.5,
+              "w": 78,
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAFcAAAAXCAYAAAB+kNMAAAAAaElEQVR4Ae3BsQ3CUABDwYf1d/YMnhoogpQ6wp3vXu8vpkJMzeHGNvNcEu4OF9skYZ6zTRJ+xNSIqRFTI6ZGTI2YGjE1YmrE1IipEVMjpkZMjZgaMTViag6XJNhmnkvC3eEmCfM/Ymo+iDUTaJnjRj0AAAAASUVORK5CYII=",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAFMAAAAYCAYAAACGLcGvAAAAqklEQVR4Ae3BsQ3DMAxFwRfCQ6jiEm60h8bQbITX0ByqvEWSQgbcOQhY/rvX+wtJYUgaQ9JsLOd5EhHMOZFn7k5rjVIKl40lItj3nd478myMQUTQe+diLHNOaq3Ib2qtzDm5MySNIWkMSWNIGkPSGJLGkDSGpDEkjSFpDEljSBpD0hiSxljcnTEG8psxBu7O3cbSWiMiOI4DeebutNa421hKKfTekf8ZkuYDJyoqnpvK6cgAAAAASUVORK5CYII=",
             "threshold": 0.92
           }
         ],
@@ -753,10 +760,10 @@
           "tag": "input",
           "role": "textbox",
           "bbox": {
-            "x": 282.125,
-            "y": 177,
-            "w": 82,
-            "h": 19
+            "x": 282.1171875,
+            "y": 177.5,
+            "w": 78,
+            "h": 19.5
           }
         }
       },
@@ -767,7 +774,7 @@
       "clear": true,
       "id": "s08-type-initial-deposit",
       "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
-      "intent": "Fund the share with the initial deposit",
+      "intent": "Enter the initial deposit.",
       "risk": "safe",
       "precondition": [
         {
@@ -836,12 +843,12 @@
           {
             "kind": "visual",
             "bbox": {
-              "x": 282.125,
-              "y": 221,
+              "x": 282.1171875,
+              "y": 222.5,
               "w": 55.015625,
-              "h": 19
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAADwAAAAXCAYAAABXlyyHAAAD5UlEQVR4AeXBPUgbCwDA8X+OM3pGt+ukjQahRdCAg1uF1i9QFFGxxeGshoJoFgeltVIEY/wAoRBbEAdBTkSJ1A6tqBwO7VAnUchovSmoJBVKjJ7NkHpgIHR6Z9/ro/r72ZKXuEUEbhmRNKqqEo/H0XWdv53L5cLhcKAoCulErqiqiiRJNDY2clNomoaqqiiKQorAlXg8TnV1NTdJdXU18XicdAJXdF3nJtJ1nXQCt4zA/+ji4gLDMPiTRCx48uQJm5ubmHJzc2lra8Pv95OVlcV1vHz5kkQiQSAQ4E8RsSCZTDI2NsbTp0/Z39+noaGB4uJinj17xnW8evWKP03EIrvdTnZ2Nm63m/r6esLhMKbT01OGh4cJBoPk5eXR0dFBT08Pr1+/5uzsjKGhIUyRSITm5mbev3/Pu3fvSCQSeL1eTk9PGR4eJhgMkpeXR0dHBz09Pezt7TE4OMja2homRVFob2+nvr6ejY0NPn78SCAQ4J8SsCiZTPLjxw92d3fZ2tqisrISk8/n4+TkhJ2dHYLBILOzs4RCISorK5mamuL79++YlpeXuXv3LrIsc3R0RCQSweTz+Tg5OWFnZ4dgMMjs7CyhUIh79+7x5csXvn79ysHBAR8+fEBVVUxbW1s4nU6sELFoYGCAkZERYrEYb968oaKiAtPq6iolJSWMjo6Ssr6+Tn9/P+Xl5aysrNDZ2cnMzAyBQIBfra6uUlJSwujoKCnr6+v09/dTU1PD9vY20WiUFy9e8PbtW759+8anT58IBAJYIWLR1NQUXV1ddHd3Mzc3R1NTEzk5ORiGQWtrK6WlpZg8Hg+yLGPq7u5mYmKCgoICMjIyePjwIb8yDIPW1lZKS0sxeTweZFnGVFNTw+fPnwmFQiwsLBAOh5mfnyccDlNWVoYVAtcgCALT09NkZmbi8XhIJBLU1dWhaRpFRUW43W7sdjuHh4eYGhoaOD4+pre3F6/XiyAI/Kqurg5N0ygqKsLtdmO32zk8PMRUUVHB8vIy2dnZFBYW0tLSgs/no6qqClEUsULAApvNRkpWVhaLi4vouk5fXx9+vx/DMMjPz8fpdFJbW0s0GsWUmZmJ1+slEonQ1tZGis1mI8Xv92MYBvn5+TidTmpra4lGo5ju37/PnTt3ePz4MaYHDx6Qm5vLo0ePsMqWvMSl58+fMzg4yO86Pz8nFoshyzKCIGDV+fk5sVgMWZYRBIHfNT4+zuTkJCki/zJJkpAkieuSJAlJkvivCFxxuVzcRC6Xi3QCVxwOB5qmcZNomobD4SCdyBVFUVBVlaWlJXRd52/ncrlwOBwoikI6kTSKonDTCdwyPwFa0HMetu81FAAAAABJRU5ErkJggg==",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAADwAAAAYCAYAAACmwZ5SAAADnklEQVR4AeXBTyi7DQDA8e+enrZHTaittPX4U+KA5SBR/k3jME6IkxIuMmpS/pTLWCgi1C67KA60ciB/1iQRTqR2ldOk0EppW9jv9ZSV3B6/9/WWfT6aP+9IIgJJRiDJiHw4PDwkGAySm5vLb3Fzc0NhYSF1dXUkiHzw+/04nU60Wi2/RVlZGfPz89TV1ZEg8CEej6PVavlNtFot8XiczwSSjECSEfgfxWIxYrEYP0lEhYyMDBJMJhNOp5Oenh6+a2xsjJeXFxYXF/kpIioFAgEKCgrw+/10d3dTUVFBYWEh3zE+Ps5PE1BJkiT0ej3Nzc0YjUZCoRCK5+dnBgcHkWWZ8vJyPB4PioWFBdxuNwn39/dUVlby8PDAxsYGa2trKJ6fnxkcHESWZcrLy/F4PCiurq6w2+0kdHR0sLOzg8Lv9zMwMIAaIiq9vb0RiUTY3d3l/v6eiooKFC6Xi3A4zOXlJbFYjKamJqqqqrBardTW1uJwOEhLS2N9fR1ZljEYDNzd3RGPx1G4XC7C4TCXl5fEYjGampqoqqqioKCAs7Mzrq+v0Wg0bG9v8/r6it1u5+DggKysLNQQUammpoaE09NTUlNTUWxublJUVMTk5CQJe3t7DA0NUVpais/no7OzE4/Hw9LSEl9tbm5SVFTE5OQkCXt7ewwNDWGz2Tg/P+fh4YGRkRGWl5d5fHzk6OiI5eVl1BBR6eTkBLPZTH19PV6vl7m5ORSRSISWlhaKi4tRdHV1YTQaUfT29jI1NUVOTg5arZba2lq+ikQitLS0UFxcjKKrqwuj0YiioaGB4+NjgsEgq6urhEIhVlZWCIVClJSUoIbAN6Snp+Pz+dja2mJ2dhaF3W4nEAiQl5eHxWJBp9Nxe3uLorGxkbu7O3p7e+nr60MQBL6y2+0EAgHy8vKwWCzodDpub29RVFdXs76+TkpKCjk5OTQ3NzMxMYHNZkMURdQQ+abs7Gw2NjawWq2YTCbcbjf9/f2YzWb0ej0Kr9eLQqfT4XA4mJ6epq2tjQSNRkOC2+2mv78fs9mMXq9H4fV6UeTn52M0Gmlvb0dRWVmJXq/HarWilubPO94NDw8zOjrK34pGozw9PWEwGBAEAbWi0ShPT08YDAYEQeBvTU1NMTMzQ4LIv0ySJCRJ4rskSUKSJP4rAklG4IMsy1xcXPCbXFxcIMsyn4l8aG1txefzsb+/z28hyzKtra18JvIhMzMTh8PBbyeQZP4BNzw+itW+30EAAAAASUVORK5CYII=",
             "threshold": 0.92
           }
         ],
@@ -850,16 +857,16 @@
           "role": "button",
           "name": "Review",
           "bbox": {
-            "x": 282.125,
-            "y": 221,
+            "x": 282.1171875,
+            "y": 222.5,
             "w": 55.015625,
-            "h": 19
+            "h": 19.5
           }
         }
       },
       "id": "s09-click-review",
       "name": "Click the button \"Review\" in frame main",
-      "intent": "Review the new share before posting",
+      "intent": "Proceed to review the new share details.",
       "risk": "safe",
       "precondition": [
         {
@@ -927,11 +934,11 @@
             "kind": "visual",
             "bbox": {
               "x": 181,
-              "y": 231,
-              "w": 59.609375,
-              "h": 19
+              "y": 229,
+              "w": 59.6015625,
+              "h": 19.5
             },
-            "template": "iVBORw0KGgoAAAANSUhEUgAAAEAAAAAXCAYAAAC74kmRAAADmklEQVR4AeXBTyhkDwDA8e+8eT07XmMSmiQyc5BWRi7aaVHkpJkcRnMwXjlINqct+XMxUbubVu11RZRXDCZN4ja54EIRJQ7DO5BtW4edmKFp5GfKlDa/GvLT/szno7u5RRoTSHMi96iqSiQSQdM0XiOLxYIsyyiKQpLIHVVVMRgMOJ1OXrNgMIiqqiiKQoLAnUgkQkNDA69dQ0MDkUiEJIE7mqaRLjRNI0kgzQk8wfX1Naenp1xeXvIcTk5OmJ6eZm9vj2g0Sjwe56WIPEI4HGZoaIiJiQmMRiPn5+fU1dUxMjKC1WrlKXw+Hz09PTgcDiRJorW1lf7+ftxuNy9B5BG6u7vZ399nZ2eHoqIifv78idfr5fDwEKvVylMsLy/T29tLV1cXCTU1NRiNRl6KSIqOjo7w+/2sr69TVFREgtls5vv378RiMW5ubvj69Svj4+NcXV3hcrn49OkTmZmZtLe3k5OTw8rKCuFwmI6ODrq7u1lYWGBpaYnt7W1mZmbw+XwMDg7S1tbG+/fvaW9vp6qqio2NDUKhEH6/H6fTSX19PaqqkpWVhdfrZXV1lUAgQGVlJZ8/f6asrIxUiaRob2+PgoIC3r59y58kSWJra4upqSnm5+cxmUx8+PCBQCBAS0sLoVAIvV7P7OwssVgMu92Ox+OhsbGRd+/e0dLSgsPhwGQycXR0xMXFBQmhUAhN0/j48SM5OTno9XoODg5QFIXNzU38fj8dHR2Mjo4yMDDAt2/fmJycZGRkhFQJpOjq6gqDwcC/WVxcpKmpiYqKCoqLi/F4PCwsLJDU3NyM1WqltLSUsrIydnd3efPmDZIkYTQayc7ORhAE/tTX14fD4cButyMIAgkejwez2UxNTQ1GoxG3201ubi7V1dVsb2/zGAIpKikpIRQK8ePHDx4SjUaRJIkkSZKIRqM8JCMjg+eg1+u5TxAEHksgRTabjbq6Ojo7Ozk+Pibh7OyM4eFh1tbWaGpqIhAIcHJywu/fv5mbm8PlcvG3E0mRTqdjbGyMgYEBbDYbSbW1tbjdbgoLC6mqqqK8vJwEu92Oy+Xiv6DT6Xguuptb3Ort7aW/v59UxONxfv36RVZWFrIsc184HCYWi5GXl8ff6suXLwwPD5Mg8gSiKJKfn89DTCYT/ycCdywWC+nCYrGQJHBHlmWCwSCvXTAYRJZlkkTuKIqCqqr4fD40TeM1slgsyLKMoigkidyjKArpRiDN/QPNR0bnUXZYEgAAAABJRU5ErkJggg==",
+            "template": "iVBORw0KGgoAAAANSUhEUgAAAEAAAAAYCAYAAABKtPtEAAADuUlEQVR4AeXBT0iaDQDA4Z+vL6+rpTJWIYPJ8lDs3VbgoZLVQMvD0NGI8lASg6CCnQKjvEhdGqOg66Jo1KFm2h9iu3ZJBh1ybLDVYMqgsogOCc3CFX0JCjH6wKIv9unzKE5OkcUEspxI0vb2Nn6/n/X1dTKVIAhYrVYsFgspIkl+vx9ZlnE6nWSqeDyO1+tFp9MhyzIJAknr6+sYjUYymSRJFBUVEYlESBHIcgJZTuASjo+P2dra4vDwkKuwubnJ5OQk37594+DggKOjI66LyAVEo1H6+vp4+/YteXl57O/vYzabGRwcxGAwcBnv3r2jq6uLZ8+eoVKpaG5uxu1243A4uA4iF+ByuVhdXeXz58/o9Xp2dnbweDyEw2EMBgOX8eHDB3p6enj58iUJ1dXVqNVqrotImsLhMH6/n48fP6LX60koLCzkzZs3xONxTk5OGBgYYHR0lIODAxoaGujv7ycnJ4fW1lby8/NZXFwkGo3S1taGy+VidnaW9+/fEwwGmZqawuv10tvby4sXL3j8+DGtra1UVFSwvLxMKBRiZmYGm81GTU0NExMTaDQaent7WVpaYm5uDqPRyKtXr5BlmXSJpOnr16/cuXOH+/fv8ydJkggGg4yPj+Pz+dBqtXR0dDA3N0dTUxOhUAhRFPF6vfz+/ZvKykqcTic2m42Kigqam5ux2+1otVrC4TC/fv0iIRQK8fPnTzo7O7l9+zaCIPD9+3daWlpYWVnB5/PR1tbG8PAwHo+HoaEhxsbGGBwcJF0CaTo8PCQ3N5d/s7CwwPPnzykrK+PevXs4nU5mZ2dJaWxsxGAwUFJSwoMHD/jy5QsqlQqVSoVarebWrVsIgsCf3G43drsdk8mEUqkkwel0UlhYSHV1NXl5eTgcDvLz86mqquLTp09chECaiouL+fHjB9vb25wnFoshSRIpkiQRi8U4j0ql4iqIoshZSqWSixJIU2lpKWazmfb2djY2NkjY3d3l9evXBAIB6urqmJ+fZ3Nzk729Paanp2loaOBvJ5ImhULByMgIHo+HR48ekfLkyRMcDgd3796lvLychw8fkmAymaivr+e/oFAouCqKk1Oc6u7uxu12k46joyN2d3fRaDTk5uZyVjQaJR6PU1BQwN8oEAhw48YNamtrSRC5BFEU0el0nEer1fJ/IpDlBJIEQSAej5PpYrEYkiSRIpJktVrxer0UFRWRqWKxGGtrazx9+pQUkSSLxYJOpyMSiZCpNBoNNpuNmzdvkiJyhizLyLJMNhHIcv8Adx9HnBIXxQYAAAAASUVORK5CYII=",
             "threshold": 0.92
           }
         ],
@@ -941,15 +948,15 @@
           "name": "Confirm",
           "bbox": {
             "x": 181,
-            "y": 231,
-            "w": 59.609375,
-            "h": 19
+            "y": 229,
+            "w": 59.6015625,
+            "h": 19.5
           }
         }
       },
       "id": "s10-click-confirm",
       "name": "Click the button \"Confirm\" in frame main",
-      "intent": "Post the new share after review",
+      "intent": "Confirm opening the {{share_type}} share with the reviewed details.",
       "risk": "irreversible",
       "precondition": [
         {
@@ -1015,9 +1022,9 @@
           "role": "cell",
           "bbox": {
             "x": 329.703125,
-            "y": 137,
+            "y": 136.5,
             "w": 144.359375,
-            "h": 20
+            "h": 19.5
           }
         }
       },
@@ -1027,7 +1034,66 @@
       },
       "id": "s11-extract-confirmation-number",
       "name": "Read confirmation_number from the value next to \"Confirmation Number\" in frame main",
-      "intent": "Capture the confirmation number for the caller",
+      "intent": "Record the confirmation number of the new share.",
+      "risk": "safe",
+      "precondition": [
+        {
+          "kind": "url",
+          "pattern": "^{{base_url}}/member/{{member_id}}/share/confirm(\\?.*)?$",
+          "frame": [
+            "main"
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "Share Opened",
+          "frame": [
+            "main"
+          ]
+        }
+      ],
+      "expect": []
+    },
+    {
+      "kind": "extract",
+      "target": {
+        "description": "the value next to \"Share ID\" in frame main",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "label",
+            "text": "Share ID",
+            "control": "value"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(2) > td:nth-of-type(2)"
+          },
+          {
+            "kind": "xpath",
+            "expression": "/html[1]/body[1]/table[3]/tbody[1]/tr[2]/td[2]"
+          }
+        ],
+        "recorded": {
+          "tag": "td",
+          "role": "cell",
+          "bbox": {
+            "x": 329.703125,
+            "y": 156,
+            "w": 144.359375,
+            "h": 19.5
+          }
+        }
+      },
+      "output": "share_id",
+      "parse": {
+        "type": "text"
+      },
+      "id": "s12-extract-share-id",
+      "name": "Read share_id from the value next to \"Share ID\" in frame main",
+      "intent": "Record the new share ID.",
       "risk": "safe",
       "precondition": [
         {
@@ -1049,7 +1115,7 @@
     }
   ],
   "checkpoint": {
-    "description": "The Share Opened confirmation screen is displayed with a confirmation number.",
+    "description": "After clicking Confirm, the confirmation screen in the main frame displays a non-empty 'Confirmation Number' and a non-empty 'Share ID' for the new share of the requested share type on the specified member; both values are successfully extracted.",
     "expect": [
       {
         "kind": "url",
@@ -1060,7 +1126,7 @@
       },
       {
         "kind": "text",
-        "text": "Share Opened",
+        "text": "New share opened successfully.",
         "frame": [
           "main"
         ]
@@ -1069,8 +1135,8 @@
   },
   "conditions": [
     {
-      "id": "validation_error",
-      "description": "The New Share form rejected the supplied values.",
+      "id": "initial_deposit_below_minimum",
+      "description": "The application rejected the new share because the initial deposit is below the required minimum for this share type. It shows the validation message 'Initial deposit must be at least $X' on the New Share form.",
       "detect": {
         "kind": "text",
         "text": "Initial deposit must be at least",
@@ -1081,19 +1147,19 @@
       "class": "business_outcome",
       "origin": "probe",
       "outcome": {
-        "code": "VALIDATION_ERROR",
-        "message": "The application rejected the new share request; see the validation message."
+        "code": "INITIAL_DEPOSIT_BELOW_MINIMUM",
+        "message": "The share could not be opened: the initial deposit is below the minimum required for this share type."
       }
     }
   ],
   "overrides": {},
   "provenance": {
-    "recordedAt": "2026-09-20T16:41:38.539Z",
+    "recordedAt": "2026-09-26T16:43:32.115Z",
     "recordedBy": {
-      "kind": "scripted",
-      "model": "scripted"
+      "kind": "llm",
+      "model": "claude-opus-5-5"
     },
-    "discoveryRunId": "01M2ZV3FR88TV0NP60EKDRDMAD",
+    "discoveryRunId": "01M3F9HS5ABHVZ00XYGVQ3QTWV",
     "tenant": "summit",
     "tools": {
       "@anthropic-ai/sdk": "unknown",
@@ -1103,7 +1169,7 @@
     "transcriptRef": "transcript.json",
     "verification": {
       "status": "skipped",
-      "at": "2026-09-20T16:41:52.879Z",
+      "at": "2026-09-26T16:43:50.359Z",
       "reason": "riskClass irreversible: verification would post for real; run with --verify-mutating to opt in"
     }
   },

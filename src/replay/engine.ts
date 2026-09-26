@@ -167,6 +167,12 @@ export class ReplayEngine {
 
   async run(): Promise<RunResult> {
     const { evidence, capability } = this.o;
+    // Mask sensitive inputs before the first event, which carries the raw inputs.
+    for (const [name, value] of Object.entries(this.o.inputs)) {
+      const sensitivity = capability.inputs[name]?.sensitivity;
+      if (sensitivity === "pii" || sensitivity === "secret")
+        this.o.redactor.registerSensitive(String(value), sensitivity);
+    }
     evidence.emit(
       "run.start",
       `Replay ${capability.name}@${capability.version} on tenant ${this.o.tenant.id}`,

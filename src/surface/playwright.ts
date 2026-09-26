@@ -48,6 +48,8 @@ export interface WebSurfaceOptions {
   screenshots: "masked" | "full" | "none";
   /** Regex sources (case-insensitive) matched against labels / column headers / field names. */
   maskPatterns?: string[];
+  /** Receives the original text of every masked value, so the redactor can mask it everywhere. */
+  onMasked?: (value: string) => void;
   tracing?: boolean;
   slowMo?: number;
   kind?: "web" | "legacy_web";
@@ -231,6 +233,8 @@ export class PlaywrightSurface implements Surface {
         refs.push(ref);
         // Classified data never reaches the model's element list or the evidence log.
         if (e.sensitive && this.opts.screenshots !== "full") {
+          if (!e.interactive && e.text.trim()) this.opts.onMasked?.(e.text.trim());
+          if (e.value?.trim() && e.role !== "password") this.opts.onMasked?.(e.value.trim());
           if (!e.interactive) e.text = "[masked]";
           if (e.value !== undefined && e.role !== "password") e.value = "[masked]";
           e.name = e.interactive ? e.name : "[masked]";
@@ -887,8 +891,38 @@ export class PlaywrightSurface implements Surface {
     return maskRegions(png, await this.sensitiveBoxes());
   }
 
-  private async sensitiveBoxes(): Promise<BBox[]> {
+  /**
+   * Classify the live page with the same rules as observe(): report every sensitive value to
+   * onMasked (so logs and DOM snapshots mask it) and return the boxes to black out. Replays
+   * do not observe every step, so failure evidence must classify on its own.
+   */
+  private async classifiedBoxes(): Promise<BBox[]> {
     const boxes: BBox[] = [];
+    if (this.opts.screenshots === "full" || !this.opts.maskPatterns?.length) return boxes;
+    for (const f of this.page.frames()) {
+      try {
+        await this.ensureInjected(f);
+        const entries = (await f.evaluate((o) => (window as unknown as CuaWindow).__cua.index(o), {
+          maxReadable: 400,
+          maskPatterns: this.opts.maskPatterns,
+        })) as RawEntry[];
+        const off = await this.frameOffset(f);
+        for (const e of entries) {
+          if (!e.sensitive) continue;
+          if (!e.interactive && e.text.trim()) this.opts.onMasked?.(e.text.trim());
+          if (e.value?.trim() && e.role !== "password") this.opts.onMasked?.(e.value.trim());
+          const b = e.localBbox;
+          boxes.push({ x: b.x + off.x, y: b.y + off.y, w: b.w, h: b.h });
+        }
+      } catch {
+        /* detached or cross-origin frame: skip */
+      }
+    }
+    return boxes;
+  }
+
+  private async sensitiveBoxes(): Promise<BBox[]> {
+    const boxes: BBox[] = await this.classifiedBoxes();
     for (const f of this.page.frames()) {
       try {
         const local = (await f.evaluate(() =>
@@ -908,6 +942,8 @@ export class PlaywrightSurface implements Surface {
   }
 
   async domSnapshot(): Promise<string> {
+    // Register classified values first, so the evidence store's redactor masks them in the HTML.
+    await this.classifiedBoxes();
     const parts: string[] = [];
     for (const f of this.page.frames()) {
       try {

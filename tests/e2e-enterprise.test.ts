@@ -54,7 +54,7 @@ beforeAll(async () => {
   );
   rt = await createRuntime({
     tenantId: "summit",
-    headless: true,
+    headless: process.env.HEADED !== "1",
     root,
     evidenceRoot: path.join(root, "runs"),
     consolePort: 0,
@@ -132,7 +132,7 @@ describe("verification, pre-conditions and integrity", () => {
     fs.writeFileSync(file, JSON.stringify(wrong));
     const noConsole = await createRuntime({
       tenantId: "summit",
-      headless: true,
+      headless: process.env.HEADED !== "1",
       root,
       evidenceRoot: path.join(root, "runs"),
       console: false,
@@ -286,7 +286,7 @@ describe("assisted recovery and learning from humans", () => {
   it("re-finds relabelled controls with one bounded assist when semantic locators are restricted", async () => {
     const cascade = await createRuntime({
       tenantId: "cascade",
-      headless: true,
+      headless: process.env.HEADED !== "1",
       root,
       evidenceRoot: path.join(root, "runs"),
       console: false,
@@ -428,11 +428,13 @@ describe("data classification, vision-only replay, reports and codegen", () => {
     expect(fs.existsSync(path.join(r!.evidence.dir, "report.html"))).toBe(true);
     const cap = rt.store.load("member.lookup_savings_balance");
     const code = generatePlaywrightScript(cap, rt.profile, rt.tenant, { member_id: "10024" });
+    // Input values are passed at run time, never baked into the generated file.
+    expect(code).not.toContain("10024");
     // The generated script imports "playwright", so it must live where node can resolve it.
     fs.mkdirSync(path.join(process.cwd(), "runs"), { recursive: true });
     const file = path.join(process.cwd(), "runs", `generated-${Date.now()}.ts`);
     fs.writeFileSync(file, code);
-    const out = execFileSync(process.execPath, ["--import", "tsx", file], {
+    const out = execFileSync(process.execPath, ["--import", "tsx", file, '{"member_id":"10024"}'], {
       env: { ...process.env, LEGACYCORE_PASSWORD: process.env.LEGACYCORE_PASSWORD },
       cwd: process.cwd(),
       encoding: "utf8",

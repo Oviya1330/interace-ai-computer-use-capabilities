@@ -21,14 +21,14 @@
   "proposal": {
     "class": "business_outcome",
     "code": "MEMBER_NOT_FOUND",
-    "description": "The inquiry returned no member for the supplied member number.",
-    "message": "No member exists with the supplied member number.",
+    "description": "The member search returned no matching record; the application legitimately reports that no member exists for the given member number.",
+    "message": "No member was found matching the supplied member number.",
     "detectorText": "No member found matching",
     "dismissRef": null
   },
   "condition": {
     "id": "member_not_found",
-    "description": "The inquiry returned no member for the supplied member number.",
+    "description": "The member search returned no matching record; the application legitimately reports that no member exists for the given member number.",
     "detect": {
       "kind": "text",
       "text": "No member found matching",
@@ -40,7 +40,7 @@
     "origin": "probe",
     "outcome": {
       "code": "MEMBER_NOT_FOUND",
-      "message": "No member exists with the supplied member number."
+      "message": "No member was found matching the supplied member number."
     }
   }
 }

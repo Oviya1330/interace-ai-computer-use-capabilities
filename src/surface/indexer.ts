@@ -12,7 +12,7 @@
  *   mark(entries) / unmark() -> numbered overlay boxes (set-of-marks) for screenshots
  *   visibleText() / signature()
  */
-export const INDEXER_VERSION = 7;
+export const INDEXER_VERSION = 8;
 
 export const INDEXER_SCRIPT = String.raw`
 (() => {
@@ -24,7 +24,12 @@ export const INDEXER_SCRIPT = String.raw`
   const stripColon = (s) => norm(s).replace(/[:：]\s*$/, '');
   let registry = [];
   let maskRes = [];
-  const isMasked = (e) => maskRes.length > 0 && maskRes.some((re) => (e.labelText && re.test(e.labelText)) || (e.table && e.table.columnHeader && re.test(e.table.columnHeader)) || (e.attrs.name && re.test(e.attrs.name)) || (e.attrs['aria-label'] && re.test(e.attrs['aria-label'])));
+  // Column headers only mean something in a real grid; a two-column table is a label/value form
+  // whose first row is data, so there a value is classified by the label to its left.
+  const inGrid = (e) => !!(e.table && e.table.headers.length >= 3);
+  // A grid header cell or a cell whose own text is a classified label ("Name") describes data; it is not data.
+  const isLabel = (e) => (inGrid(e) && e.table.isHeader) || (!!e.text && maskRes.some((re) => re.test(e.text)));
+  const isMasked = (e) => maskRes.length > 0 && !isLabel(e) && maskRes.some((re) => (e.labelText && re.test(e.labelText)) || (inGrid(e) && e.table.columnHeader && re.test(e.table.columnHeader)) || (e.attrs.name && re.test(e.attrs.name)) || (e.attrs['aria-label'] && re.test(e.attrs['aria-label'])));
 
   function visible(el) {
     if (!(el instanceof Element)) return false;

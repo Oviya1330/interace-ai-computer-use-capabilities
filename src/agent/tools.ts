@@ -126,7 +126,7 @@ export const AGENT_TOOLS: Anthropic.Beta.BetaTool[] = [
     strict: true,
     input_schema: {
       type: "object",
-      properties: { seconds: { type: "integer", minimum: 1, maximum: 10 }, why },
+      properties: { seconds: { type: "integer", description: "1 to 10; clamped" }, why },
       required: ["seconds", "why"],
       additionalProperties: false,
     },

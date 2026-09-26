@@ -91,6 +91,8 @@ export async function createRuntime(o: RuntimeOptions): Promise<Runtime> {
       settle: profile.settle,
       screenshots: policyConfig.data.screenshots,
       maskPatterns: maskPatternsFor(profile),
+      // Whatever the surface masks on screen is masked in logs, transcripts and DOM snapshots too.
+      onMasked: (value) => redactor.registerSensitive(value, "pii"),
       tracing: o.tracing ?? true,
       slowMo: o.slowMo,
       kind: profile.surface === "desktop" ? "web" : profile.surface,

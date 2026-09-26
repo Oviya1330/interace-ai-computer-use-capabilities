@@ -51,7 +51,14 @@ export class Recorder {
   readonly outputs: RecordedOutput[] = [];
   private pending: Draft | null = null;
   private counter = 0;
-  private evidenceTarget: { target: Target; text: string; frame: string[] } | null = null;
+  private evidenceTarget: {
+    target: Target;
+    text: string;
+    frame: string[];
+    sensitive: boolean;
+  } | null = null;
+  /** Raw text of every extracted output; run-specific data that must never become a checkpoint. */
+  private readonly extractedTexts: string[] = [];
 
   constructor(
     private readonly surface: Surface,
@@ -241,6 +248,7 @@ export class Recorder {
           ...base("extract", `Read ${action.output} from ${target!.description}`, action.output),
         };
         this.outputs.push({ name: action.output, parse, sample: extra?.value });
+        if (extra?.raw?.trim()) this.extractedTexts.push(extra.raw.trim());
         break;
       }
       case "done": {
@@ -249,6 +257,7 @@ export class Recorder {
             target,
             text: parameterize(el.text || el.name, this.params),
             frame: el.frame,
+            sensitive: el.sensitive,
           };
         return null;
       }
@@ -279,7 +288,18 @@ export class Recorder {
         frame: content.path,
       });
     }
-    if (this.evidenceTarget && this.evidenceTarget.text) {
+    // An extracted value (a balance, an amount) differs per member, so it cannot prove the
+    // goal state on the next run; fall back to the screen heading instead.
+    const evidenceText = this.evidenceTarget?.text.trim() ?? "";
+    // A classified cell only ever reaches the model as "[masked]", which is never on the real page.
+    const evidenceIsData =
+      evidenceText !== "" &&
+      (this.evidenceTarget!.sensitive ||
+        evidenceText.includes("[masked]") ||
+        this.extractedTexts.some(
+          (raw) => evidenceText.includes(raw) || raw.includes(evidenceText),
+        ));
+    if (this.evidenceTarget && evidenceText && !evidenceIsData) {
       expect.push({
         kind: "text",
         text: this.evidenceTarget.text,
@@ -292,9 +312,10 @@ export class Recorder {
         frame: this.contentFrame,
       });
     }
-    const description = this.evidenceTarget
-      ? `The screen shows "${this.evidenceTarget.text}"${content ? ` at ${canonicalUrlPattern(content.url, this.params, this.baseUrl)}` : ""}`
-      : `The content frame reached ${content?.url ?? "the final screen"}`;
+    const description =
+      this.evidenceTarget && !evidenceIsData
+        ? `The screen shows "${this.evidenceTarget.text}"${content ? ` at ${canonicalUrlPattern(content.url, this.params, this.baseUrl)}` : ""}`
+        : `The content frame reached ${content?.url ?? "the final screen"}`;
     return { description, expect };
   }
 
@@ -330,7 +351,13 @@ export class Recorder {
         // Real values never enter the artifact when the input is sensitive.
         ...(sensitivity === "none" ? { example: value } : {}),
         sensitivity,
-        ...(spec?.pattern ? { pattern: spec.pattern } : {}),
+        ...(spec?.pattern
+          ? { pattern: spec.pattern }
+          : // No pattern from the model: a value typed as pure digits (a member or account
+            // number) still gets a digits-only guard, so malformed input fails before the UI.
+            /^\d+$/.test(value)
+            ? { pattern: "^\\d+$" }
+            : {}),
       };
     }
     const outputs: Capability["outputs"] = {};

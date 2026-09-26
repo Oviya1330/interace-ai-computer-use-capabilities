@@ -44,7 +44,8 @@ export class LlmDecider implements Decider {
   private readonly messages: Msg[] = [];
   private readonly imageRefs = new Map<number, string>();
   private task!: TaskSpec;
-  private events!: EventSink;
+  /** Set by start(); absent when the replay engine uses the decider only for assists. */
+  private events?: EventSink;
   private stats: LlmUsage;
   private nudges = 0;
 
@@ -204,7 +205,7 @@ export class LlmDecider implements Decider {
       .map((b) => b.text)
       .join("\n");
     const fellBack = res.content.some((b) => (b as { type: string }).type === "fallback");
-    this.events.emit(
+    this.events?.emit(
       "agent.llm",
       `LLM call ${this.stats.calls}: ${res.model} stop=${res.stop_reason} in=${res.usage.input_tokens} out=${res.usage.output_tokens} cache_read=${res.usage.cache_read_input_tokens ?? 0} (${Date.now() - started}ms)`,
       {
@@ -354,7 +355,7 @@ ${obsText}`;
     this.stats.outputTokens += usage.output_tokens;
     this.stats.cacheReadTokens += usage.cache_read_input_tokens ?? 0;
     this.stats.cacheWriteTokens += usage.cache_creation_input_tokens ?? 0;
-    this.events.emit(
+    this.events?.emit(
       "agent.llm",
       `LLM ${what} call: ${model} stop=${stop} in=${usage.input_tokens} out=${usage.output_tokens} (${Date.now() - started}ms)`,
       {

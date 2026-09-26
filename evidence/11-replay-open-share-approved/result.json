@@ -1,10 +1,10 @@
 {
-  "runId": "01M2ZV74DWA3EJH3NMY028KDY6",
+  "runId": "01M3F9Q2MPDMEB6Y5HSHX03W62",
   "kind": "replay",
   "capability": {
     "name": "member.open_share",
     "version": "1.0.0",
-    "id": "01M2ZV3NZBFA6SKP278SXGBCSR"
+    "id": "01M3F9KEWK8YSXBJBA1XZCCG1P"
   },
   "tenant": "summit",
   "inputs": {
@@ -13,9 +13,9 @@
     "description": "Rainy day",
     "initial_deposit": "40.00"
   },
-  "startedAt": "2026-09-20T16:43:31.644Z",
-  "endedAt": "2026-09-20T16:43:36.673Z",
-  "durationMs": 5029,
+  "startedAt": "2026-09-26T16:45:30.646Z",
+  "endedAt": "2026-09-26T16:45:36.514Z",
+  "durationMs": 5868,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -23,15 +23,15 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:31.979Z",
-      "durationMs": 497,
+      "startedAt": "2026-09-26T16:45:30.990Z",
+      "durationMs": 449,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 17
+        "ms": 24
       },
       "screenshot": "steps/01-s01-click-member-inquiry.png"
     },
@@ -41,15 +41,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:32.476Z",
-      "durationMs": 352,
+      "startedAt": "2026-09-26T16:45:31.440Z",
+      "durationMs": 398,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 13
+        "ms": 16
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -59,15 +59,15 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:32.828Z",
-      "durationMs": 482,
+      "startedAt": "2026-09-26T16:45:31.838Z",
+      "durationMs": 537,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 4
+        "ms": 5
       },
       "screenshot": "steps/03-s03-click-search.png"
     },
@@ -77,15 +77,15 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:33.310Z",
-      "durationMs": 502,
+      "startedAt": "2026-09-26T16:45:32.375Z",
+      "durationMs": 553,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 10
+        "ms": 9
       },
       "screenshot": "steps/04-s04-click-member-id.png"
     },
@@ -95,8 +95,8 @@
       "kind": "click",
       "name": "Click the button \"New Share\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:33.812Z",
-      "durationMs": 499,
+      "startedAt": "2026-09-26T16:45:32.928Z",
+      "durationMs": 553,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -113,8 +113,8 @@
       "kind": "select",
       "name": "Select {{share_type}} in the combobox \"Share Type\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:34.311Z",
-      "durationMs": 350,
+      "startedAt": "2026-09-26T16:45:33.481Z",
+      "durationMs": 426,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -131,15 +131,15 @@
       "kind": "type",
       "name": "Enter {{description}} into the textbox \"Description\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:34.661Z",
-      "durationMs": 351,
+      "startedAt": "2026-09-26T16:45:33.908Z",
+      "durationMs": 423,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 3
+        "ms": 4
       },
       "screenshot": "steps/07-s07-type-description.png"
     },
@@ -149,8 +149,8 @@
       "kind": "type",
       "name": "Enter {{initial_deposit}} into the textbox \"Initial Deposit\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:35.012Z",
-      "durationMs": 351,
+      "startedAt": "2026-09-26T16:45:34.332Z",
+      "durationMs": 424,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -167,15 +167,15 @@
       "kind": "click",
       "name": "Click the button \"Review\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:35.363Z",
-      "durationMs": 480,
+      "startedAt": "2026-09-26T16:45:34.757Z",
+      "durationMs": 532,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "role",
         "tier": 0,
         "matches": 1,
-        "ms": 3
+        "ms": 4
       },
       "screenshot": "steps/09-s09-click-review.png"
     },
@@ -185,8 +185,8 @@
       "kind": "click",
       "name": "Click the button \"Confirm\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:35.843Z",
-      "durationMs": 483,
+      "startedAt": "2026-09-26T16:45:35.289Z",
+      "durationMs": 429,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -208,8 +208,8 @@
       "kind": "extract",
       "name": "Read confirmation_number from the value next to \"Confirmation Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:43:36.326Z",
-      "durationMs": 345,
+      "startedAt": "2026-09-26T16:45:35.718Z",
+      "durationMs": 395,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -220,9 +220,31 @@
       },
       "extracted": {
         "output": "confirmation_number",
-        "raw": "CNF-D10A032D"
+        "raw": "CNF-E7A0D9EF"
       },
       "screenshot": "steps/11-s11-extract-confirmation-number.png"
+    },
+    {
+      "stepId": "s12-extract-share-id",
+      "index": 11,
+      "kind": "extract",
+      "name": "Read share_id from the value next to \"Share ID\" in frame main",
+      "status": "ok",
+      "startedAt": "2026-09-26T16:45:36.113Z",
+      "durationMs": 399,
+      "attempts": 1,
+      "recoveries": [],
+      "resolution": {
+        "strategy": "label",
+        "tier": 0,
+        "matches": 1,
+        "ms": 3
+      },
+      "extracted": {
+        "output": "share_id",
+        "raw": "[pii:0***0]"
+      },
+      "screenshot": "steps/12-s12-extract-share-id.png"
     }
   ],
   "recoveries": [],
@@ -231,7 +253,7 @@
   "proposedConditions": [],
   "drift": {
     "tierHistogram": {
-      "0": 11
+      "0": 12
     },
     "warnings": []
   },
@@ -240,12 +262,12 @@
     "events": "events.jsonl"
   },
   "policy": {
-    "decisions": 11,
+    "decisions": 12,
     "denied": 0,
     "confirmations": 0
   },
   "integrity": {
-    "hash": "f007caaff4c0ef093ce527ee41eb8e499ff9c405b38d01f8721f8e40df859340",
+    "hash": "55913a46afe244cc4ae52d23729867794cf68cce6f3f0586af14fd2a7e0c85f7",
     "approvedHashMatches": true,
     "effectiveStatus": "approved"
   },
@@ -268,6 +290,7 @@
   ],
   "status": "success",
   "outputs": {
-    "confirmation_number": "CNF-D10A032D"
+    "confirmation_number": "CNF-E7A0D9EF",
+    "share_id": "[pii:0***0]"
   }
 }

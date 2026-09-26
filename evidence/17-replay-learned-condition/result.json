@@ -1,18 +1,18 @@
 {
-  "runId": "01M2ZV9CGH21CR86WZ5S4RQ8PH",
+  "runId": "01M3F9SPX6VTJ6T6JS71HEC8Z0",
   "kind": "replay",
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.2.0",
-    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+    "id": "01M3F9H7CQW0HMR9YZE2EM03EG"
   },
   "tenant": "summit",
   "inputs": {
     "member_id": "[pii:1***7]"
   },
-  "startedAt": "2026-09-20T16:44:45.458Z",
-  "endedAt": "2026-09-20T16:44:58.476Z",
-  "durationMs": 13018,
+  "startedAt": "2026-09-26T16:46:56.934Z",
+  "endedAt": "2026-09-26T16:47:10.213Z",
+  "durationMs": 13279,
   "steps": [
     {
       "stepId": "s01-click-member-inquiry",
@@ -20,14 +20,14 @@
       "kind": "click",
       "name": "Click the link \"Member Inquiry\" in frame nav",
       "status": "recovered",
-      "startedAt": "2026-09-20T16:44:45.792Z",
-      "durationMs": 11014,
+      "startedAt": "2026-09-26T16:46:57.278Z",
+      "durationMs": 11019,
       "attempts": 2,
       "recoveries": [
         {
           "conditionId": "human_security_bulletin",
           "class": "recoverable",
-          "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M2ZV6N30ZV2PN1GR06EA5TC2)",
+          "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M3F9PK368JJ8QKK80TS1V6Q6)",
           "handled": "resolved",
           "stepId": "s01-click-member-inquiry",
           "handler": "dismiss",
@@ -42,15 +42,15 @@
       "kind": "type",
       "name": "Enter {{member_id}} into the textbox \"Member Number\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:44:56.807Z",
-      "durationMs": 352,
+      "startedAt": "2026-09-26T16:47:08.297Z",
+      "durationMs": 388,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
         "strategy": "label",
         "tier": 0,
         "matches": 1,
-        "ms": 9
+        "ms": 10
       },
       "screenshot": "steps/02-s02-type-member-number.png"
     },
@@ -60,8 +60,8 @@
       "kind": "click",
       "name": "Click the button \"Search\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:44:57.159Z",
-      "durationMs": 473,
+      "startedAt": "2026-09-26T16:47:08.685Z",
+      "durationMs": 534,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -78,8 +78,8 @@
       "kind": "click",
       "name": "Click the link \"{{member_id}}\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:44:57.632Z",
-      "durationMs": 494,
+      "startedAt": "2026-09-26T16:47:09.220Z",
+      "durationMs": 557,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -96,8 +96,8 @@
       "kind": "extract",
       "name": "Read savings_balance from the \"Balance\" cell of the row where Type = \"Savings\" in frame main",
       "status": "ok",
-      "startedAt": "2026-09-20T16:44:58.126Z",
-      "durationMs": 349,
+      "startedAt": "2026-09-26T16:47:09.778Z",
+      "durationMs": 434,
       "attempts": 1,
       "recoveries": [],
       "resolution": {
@@ -117,7 +117,7 @@
     {
       "conditionId": "human_security_bulletin",
       "class": "recoverable",
-      "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M2ZV6N30ZV2PN1GR06EA5TC2)",
+      "description": "Screen \"Security Bulletin\" cleared by operator operator-bot via the button \"I Acknowledge\" in frame main (run 01M3F9PK368JJ8QKK80TS1V6Q6)",
       "handled": "resolved",
       "stepId": "s01-click-member-inquiry",
       "handler": "dismiss",
@@ -143,7 +143,7 @@
     "confirmations": 0
   },
   "integrity": {
-    "hash": "33180148f933d885d0de1d4e4b2306650240e0719f56dbffc61b70642eaea780",
+    "hash": "ee191de2f81c5ecc1db376c89431899fabac92bfa88ba0316007612be743c63a",
     "approvedHashMatches": null,
     "effectiveStatus": "draft"
   },

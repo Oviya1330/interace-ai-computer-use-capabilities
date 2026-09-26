@@ -264,7 +264,16 @@
   },
   "defaultStepTimeoutMs": 10000,
   "dataPolicy": {
-    "maskLabels": ["SSN", "Social Security", "Card Number", "Password"],
+    "maskLabels": [
+      "SSN",
+      "Social Security",
+      "Card Number",
+      "Password",
+      "Name",
+      "Member",
+      "Address",
+      "Phone"
+    ],
     "maskNamePatterns": ["ssn", "passw", "cardno"]
   },
   "locatorPolicy": {

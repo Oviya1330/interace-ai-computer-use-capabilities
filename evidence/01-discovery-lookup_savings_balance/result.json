@@ -1,5 +1,5 @@
 {
-  "runId": "01M2ZV2V2NJSYPC31M93D5F70G",
+  "runId": "01M3F9G7DN671J8QMR0FRZ4GVJ",
   "kind": "discovery",
   "status": "success",
   "goal": "Look up member [pii:1***3] and read their current savings balance",
@@ -7,12 +7,12 @@
   "actions": 5,
   "turns": 5,
   "llm": {
-    "calls": 0,
+    "calls": 6,
     "inputTokens": "[REDACTED:key]",
     "outputTokens": "[REDACTED:key]",
     "cacheReadTokens": "[REDACTED:key]",
     "cacheWriteTokens": "[REDACTED:key]",
-    "model": "scripted"
+    "model": "claude-opus-5-5"
   },
   "interventions": [],
   "policy": {
@@ -27,13 +27,13 @@
     "artifact": "artifact.json",
     "trace": "trace.zip"
   },
-  "startedAt": "2026-09-20T16:41:10.998Z",
-  "endedAt": "2026-09-20T16:41:17.760Z",
-  "durationMs": 6762,
+  "startedAt": "2026-09-26T16:41:46.167Z",
+  "endedAt": "2026-09-26T16:42:18.915Z",
+  "durationMs": 32748,
   "capability": {
     "name": "member.lookup_savings_balance",
     "version": "1.0.0",
-    "id": "01M2ZV31NVVS3A1HXNXJH3TNR1"
+    "id": "01M3F9H7CQW0HMR9YZE2EM03EG"
   },
   "artifactPath": "/Users/saa/Developer/Projects/computer-use-assignment/capabilities/[REDACTED:email]"
 }

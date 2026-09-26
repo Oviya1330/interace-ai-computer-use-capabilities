@@ -523,11 +523,15 @@ async function main(): Promise<void> {
         }),
       );
       try {
-        const out = execFileSync(process.execPath, ["--import", "tsx", genFile], {
-          encoding: "utf8",
-          timeout: 120_000,
-          env: process.env,
-        });
+        const out = execFileSync(
+          process.execPath,
+          ["--import", "tsx", genFile, '{"member_id":"10024"}'],
+          {
+            encoding: "utf8",
+            timeout: 120_000,
+            env: process.env,
+          },
+        );
         fs.writeFileSync(
           path.join(OUT, "artifacts", "generated-lookup_savings_balance.output.json"),
           out,
@@ -609,7 +613,11 @@ async function main(): Promise<void> {
       "",
       ...fs.readdirSync(artDir).map((f) => `- \`artifacts/${f}\``),
     );
-    fs.writeFileSync(path.join(OUT, "README.md"), index.join("\n") + "\n");
+    // Goals and scenario labels carry member numbers; mask them like every other evidence file.
+    fs.writeFileSync(
+      path.join(OUT, "README.md"),
+      rt.redactor.redactString(index.join("\n")) + "\n",
+    );
     say(`\nEvidence written to ${path.resolve(OUT)} (index: ${path.join(OUT, "README.md")})`);
   } finally {
     await cascade?.close();
