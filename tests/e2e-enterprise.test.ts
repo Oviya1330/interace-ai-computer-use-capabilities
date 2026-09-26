@@ -22,7 +22,8 @@ import { AuditLog } from "../src/hitl/audit.js";
 import { decode } from "../src/surface/png.js";
 import { renderRunReport } from "../src/evidence/report.js";
 import { generatePlaywrightScript } from "../src/catalog/codegen.js";
-import { execFileSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 
 process.env.LEGACYCORE_PASSWORD ??= "Summit#2024!";
 process.env.LEGACYCORE_CASCADE_PASSWORD ??= "Cascade#2024!";
@@ -434,12 +435,18 @@ describe("data classification, vision-only replay, reports and codegen", () => {
     fs.mkdirSync(path.join(process.cwd(), "runs"), { recursive: true });
     const file = path.join(process.cwd(), "runs", `generated-${Date.now()}.ts`);
     fs.writeFileSync(file, code);
-    const out = execFileSync(process.execPath, ["--import", "tsx", file, '{"member_id":"10024"}'], {
-      env: { ...process.env, LEGACYCORE_PASSWORD: process.env.LEGACYCORE_PASSWORD },
-      cwd: process.cwd(),
-      encoding: "utf8",
-      timeout: 120_000,
-    });
+    // Async on purpose: the app may be served from this very process, and a sync spawn would
+    // block its event loop so the child's page.goto could never get a response.
+    const { stdout: out } = await promisify(execFile)(
+      process.execPath,
+      ["--import", "tsx", file, '{"member_id":"10024"}'],
+      {
+        env: { ...process.env, LEGACYCORE_PASSWORD: process.env.LEGACYCORE_PASSWORD },
+        cwd: process.cwd(),
+        encoding: "utf8",
+        timeout: 120_000,
+      },
+    );
     const parsed = JSON.parse(out);
     expect(parsed.status).toBe("success");
     expect(typeof parsed.outputs.savings_balance).toBe("number");

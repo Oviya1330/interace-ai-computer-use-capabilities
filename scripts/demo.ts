@@ -14,7 +14,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { startLegacyCore } from "../apps/legacycore/server.js";
 import { createRuntime, type Runtime } from "../src/runtime.js";
 import {
@@ -523,7 +524,8 @@ async function main(): Promise<void> {
         }),
       );
       try {
-        const out = execFileSync(
+        // Async: when the demo serves the app itself, a sync spawn would block it.
+        const { stdout: out } = await promisify(execFile)(
           process.execPath,
           ["--import", "tsx", genFile, '{"member_id":"10024"}'],
           {
